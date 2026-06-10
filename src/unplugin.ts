@@ -15,8 +15,10 @@ const COMPONENT_MANIFEST: Record<string, string> = {
   Map: 'Map.vue',
   Source: 'Source.vue',
   Layer: 'Layer.vue',
+  LayerGroup: 'LayerGroup.vue',
   Marker: 'Marker.vue',
   Popup: 'Popup.vue',
+  Tooltip: 'Tooltip.vue',
   NavigationControl: 'controls/NavigationControl.vue',
   GeolocateControl: 'controls/GeolocateControl.vue',
   FullscreenControl: 'controls/FullscreenControl.vue',
@@ -25,7 +27,17 @@ const COMPONENT_MANIFEST: Record<string, string> = {
   DrawControl: 'extensions/DrawControl.vue',
   TiandituLayer: 'extensions/TiandituLayer.vue',
   WmtsLayer: 'extensions/WmtsLayer.vue',
-  WmsLayer: 'extensions/WmsLayer.vue'
+  WmsLayer: 'extensions/WmsLayer.vue',
+  ImageLayer: 'layers/ImageLayer.vue',
+  VideoLayer: 'layers/VideoLayer.vue',
+  RasterLayer: 'layers/RasterLayer.vue',
+  BuildingLayer: 'layers/BuildingLayer.vue',
+  ClusterLayer: 'layers/ClusterLayer.vue',
+  Terrain: 'environment/Terrain.vue',
+  Fog: 'environment/Fog.vue',
+  Rain: 'environment/Rain.vue',
+  Snow: 'environment/Snow.vue',
+  Lights: 'environment/Lights.vue'
 }
 
 // composable 名 → runtime/composables 下的文件名
@@ -33,6 +45,9 @@ const COMPOSABLE_MANIFEST: Record<string, string> = {
   useMap: 'useMap',
   useMapbox: 'useMapbox',
   useMapboxDraw: 'useMapboxDraw',
+  useFeatureState: 'useFeatureState',
+  useMapboxImage: 'useMapboxImage',
+  useMapboxCamera: 'useMapboxCamera',
   defineMapboxControl: 'defineMapboxControl'
 }
 

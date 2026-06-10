@@ -11,6 +11,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    DemoMap: typeof import('./../play/app/components/DemoMap.vue')['default']
     MapboxAttributionControl: typeof import('#mapbox/components/controls/AttributionControl.vue')['default']
     MapboxDrawControl: typeof import('#mapbox/components/extensions/DrawControl.vue')['default']
     MapboxFullscreenControl: typeof import('#mapbox/components/controls/FullscreenControl.vue')['default']
@@ -41,6 +42,7 @@ declare module 'vue' {
     UPageCard: typeof import('./../../node_modules/.pnpm/@nuxt+ui@4.8.2_@internationalized+date@3.12.2_@internationalized+number@3.6.7_@tiptap+e_c5faf6b69d02c9bcb1bd890705c42ebf/node_modules/@nuxt/ui/dist/runtime/components/PageCard.vue')['default']
     UPageGrid: typeof import('./../../node_modules/.pnpm/@nuxt+ui@4.8.2_@internationalized+date@3.12.2_@internationalized+number@3.6.7_@tiptap+e_c5faf6b69d02c9bcb1bd890705c42ebf/node_modules/@nuxt/ui/dist/runtime/components/PageGrid.vue')['default']
     UPageHero: typeof import('./../../node_modules/.pnpm/@nuxt+ui@4.8.2_@internationalized+date@3.12.2_@internationalized+number@3.6.7_@tiptap+e_c5faf6b69d02c9bcb1bd890705c42ebf/node_modules/@nuxt/ui/dist/runtime/components/PageHero.vue')['default']
+    URadioGroup: typeof import('./../../node_modules/.pnpm/@nuxt+ui@4.8.2_@internationalized+date@3.12.2_@internationalized+number@3.6.7_@tiptap+e_c5faf6b69d02c9bcb1bd890705c42ebf/node_modules/@nuxt/ui/dist/runtime/components/RadioGroup.vue')['default']
     USelect: typeof import('./../../node_modules/.pnpm/@nuxt+ui@4.8.2_@internationalized+date@3.12.2_@internationalized+number@3.6.7_@tiptap+e_c5faf6b69d02c9bcb1bd890705c42ebf/node_modules/@nuxt/ui/dist/runtime/components/Select.vue')['default']
     USeparator: typeof import('./../../node_modules/.pnpm/@nuxt+ui@4.8.2_@internationalized+date@3.12.2_@internationalized+number@3.6.7_@tiptap+e_c5faf6b69d02c9bcb1bd890705c42ebf/node_modules/@nuxt/ui/dist/runtime/components/Separator.vue')['default']
     USlider: typeof import('./../../node_modules/.pnpm/@nuxt+ui@4.8.2_@internationalized+date@3.12.2_@internationalized+number@3.6.7_@tiptap+e_c5faf6b69d02c9bcb1bd890705c42ebf/node_modules/@nuxt/ui/dist/runtime/components/Slider.vue')['default']

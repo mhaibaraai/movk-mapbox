@@ -62,6 +62,7 @@ declare global {
   const unref: typeof import('vue').unref
   const useAppConfig: typeof import('../../node_modules/.pnpm/@nuxt+ui@4.8.2_@internationalized+date@3.12.2_@internationalized+number@3.6.7_@tiptap+e_c5faf6b69d02c9bcb1bd890705c42ebf/node_modules/@nuxt/ui/dist/runtime/vue/composables/useAppConfig.js').useAppConfig
   const useAttrs: typeof import('vue').useAttrs
+  const useBasemap: typeof import('../play/app/composables/useBasemap').useBasemap
   const useContentSearch: typeof import('../../node_modules/.pnpm/@nuxt+ui@4.8.2_@internationalized+date@3.12.2_@internationalized+number@3.6.7_@tiptap+e_c5faf6b69d02c9bcb1bd890705c42ebf/node_modules/@nuxt/ui/dist/runtime/composables/useContentSearch').useContentSearch
   const useCssModule: typeof import('vue').useCssModule
   const useCssVars: typeof import('vue').useCssVars
@@ -94,4 +95,7 @@ declare global {
   // @ts-ignore
   export type { Component, Slot, Slots, ComponentPublicInstance, ComputedRef, DirectiveBinding, ExtractDefaultPropTypes, ExtractPropTypes, ExtractPublicPropTypes, InjectionKey, PropType, Ref, ShallowRef, MaybeRef, MaybeRefOrGetter, VNode, WritableComputedRef } from 'vue'
   import('vue')
+  // @ts-ignore
+  export type { BasemapKey } from '../play/app/composables/useBasemap'
+  import('../play/app/composables/useBasemap')
 }
