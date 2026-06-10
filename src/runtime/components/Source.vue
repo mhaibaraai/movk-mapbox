@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onUnmounted, watch } from 'vue'
-import type { GeoJSONSource, ImageSource, RasterTileSource, SourceSpecification, VectorTileSource } from 'mapbox-gl'
+import type { GeoJSONSource, ImageSource, RasterTileSource, SourceSpecification, VectorTileSource, VideoSource } from 'mapbox-gl'
 import { useMap } from '../composables/useMap'
 
 const props = defineProps<{
@@ -31,6 +31,8 @@ watch(() => props.source, (next) => {
     if (next.tiles) (source as RasterTileSource).setTiles(next.tiles)
   } else if (next.type === 'image' && next.url) {
     (source as ImageSource).updateImage(next as typeof next & { url: string })
+  } else if (next.type === 'video' && next.coordinates) {
+    (source as VideoSource).setCoordinates(next.coordinates)
   }
 }, { deep: true })
 
