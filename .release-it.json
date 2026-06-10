@@ -1,0 +1,21 @@
+{
+  "git": {
+    "commitMessage": "chore(release): release v${version}",
+    "tagName": "v${version}"
+  },
+  "hooks": {
+    "before:init": ["pnpm lint", "pnpm typecheck", "pnpm test --run"]
+  },
+  "github": {
+    "release": true
+  },
+  "npm": {
+    "publish": false
+  },
+  "plugins": {
+    "@release-it/conventional-changelog": {
+      "preset": "conventionalcommits",
+      "infile": "CHANGELOG.md"
+    }
+  }
+}

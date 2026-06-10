@@ -1,0 +1,19 @@
+{
+  "name": "play",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "nuxt dev",
+    "build": "nuxt build"
+  },
+  "dependencies": {
+    "@mapbox/mapbox-gl-draw": "^1.5.1",
+    "@nuxt/ui": "^4.8.2",
+    "mapbox-gl": "^3.24.0"
+  },
+  "devDependencies": {
+    "@iconify-json/lucide": "^1.2.111",
+    "nuxt": "^4.4.8",
+    "tailwindcss": "^4.3.0"
+  }
+}

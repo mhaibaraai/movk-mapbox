@@ -1,0 +1,13 @@
+packages:
+  - playgrounds/*
+  - docs
+
+ignoreWorkspaceRootCheck: true
+linkWorkspacePackages: true
+
+allowBuilds:
+  '@parcel/watcher': false
+  esbuild: false
+  sharp: true
+  unrs-resolver: false
+  vue-demi: false
