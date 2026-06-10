@@ -4,6 +4,8 @@ const sections = [
   { label: '数据源', icon: 'i-lucide-database', to: '/sources/geojson', description: 'GeoJSON / Vector / Raster / Image 四类数据源' },
   { label: '图层', icon: 'i-lucide-layers', to: '/layers/circle', description: 'circle/line/fill/symbol/heatmap/3D 与内联 source' },
   { label: '标注', icon: 'i-lucide-map-pin', to: '/annotations/marker', description: 'Marker 与 Popup，支持自定义 DOM 与拖拽' },
+  { label: '交互', icon: 'i-lucide-mouse-pointer-click', to: '/interactions/feature-state', description: 'feature-state 高亮、Tooltip、相机助手、图标注册' },
+  { label: '环境', icon: 'i-lucide-mountain-snow', to: '/environment/terrain', description: '3D 地形、大气、雨雪天气与光照' },
   { label: '控件', icon: 'i-lucide-sliders-horizontal', to: '/controls', description: '导航/定位/全屏/比例尺/版权信息' },
   { label: '扩展', icon: 'i-lucide-puzzle', to: '/extensions/draw', description: 'Draw 绘制、天地图底图、坐标系转换' }
 ]

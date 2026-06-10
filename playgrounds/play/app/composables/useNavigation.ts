@@ -34,7 +34,37 @@ const layersNav: NavigationMenuItem = {
     { label: 'Symbol 符号', to: '/layers/symbol' },
     { label: 'Heatmap 热力', to: '/layers/heatmap' },
     { label: 'FillExtrusion 3D', to: '/layers/fill-extrusion' },
-    { label: '内联 Source', to: '/layers/inline-source' }
+    { label: '内联 Source', to: '/layers/inline-source' },
+    { label: 'Image 图片图层', to: '/layers/image' },
+    { label: 'Video 视频图层', to: '/layers/video' },
+    { label: 'Raster URL 模板', to: '/layers/raster-tiles' },
+    { label: 'Building 3D 建筑', to: '/layers/building' },
+    { label: 'Cluster 点聚合', to: '/layers/cluster' },
+    { label: 'LayerGroup 图层组', to: '/layers/group' }
+  ]
+}
+
+const interactionsNav: NavigationMenuItem = {
+  label: '交互',
+  icon: 'i-lucide-mouse-pointer-click',
+  defaultOpen: true,
+  children: [
+    { label: 'FeatureState 悬浮/选中', to: '/interactions/feature-state' },
+    { label: 'Tooltip 悬浮提示', to: '/interactions/tooltip' },
+    { label: 'Camera 相机助手', to: '/interactions/camera' },
+    { label: 'Image 图标注册', to: '/interactions/icons' }
+  ]
+}
+
+const environmentNav: NavigationMenuItem = {
+  label: '环境',
+  icon: 'i-lucide-mountain-snow',
+  defaultOpen: true,
+  children: [
+    { label: 'Terrain 3D 地形', to: '/environment/terrain' },
+    { label: 'Fog 大气', to: '/environment/fog' },
+    { label: 'Rain/Snow 天气', to: '/environment/weather' },
+    { label: 'Lights 光照', to: '/environment/lights' }
   ]
 }
 
@@ -75,6 +105,8 @@ const components: NavigationMenuItem[] = [
   sourcesNav,
   layersNav,
   annotationsNav,
+  interactionsNav,
+  environmentNav,
   controlsNav,
   extensionsNav
 ]
