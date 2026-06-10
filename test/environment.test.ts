@@ -15,6 +15,11 @@ const { maps, makeFakeMap } = vi.hoisted(() => {
       sources,
       fogCalls: [] as unknown[],
       terrainCalls: [] as unknown[],
+      styleLoaded: true,
+      // 模拟 mapbox Style._checkLoaded：样式未加载完时样式级 setter 必抛
+      checkLoaded() {
+        if (!self.styleLoaded) throw new Error('Style is not done loading')
+      },
       on(type: string, a: unknown, b?: unknown) {
         const listener = (b ?? a) as (e?: unknown) => void
         ;(handlers[type] ??= new Set()).add(listener)
@@ -26,11 +31,13 @@ const { maps, makeFakeMap } = vi.hoisted(() => {
       fire(type: string, e?: unknown) {
         handlers[type]?.forEach(fn => fn(e))
       },
-      isStyleLoaded: () => true,
+      isStyleLoaded: () => self.styleLoaded,
       setFog(value: unknown) {
+        self.checkLoaded()
         self.fogCalls.push(value)
       },
       setTerrain(value: unknown) {
+        self.checkLoaded()
         self.terrainCalls.push(value)
       },
       getSource: (id: string) => (sources.has(id) ? {} : undefined),
@@ -105,6 +112,51 @@ describe('Fog 大气', () => {
     map.fire('style.load')
     expect(map.fogCalls).toHaveLength(2)
   })
+
+  it('样式未加载完时卸载不抛错（导航离开场景）', async () => {
+    const show = ref(true)
+    const Parent = defineComponent({
+      setup() {
+        return () => h(MapboxMap, { options: {} }, {
+          default: () => (show.value ? h(MapboxFog) : null)
+        })
+      }
+    })
+    mount(Parent)
+    const map = maps[maps.length - 1]!
+
+    map.fire('style.load')
+    expect(map.fogCalls).toHaveLength(1)
+
+    // 进入样式重载窗口期（如底图切换 setStyle 后），卸载清除被安全吞掉
+    map.styleLoaded = false
+    show.value = false
+    await expect(nextTick()).resolves.toBeUndefined()
+    expect(map.fogCalls).toHaveLength(1)
+  })
+
+  it('样式未加载完时 options 变更不抛错，style.load 后由 onReady 以最新值恢复', async () => {
+    const options = ref({ 'star-intensity': 0.2 })
+    const Parent = defineComponent({
+      setup() {
+        return () => h(MapboxMap, { options: {} }, {
+          default: () => h(MapboxFog, { options: options.value })
+        })
+      }
+    })
+    mount(Parent)
+    const map = maps[maps.length - 1]!
+    map.fire('style.load')
+
+    map.styleLoaded = false
+    options.value = { 'star-intensity': 0.9 }
+    await expect(nextTick()).resolves.toBeUndefined()
+    expect(map.fogCalls).toHaveLength(1)
+
+    map.styleLoaded = true
+    map.fire('style.load')
+    expect(map.fogCalls[1]).toEqual({ 'star-intensity': 0.9 })
+  })
 })
 
 describe('Terrain 地形', () => {
@@ -128,5 +180,25 @@ describe('Terrain 地形', () => {
     await nextTick()
     expect(map.terrainCalls[1]).toBeNull()
     expect(map.sources.has('movk-terrain-dem')).toBe(false)
+  })
+
+  it('样式未加载完时卸载不抛错', async () => {
+    const show = ref(true)
+    const Parent = defineComponent({
+      setup() {
+        return () => h(MapboxMap, { options: {} }, {
+          default: () => (show.value ? h(MapboxTerrain) : null)
+        })
+      }
+    })
+    mount(Parent)
+    const map = maps[maps.length - 1]!
+    map.fire('style.load')
+
+    map.styleLoaded = false
+    show.value = false
+    await expect(nextTick()).resolves.toBeUndefined()
+    // setTerrain(null) 被吞掉，地形清除交由样式重载
+    expect(map.terrainCalls).toHaveLength(1)
   })
 })

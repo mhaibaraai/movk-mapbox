@@ -45,12 +45,17 @@ onUnmounted(() => {
   stopReady()
   const map = ctx.map.value
   if (!map) return
-  map.setTerrain(null)
+  // 样式加载窗口期 setter/removeSource 必抛，吞掉交由新样式重置；源仍被引用同理
+  try {
+    map.setTerrain(null)
+  } catch {
+    // style is not done loading
+  }
   if (map.getSource(props.sourceId)) {
     try {
       map.removeSource(props.sourceId)
     } catch {
-      // 仍被引用时交由样式重载清理
+      // source is still in use
     }
   }
 })
