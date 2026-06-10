@@ -19,7 +19,7 @@ const source: GeoJSONSourceSpecification = {
     title="Heatmap 热力图层"
     description="heatmap 类型基于点密度渲染热力，paint 表达式控制权重、半径与配色渐变。"
   >
-    <MapboxMap :options="{ style: 'mapbox://styles/mapbox/dark-v11', center: [116.41, 39.93], zoom: 10 }">
+    <DemoMap :center="[116.41, 39.93]" :zoom="10">
       <MapboxSource source-id="heat" :source="source">
         <MapboxLayer
           layer-id="heat-layer"
@@ -39,6 +39,6 @@ const source: GeoJSONSourceSpecification = {
           }"
         />
       </MapboxSource>
-    </MapboxMap>
+    </DemoMap>
   </MapShowcase>
 </template>

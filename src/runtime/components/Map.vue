@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, provide, useId, useTemplateRef, watch } from 'vue'
 import { useResizeObserver } from '@vueuse/core'
+import { omitUndefined } from '@movk/core'
 import { LngLat } from 'mapbox-gl'
-import type { LngLatLike, Map as MapboxMap, MapEventOf } from 'mapbox-gl'
+import type { LngLatLike, Map as MapboxMap, MapEventOf, MapOptions } from 'mapbox-gl'
 import type { MapboxMapOptions } from '../types'
 import { createMapboxContext, MapboxContextKey } from '../domains/map/context'
 import { createMapboxGl } from '../domains/map/create-map'
@@ -100,11 +101,12 @@ onMounted(() => {
   }
   if (!created || !container.value) return
 
-  const map = createMapboxGl({
+  // 剔除 undefined：mapbox jumpTo 以 `key in options` 判定，`+undefined` 会得 NaN 污染相机矩阵
+  const map = createMapboxGl(omitUndefined({
     ...props.options,
     ...(props.accessToken ? { accessToken: props.accessToken } : {}),
     container: container.value
-  })
+  }) as MapOptions)
   created.attach(map)
   bindRuntime(map)
 })

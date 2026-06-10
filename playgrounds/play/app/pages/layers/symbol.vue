@@ -19,7 +19,7 @@ const source: GeoJSONSourceSpecification = {
     title="Symbol 符号图层"
     description="symbol 类型用内置字体渲染文字标注，layout 控制文字字段与排布。"
   >
-    <MapboxMap :options="{ style: 'mapbox://styles/mapbox/streets-v12', center: [116.35, 39.96], zoom: 10 }">
+    <DemoMap :center="[116.35, 39.96]" :zoom="10">
       <MapboxSource source-id="poi" :source="source">
         <MapboxLayer
           layer-id="poi-symbol"
@@ -34,6 +34,6 @@ const source: GeoJSONSourceSpecification = {
           :paint="{ 'text-color': '#dc2626', 'text-halo-color': '#fff', 'text-halo-width': 1.5 }"
         />
       </MapboxSource>
-    </MapboxMap>
+    </DemoMap>
   </MapShowcase>
 </template>

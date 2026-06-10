@@ -19,12 +19,12 @@ const showAttribution = ref(true)
       <USwitch v-model="showAttribution" label="版权" />
     </template>
 
-    <MapboxMap :options="{ style: 'mapbox://styles/mapbox/streets-v12', center: [116.39, 39.91], zoom: 10 }">
+    <DemoMap :center="[116.39, 39.91]" :zoom="10">
       <MapboxNavigationControl v-if="showNav" position="top-right" :options="{ visualizePitch: true }" />
       <MapboxGeolocateControl v-if="showGeolocate" position="top-right" :options="{ trackUserLocation: true }" />
       <MapboxFullscreenControl v-if="showFullscreen" position="top-right" />
       <MapboxScaleControl v-if="showScale" position="bottom-left" :options="{ unit: 'metric' }" />
       <MapboxAttributionControl v-if="showAttribution" position="bottom-right" :options="{ compact: true }" />
-    </MapboxMap>
+    </DemoMap>
   </MapShowcase>
 </template>
