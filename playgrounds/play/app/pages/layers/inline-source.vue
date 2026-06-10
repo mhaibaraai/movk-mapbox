@@ -26,13 +26,13 @@ const source: GeoJSONSourceSpecification = {
     title="内联 Source 便捷写法"
     description="单图层场景无需单独 MapboxSource：MapboxLayer 直接接 source 对象，省去样板。"
   >
-    <MapboxMap :options="{ style: 'mapbox://styles/mapbox/light-v11', center: [116.41, 39.915], zoom: 12 }">
+    <DemoMap :center="[116.41, 39.915]" :zoom="12">
       <MapboxLayer
         layer-id="inline-area"
         type="fill"
         :source="source"
         :paint="{ 'fill-color': '#8b5cf6', 'fill-opacity': 0.4 }"
       />
-    </MapboxMap>
+    </DemoMap>
   </MapShowcase>
 </template>

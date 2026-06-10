@@ -36,11 +36,11 @@ const paint = computed(() => ({
       <USlider v-model="opacity" :min="0" :max="1" :step="0.05" class="w-32" />
     </template>
 
-    <MapboxMap :options="{ style: 'mapbox://styles/mapbox/light-v11', center: [116.41, 39.91], zoom: 11 }">
+    <DemoMap :center="[116.41, 39.91]" :zoom="11">
       <MapboxSource source-id="area" :source="source">
         <MapboxLayer layer-id="area-fill" type="fill" source="area" :paint="paint" />
         <MapboxLayer layer-id="area-outline" type="line" source="area" :paint="{ 'line-color': '#1d4ed8', 'line-width': 2 }" />
       </MapboxSource>
-    </MapboxMap>
+    </DemoMap>
   </MapShowcase>
 </template>

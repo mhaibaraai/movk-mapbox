@@ -20,7 +20,7 @@ function onClose() {
       </UButton>
     </template>
 
-    <MapboxMap :options="{ style: 'mapbox://styles/mapbox/light-v11', center: [116.397, 39.909], zoom: 12 }">
+    <DemoMap :center="[116.397, 39.909]" :zoom="12">
       <MapboxPopup
         v-if="open"
         :lnglat="[116.397, 39.909]"
@@ -36,6 +36,6 @@ function onClose() {
           </p>
         </div>
       </MapboxPopup>
-    </MapboxMap>
+    </DemoMap>
   </MapShowcase>
 </template>

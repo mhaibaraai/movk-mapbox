@@ -24,7 +24,7 @@ function onDelete(deleted: Feature[]) {
     description="封装 @mapbox/mapbox-gl-draw，暴露 create/update/delete 等事件。绘制点/线/面后查看右侧统计。"
     :state="{ count: features.length, lastEvent }"
   >
-    <MapboxMap :options="{ style: 'mapbox://styles/mapbox/light-v11', center: [116.39, 39.91], zoom: 11 }">
+    <DemoMap :center="[116.39, 39.91]" :zoom="11">
       <MapboxDrawControl
         position="top-left"
         :options="{
@@ -35,6 +35,6 @@ function onDelete(deleted: Feature[]) {
         @update="onUpdate"
         @delete="onDelete"
       />
-    </MapboxMap>
+    </DemoMap>
   </MapShowcase>
 </template>

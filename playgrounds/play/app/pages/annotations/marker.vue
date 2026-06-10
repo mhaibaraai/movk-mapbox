@@ -13,7 +13,7 @@ const defaultPos: LngLatLike = [116.45, 39.93]
     :state="{ draggable }"
     state-label="Dragged"
   >
-    <MapboxMap :options="{ style: 'mapbox://styles/mapbox/streets-v12', center: [116.42, 39.92], zoom: 12 }">
+    <DemoMap :center="[116.42, 39.92]" :zoom="12">
       <!-- 原生默认 marker（无插槽） -->
       <MapboxMarker :lnglat="defaultPos" />
 
@@ -23,6 +23,6 @@ const defaultPos: LngLatLike = [116.45, 39.93]
           拖我
         </div>
       </MapboxMarker>
-    </MapboxMap>
+    </DemoMap>
   </MapShowcase>
 </template>

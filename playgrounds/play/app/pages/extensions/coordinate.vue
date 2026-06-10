@@ -18,13 +18,13 @@ const gcjPos = computed<LngLatLike>(() => gcj02.value)
     :state="{ wgs84, gcj02, bd09 }"
     state-label="Coordinates"
   >
-    <MapboxMap :options="{ style: 'mapbox://styles/mapbox/streets-v12', center: [116.397, 39.909], zoom: 16 }">
+    <DemoMap :center="[116.397, 39.909]" :zoom="16">
       <MapboxMarker v-model:lnglat="wgs84">
         <div class="rounded-full bg-info size-3 ring-2 ring-white" />
       </MapboxMarker>
       <MapboxMarker :lnglat="gcjPos">
         <div class="rounded-full bg-primary size-3 ring-2 ring-white" />
       </MapboxMarker>
-    </MapboxMap>
+    </DemoMap>
   </MapShowcase>
 </template>

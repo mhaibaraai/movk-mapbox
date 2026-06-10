@@ -33,10 +33,10 @@ const paint = computed(() => ({
       <UInput v-model="color" size="xs" class="w-28" />
     </template>
 
-    <MapboxMap :options="{ style: 'mapbox://styles/mapbox/light-v11', center: [116.39, 39.91], zoom: 10 }">
+    <DemoMap :center="[116.39, 39.91]" :zoom="10">
       <MapboxSource source-id="dots" :source="source">
         <MapboxLayer layer-id="dots" type="circle" source="dots" :paint="paint" />
       </MapboxSource>
-    </MapboxMap>
+    </DemoMap>
   </MapShowcase>
 </template>

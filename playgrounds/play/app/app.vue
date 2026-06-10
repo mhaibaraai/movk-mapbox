@@ -1,8 +1,17 @@
 <script setup lang="ts">
 import { zh_cn } from '@nuxt/ui/locale'
+import type { BasemapKey } from '~/composables/useBasemap'
 
 const appConfig = useAppConfig()
 const { components, groups, items } = useNavigation()
+const { current: basemap, options: basemapOptions } = useBasemap()
+
+// 共享态由 useState 单例提供（即时跨组件生效）；此处仅在根组件做一次 localStorage 持久化桥接
+onMounted(() => {
+  const saved = localStorage.getItem('movk-basemap') as BasemapKey | null
+  if (saved) basemap.value = saved
+  watch(basemap, v => localStorage.setItem('movk-basemap', v))
+})
 
 useHead({
   title: 'Movk Mapbox · Playground'
@@ -33,6 +42,15 @@ useHead({
 
         <template #default="{ collapsed }">
           <UDashboardSearchButton :collapsed="collapsed" />
+          <USelect
+            v-if="!collapsed"
+            v-model="basemap"
+            :items="basemapOptions"
+            value-key="value"
+            :icon="basemapOptions.find(o => o.value === basemap)?.icon"
+            size="sm"
+            class="w-full"
+          />
           <UNavigationMenu :collapsed="collapsed" :items="items" orientation="vertical" />
           <USeparator type="dashed" />
           <UNavigationMenu

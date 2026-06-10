@@ -13,7 +13,7 @@ const source: VectorSourceSpecification = {
     title="Vector 矢量瓦片"
     description="vector 源经 url 引用矢量切片，图层用 source-layer 指定子图层（此处高亮道路）。"
   >
-    <MapboxMap :options="{ style: 'mapbox://styles/mapbox/light-v11', center: [116.39, 39.91], zoom: 12 }">
+    <DemoMap :center="[116.39, 39.91]" :zoom="12">
       <MapboxSource source-id="streets" :source="source">
         <MapboxLayer
           layer-id="roads"
@@ -23,6 +23,6 @@ const source: VectorSourceSpecification = {
           :paint="{ 'line-color': '#6366f1', 'line-width': 1.5 }"
         />
       </MapboxSource>
-    </MapboxMap>
+    </DemoMap>
   </MapShowcase>
 </template>

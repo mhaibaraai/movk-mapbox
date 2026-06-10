@@ -37,7 +37,7 @@ function addPoint() {
       </UButton>
     </template>
 
-    <MapboxMap :options="{ style: 'mapbox://styles/mapbox/streets-v12', center: [116.39, 39.91], zoom: 11 }">
+    <DemoMap :center="[116.39, 39.91]" :zoom="11">
       <MapboxSource source-id="cities" :source="source">
         <MapboxLayer
           layer-id="cities-circle"
@@ -46,6 +46,6 @@ function addPoint() {
           :paint="{ 'circle-radius': 8, 'circle-color': '#10b981', 'circle-stroke-width': 2, 'circle-stroke-color': '#fff' }"
         />
       </MapboxSource>
-    </MapboxMap>
+    </DemoMap>
   </MapShowcase>
 </template>

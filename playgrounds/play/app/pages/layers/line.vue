@@ -35,7 +35,7 @@ const paint = computed(() => ({
       <USlider v-model="width" :min="1" :max="12" class="w-32" />
     </template>
 
-    <MapboxMap :options="{ style: 'mapbox://styles/mapbox/streets-v12', center: [116.43, 39.92], zoom: 12 }">
+    <DemoMap :center="[116.43, 39.92]" :zoom="12">
       <MapboxSource source-id="route" :source="source">
         <MapboxLayer
           layer-id="route-line"
@@ -45,6 +45,6 @@ const paint = computed(() => ({
           :paint="paint"
         />
       </MapboxSource>
-    </MapboxMap>
+    </DemoMap>
   </MapShowcase>
 </template>
