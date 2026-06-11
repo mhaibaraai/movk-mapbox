@@ -37,7 +37,19 @@ const COMPONENT_MANIFEST: Record<string, string> = {
   Fog: 'environment/Fog.vue',
   Rain: 'environment/Rain.vue',
   Snow: 'environment/Snow.vue',
-  Lights: 'environment/Lights.vue'
+  Lights: 'environment/Lights.vue',
+  CustomLayer: 'CustomLayer.vue',
+  DiffusionCircle: 'effects/DiffusionCircle.vue',
+  WaveCircle: 'effects/WaveCircle.vue',
+  GlowCircle: 'effects/GlowCircle.vue',
+  Radar: 'effects/Radar.vue',
+  Trail: 'effects/Trail.vue',
+  Migration: 'effects/Migration.vue',
+  BufferCircle: 'buffers/BufferCircle.vue',
+  BufferEllipse: 'buffers/BufferEllipse.vue',
+  BufferSector: 'buffers/BufferSector.vue',
+  BufferLine: 'buffers/BufferLine.vue',
+  BufferPolygon: 'buffers/BufferPolygon.vue'
 }
 
 // composable 名 → runtime/composables 下的文件名
@@ -48,6 +60,8 @@ const COMPOSABLE_MANIFEST: Record<string, string> = {
   useFeatureState: 'useFeatureState',
   useMapboxImage: 'useMapboxImage',
   useMapboxCamera: 'useMapboxCamera',
+  useMapAnimation: 'useMapAnimation',
+  useMeasure: 'useMeasure',
   defineMapboxControl: 'defineMapboxControl'
 }
 

@@ -68,6 +68,30 @@ const environmentNav: NavigationMenuItem = {
   ]
 }
 
+const effectsNav: NavigationMenuItem = {
+  label: '动效',
+  icon: 'i-lucide-sparkles',
+  defaultOpen: true,
+  children: [
+    { label: 'Diffusion 扩散圆', to: '/effects/diffusion' },
+    { label: 'Wave 波浪圆', to: '/effects/wave' },
+    { label: 'Glow 炫光圆', to: '/effects/glow' },
+    { label: 'Radar 雷达扫描', to: '/effects/radar' },
+    { label: 'Trail 动态轨迹', to: '/effects/trail' },
+    { label: 'Migration 迁徙图', to: '/effects/migration' }
+  ]
+}
+
+const toolsNav: NavigationMenuItem = {
+  label: '工具',
+  icon: 'i-lucide-ruler',
+  defaultOpen: true,
+  children: [
+    { label: 'Buffer 缓冲区', to: '/tools/buffers' },
+    { label: 'Measure 测量', to: '/tools/measure' }
+  ]
+}
+
 const annotationsNav: NavigationMenuItem = {
   label: '标注',
   icon: 'i-lucide-map-pin',
@@ -107,6 +131,8 @@ const components: NavigationMenuItem[] = [
   annotationsNav,
   interactionsNav,
   environmentNav,
+  effectsNav,
+  toolsNav,
   controlsNav,
   extensionsNav
 ]
