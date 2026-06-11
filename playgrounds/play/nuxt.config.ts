@@ -8,6 +8,14 @@ export default defineNuxtConfig({
       include: [
         '@mapbox/mapbox-gl-draw',
         '@movk/core',
+        '@turf/area',
+        '@turf/bearing',
+        '@turf/buffer',
+        '@turf/circle',
+        '@turf/distance',
+        '@turf/ellipse',
+        '@turf/length',
+        '@turf/sector',
         '@vueuse/core',
         'gcoord',
         'mapbox-gl' // CJS
