@@ -78,7 +78,8 @@ const effectsNav: NavigationMenuItem = {
     { label: 'Glow 炫光圆', to: '/effects/glow' },
     { label: 'Radar 雷达扫描', to: '/effects/radar' },
     { label: 'Trail 动态轨迹', to: '/effects/trail' },
-    { label: 'Migration 迁徙图', to: '/effects/migration' }
+    { label: 'Migration 迁徙图', to: '/effects/migration' },
+    { label: 'Building 建筑特效', to: '/effects/buildings' }
   ]
 }
 
@@ -88,7 +89,8 @@ const toolsNav: NavigationMenuItem = {
   defaultOpen: true,
   children: [
     { label: 'Buffer 缓冲区', to: '/tools/buffers' },
-    { label: 'Measure 测量', to: '/tools/measure' }
+    { label: 'Measure 测量', to: '/tools/measure' },
+    { label: 'Print 导出', to: '/tools/print' }
   ]
 }
 
@@ -117,6 +119,8 @@ const extensionsNav: NavigationMenuItem = {
   defaultOpen: true,
   children: [
     { label: 'Draw 绘制', to: '/extensions/draw' },
+    { label: 'Draw 自定义模式', to: '/extensions/draw-modes' },
+    { label: 'Draw 样式主题', to: '/extensions/draw-theme' },
     { label: '天地图底图', to: '/extensions/tianditu' },
     { label: 'WMTS 图层', to: '/extensions/wmts' },
     { label: 'WMS 图层', to: '/extensions/wms' },

@@ -1,4 +1,4 @@
-import { addComponentsDir, addImportsDir, addPlugin, createResolver, defineNuxtModule, useLogger } from '@nuxt/kit'
+import { addComponentsDir, addImports, addImportsDir, addPlugin, createResolver, defineNuxtModule, useLogger } from '@nuxt/kit'
 import { defu } from 'defu'
 import { name, version } from '../package.json'
 
@@ -51,6 +51,11 @@ export default defineNuxtModule<ModuleOptions>({
       pathPrefix: false
     })
     addImportsDir(resolve('./runtime/composables'))
+    // 标绘自定义模式与主题工厂(非 composable,显式登记自动导入)
+    addImports([
+      { name: 'movkDrawModes', from: resolve('./runtime/draw-modes') },
+      { name: 'drawThemeStyles', from: resolve('./runtime/utils/draw-theme') }
+    ])
     addPlugin({ src: resolve('./runtime/plugins/access-token') })
   }
 })

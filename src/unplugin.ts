@@ -49,7 +49,11 @@ const COMPONENT_MANIFEST: Record<string, string> = {
   BufferEllipse: 'buffers/BufferEllipse.vue',
   BufferSector: 'buffers/BufferSector.vue',
   BufferLine: 'buffers/BufferLine.vue',
-  BufferPolygon: 'buffers/BufferPolygon.vue'
+  BufferPolygon: 'buffers/BufferPolygon.vue',
+  GradientBuilding: 'effects/GradientBuilding.vue',
+  FlowBuilding: 'effects/FlowBuilding.vue',
+  WindowBuilding: 'effects/WindowBuilding.vue',
+  TextureBuilding: 'effects/TextureBuilding.vue'
 }
 
 // composable 名 → runtime/composables 下的文件名
@@ -62,7 +66,14 @@ const COMPOSABLE_MANIFEST: Record<string, string> = {
   useMapboxCamera: 'useMapboxCamera',
   useMapAnimation: 'useMapAnimation',
   useMeasure: 'useMeasure',
+  useMapExport: 'useMapExport',
   defineMapboxControl: 'defineMapboxControl'
+}
+
+// 工具导出名 → runtime 下相对路径(标绘模式集合与主题工厂)
+const UTIL_MANIFEST: Record<string, string> = {
+  movkDrawModes: 'draw-modes',
+  drawThemeStyles: 'utils/draw-theme'
 }
 
 export const MapboxUnplugin = createUnplugin<MapboxUnpluginOptions | undefined>((options = {}, meta) => {
@@ -86,10 +97,16 @@ export const MapboxUnplugin = createUnplugin<MapboxUnpluginOptions | undefined>(
 
   const autoImport = AutoImport.raw({
     dts,
-    imports: Object.entries(COMPOSABLE_MANIFEST).map(([name, file]) => ({
-      from: `@movk/mapbox/runtime/composables/${file}`,
-      imports: [name]
-    }))
+    imports: [
+      ...Object.entries(COMPOSABLE_MANIFEST).map(([name, file]) => ({
+        from: `@movk/mapbox/runtime/composables/${file}`,
+        imports: [name]
+      })),
+      ...Object.entries(UTIL_MANIFEST).map(([name, file]) => ({
+        from: `@movk/mapbox/runtime/${file}`,
+        imports: [name]
+      }))
+    ]
   }, meta as Parameters<typeof AutoImport.raw>[1])
 
   return [components, autoImport].flat() as UnpluginOptions[]
