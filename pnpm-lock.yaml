@@ -14,10 +14,16 @@ importers:
       '@turf/area':
         specifier: ^7.3.5
         version: 7.3.5
+      '@turf/bearing':
+        specifier: ^7.3.5
+        version: 7.3.5
       '@turf/buffer':
         specifier: ^7.3.5
         version: 7.3.5
       '@turf/circle':
+        specifier: ^7.3.5
+        version: 7.3.5
+      '@turf/distance':
         specifier: ^7.3.5
         version: 7.3.5
       '@turf/ellipse':
@@ -2533,6 +2539,9 @@ packages:
 
   '@turf/bbox@7.3.5':
     resolution: {integrity: sha512-oG1ya/HtBjAIg4TimbWx+nOYPbY0bCvt82Bq8tm6sBw3qqtbOyRSfDz79Sq90TnH7DXJprJ1qnVGKNtZ6jemfw==}
+
+  '@turf/bearing@7.3.5':
+    resolution: {integrity: sha512-/qabIt/IuPsGlE6RukJ0zOirc6afNxoK7fK1WBNVnHuJjeOpSkW+7q1QW5XQGXBMv3odcD0ZgRR+MBiAHduYSA==}
 
   '@turf/buffer@7.3.5':
     resolution: {integrity: sha512-TGls3nYtWzviKHT00XVBfHKa7Z2oIZKqiHN7R0xErGwMSAR7YhxVROhxq/iyIsWZjl1SlPwweZZIxWILQuxpZA==}
@@ -9070,6 +9079,13 @@ snapshots:
     dependencies:
       '@turf/helpers': 7.3.5
       '@turf/meta': 7.3.5
+      '@types/geojson': 7946.0.16
+      tslib: 2.8.1
+
+  '@turf/bearing@7.3.5':
+    dependencies:
+      '@turf/helpers': 7.3.5
+      '@turf/invariant': 7.3.5
       '@types/geojson': 7946.0.16
       tslib: 2.8.1
 
