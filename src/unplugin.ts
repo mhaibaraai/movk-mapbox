@@ -38,6 +38,7 @@ const COMPONENT_MANIFEST: Record<string, string> = {
   Rain: 'environment/Rain.vue',
   Snow: 'environment/Snow.vue',
   Lights: 'environment/Lights.vue',
+  Temperature: 'environment/Temperature.vue',
   CustomLayer: 'CustomLayer.vue',
   DiffusionCircle: 'effects/DiffusionCircle.vue',
   WaveCircle: 'effects/WaveCircle.vue',
