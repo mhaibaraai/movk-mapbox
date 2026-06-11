@@ -120,6 +120,11 @@ defineExpose({
   changeMode: (next: string) => {
     draw.value?.changeMode(next as never)
     mode.value = next
+  },
+  /** 设置要素的 user_* 属性(driver theme 样式)并同步模型 */
+  setFeatureProperty: (featureId: string, property: string, value: unknown) => {
+    draw.value?.setFeatureProperty(featureId, property, value)
+    syncFeaturesFromDraw()
   }
 })
 </script>
