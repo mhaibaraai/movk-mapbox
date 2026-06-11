@@ -123,7 +123,12 @@ defineExpose({
   },
   /** 设置要素的 user_* 属性(driver theme 样式)并同步模型 */
   setFeatureProperty: (featureId: string, property: string, value: unknown) => {
-    draw.value?.setFeatureProperty(featureId, property, value)
+    const instance = draw.value
+    if (!instance) return
+    instance.setFeatureProperty(featureId, property, value)
+    // setFeatureProperty 仅标脏不重绘,re-add 同一要素触发 store.render() 且保留选中态
+    const feature = instance.get(featureId)
+    if (feature) instance.add(feature)
     syncFeaturesFromDraw()
   }
 })

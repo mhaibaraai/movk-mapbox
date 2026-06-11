@@ -5,7 +5,7 @@ const drawRef = ref<{ setFeatureProperty: (id: string, key: string, value: unkno
 const features = ref<Feature[]>([])
 const selectedId = ref<string>()
 
-// 自定义主题 styles + userProperties:要素 user_color 覆盖主题色
+// 自定义主题 styles + userProperties:存 color,经前缀为 user_color 覆盖主题色
 const options = {
   displayControlsDefault: false,
   controls: { polygon: true, line_string: true, point: true, trash: true },
@@ -20,19 +20,19 @@ function onSelectionChange(selected: Feature[]) {
 }
 
 function applyColor(color: string) {
-  if (selectedId.value) drawRef.value?.setFeatureProperty(selectedId.value, 'user_color', color)
+  if (selectedId.value) drawRef.value?.setFeatureProperty(selectedId.value, 'color', color)
 }
 
 const state = computed(() => ({
   selected: selectedId.value ?? null,
-  colors: features.value.map(f => f.properties?.user_color ?? null)
+  colors: features.value.map(f => f.properties?.color ?? null)
 }))
 </script>
 
 <template>
   <MapShowcase
     title="Draw 样式主题"
-    description="drawThemeStyles + userProperties:绘制后选中要素,点色块经 setFeatureProperty 写 user_color 实时改色。"
+    description="drawThemeStyles + userProperties:绘制后选中要素,点色块经 setFeatureProperty 写 color(前缀 user_color)实时改色。"
     :state="state"
   >
     <template #toolbar>
