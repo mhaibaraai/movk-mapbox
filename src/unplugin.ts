@@ -46,6 +46,8 @@ const COMPONENT_MANIFEST: Record<string, string> = {
   Radar: 'effects/Radar.vue',
   Trail: 'effects/Trail.vue',
   Migration: 'effects/Migration.vue',
+  SpriteImage: 'effects/SpriteImage.vue',
+  AnimatedImage: 'effects/AnimatedImage.vue',
   BufferCircle: 'buffers/BufferCircle.vue',
   BufferEllipse: 'buffers/BufferEllipse.vue',
   BufferSector: 'buffers/BufferSector.vue',

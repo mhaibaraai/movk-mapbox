@@ -80,6 +80,8 @@ const effectsNav: NavigationMenuItem = {
     { label: 'Radar 雷达扫描', to: '/effects/radar' },
     { label: 'Trail 动态轨迹', to: '/effects/trail' },
     { label: 'Migration 迁徙图', to: '/effects/migration' },
+    { label: 'SpriteImage 帧动画图标', to: '/effects/sprite-image' },
+    { label: 'AnimatedImage 动图图标', to: '/effects/animated-image' },
     { label: 'Building 建筑特效', to: '/effects/buildings' }
   ]
 }
