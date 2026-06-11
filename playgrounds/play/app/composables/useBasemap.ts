@@ -24,10 +24,11 @@ const options: BasemapOption[] = [
   { label: '天地图 地形', value: 'tianditu-ter', icon: 'i-lucide-mountain' }
 ]
 
-/** 全站示例共享的底图选择；用 useState 跨路由持久化，供顶部切换器与 DemoMap 联动 */
-export function useBasemap() {
-  const current = useState<BasemapKey>('basemap', () => 'tianditu-vec')
+// 模块级单例 ref：跨路由/跨组件共享底图选择，兼容 Nuxt 与纯 Vue 两个 playground（纯 Vue 无 useState）
+const current = ref<BasemapKey>('tianditu-vec')
 
+/** 全站示例共享的底图选择，供顶部切换器与 DemoMap 联动 */
+export function useBasemap() {
   const style = computed(() => STYLE[current.value])
   const isTianditu = computed(() => current.value.startsWith('tianditu'))
   const tiandituLayer = computed<TiandituLayerType | undefined>(() =>
