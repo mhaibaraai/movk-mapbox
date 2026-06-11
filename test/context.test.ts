@@ -19,6 +19,27 @@ function fakeMap() {
   }
 }
 
+// 支持同一事件多监听器、isStyleLoaded 可切换的 Map 桩，复刻动态挂载窗口期
+function loadingMap() {
+  const handlers: Record<string, Set<(e?: unknown) => void>> = {}
+  let styleLoaded = false
+  return {
+    on: (type: string, fn: (e?: unknown) => void) => {
+      (handlers[type] ??= new Set()).add(fn)
+    },
+    off: (type: string, fn: (e?: unknown) => void) => {
+      handlers[type]?.delete(fn)
+    },
+    isStyleLoaded: () => styleLoaded,
+    setStyleLoaded: (value: boolean) => { styleLoaded = value },
+    emit: (type: string) => {
+      for (const fn of [...(handlers[type] ?? [])]) fn()
+    },
+    remove: () => {},
+    resize: () => {}
+  }
+}
+
 vi.mock('mapbox-gl', () => {
   class FakeGlMap {
     on() {
@@ -48,6 +69,61 @@ describe('createMapboxContext', () => {
     expect(calls).toHaveLength(0)
 
     map.handlers['style.load']!()
+    expect(calls).toHaveLength(1)
+  })
+
+  it('样式已就绪时 onReady 同步执行', () => {
+    const { context, attach } = createMapboxContext('m')
+    const map = loadingMap()
+    map.setStyleLoaded(true)
+    attach(map as unknown as MapboxMap)
+
+    const calls: MapboxMap[] = []
+    context.onReady(m => calls.push(m))
+    expect(calls).toHaveLength(1)
+  })
+
+  it('动态挂载窗口期：依赖源加载完成的 sourcedata 触发补跑', () => {
+    const { context, attach } = createMapboxContext('m')
+    const map = loadingMap()
+    attach(map as unknown as MapboxMap)
+    // 样式已加载，进入「已就绪后动态挂载」语境
+    map.setStyleLoaded(true)
+    map.emit('style.load')
+
+    // 同批新建 geojson 源仍在加载，isStyleLoaded 翻为 false
+    map.setStyleLoaded(false)
+    const calls: MapboxMap[] = []
+    context.onReady(m => calls.push(m))
+    expect(calls).toHaveLength(0)
+
+    // 源加载中先抖动一次 sourcedata，仍未就绪不应补跑
+    map.emit('sourcedata')
+    expect(calls).toHaveLength(0)
+
+    // 源加载完成：isStyleLoaded 转真，sourcedata 补跑一次
+    map.setStyleLoaded(true)
+    map.emit('sourcedata')
+    expect(calls).toHaveLength(1)
+
+    // 后续事件不应重复触发
+    map.emit('sourcedata')
+    map.emit('idle')
+    expect(calls).toHaveLength(1)
+  })
+
+  it('动态挂载窗口期：idle 作为静态地图兜底信号补跑', () => {
+    const { context, attach } = createMapboxContext('m')
+    const map = loadingMap()
+    attach(map as unknown as MapboxMap)
+    map.setStyleLoaded(false)
+
+    const calls: MapboxMap[] = []
+    context.onReady(m => calls.push(m))
+    expect(calls).toHaveLength(0)
+
+    map.setStyleLoaded(true)
+    map.emit('idle')
     expect(calls).toHaveLength(1)
   })
 

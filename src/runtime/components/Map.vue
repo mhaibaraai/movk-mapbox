@@ -137,8 +137,12 @@ watch(pitch, (value) => {
   map.setPitch(value)
 })
 
+// 切换底图为整样式替换；mapbox diff 跨样式会产出未实现操作（如 setSprite）并告警，
+// 关闭 diff 直接整体重建，运行时 source/layer 由 style.load → onReady 重建
 watch(() => props.options?.style, (style) => {
-  if (style) context.map.value?.setStyle(style)
+  const map = context.map.value
+  if (!map || !style) return
+  map.setStyle(style, { diff: false } as Parameters<typeof map.setStyle>[1])
 })
 
 onUnmounted(() => {
