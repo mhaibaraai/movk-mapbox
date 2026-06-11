@@ -2,36 +2,12 @@ import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import ui from '@nuxt/ui/vite'
+import { mapboxAutoImports, mapboxComponentResolver } from '@movk/mapbox/unplugin'
 
 // @nuxt/ui 的 Vite 插件内置唯一的 unplugin-auto-import / unplugin-vue-components 实例，
-// 并拒绝额外实例。故把本库 Mapbox* 组件解析与 composable 导入合并进 ui() 的选项中，
+// 并在检测到第二个实例时直接抛错。故复用本库导出的 resolver / imports 工厂，
+// 注入 ui() 的 components / autoImport 选项（清单由库侧自动派生，单一数据源），
 // 同时复用 playgrounds/play 的演示组件与 composables。
-const prefix = 'Mapbox'
-
-const COMPONENT_MANIFEST: Record<string, string> = {
-  Map: 'Map.vue',
-  Source: 'Source.vue',
-  Layer: 'Layer.vue',
-  Marker: 'Marker.vue',
-  Popup: 'Popup.vue',
-  NavigationControl: 'controls/NavigationControl.vue',
-  GeolocateControl: 'controls/GeolocateControl.vue',
-  FullscreenControl: 'controls/FullscreenControl.vue',
-  ScaleControl: 'controls/ScaleControl.vue',
-  AttributionControl: 'controls/AttributionControl.vue',
-  DrawControl: 'extensions/DrawControl.vue',
-  TiandituLayer: 'extensions/TiandituLayer.vue',
-  WmtsLayer: 'extensions/WmtsLayer.vue',
-  WmsLayer: 'extensions/WmsLayer.vue'
-}
-
-const COMPOSABLE_MANIFEST: Record<string, string> = {
-  useMap: 'useMap',
-  useMapbox: 'useMapbox',
-  useMapboxDraw: 'useMapboxDraw',
-  defineMapboxControl: 'defineMapboxControl'
-}
-
 export default defineConfig({
   resolve: {
     alias: {
@@ -49,16 +25,7 @@ export default defineConfig({
         // 复用 playgrounds/play 的演示组件（MapShowcase 等）
         dirs: ['../play/app/components'],
         // 解析本库 Mapbox* 组件
-        resolvers: [{
-          type: 'component',
-          resolve: (name: string) => {
-            if (!name.startsWith(prefix)) return
-            const subpath = COMPONENT_MANIFEST[name.slice(prefix.length)]
-            if (!subpath) return
-            // 经 #mapbox 别名直指源码，避免从未依赖本库的 play 目录解析包失败
-            return { name: 'default', from: `#mapbox/components/${subpath}` }
-          }
-        }]
+        resolvers: [mapboxComponentResolver()]
       },
       autoImport: {
         // 复用 playgrounds/play 的 composables（useNavigation）
@@ -66,12 +33,27 @@ export default defineConfig({
         imports: [
           'vue',
           'vue-router',
-          ...Object.entries(COMPOSABLE_MANIFEST).map(([name, file]) => ({
-            from: `#mapbox/composables/${file}`,
-            imports: [name]
-          }))
+          ...mapboxAutoImports()
         ]
       }
     })
-  ]
+  ],
+  optimizeDeps: {
+    include: [
+      '@mapbox/mapbox-gl-draw',
+      '@movk/core',
+      '@turf/area',
+      '@turf/bearing',
+      '@turf/buffer',
+      '@turf/circle',
+      '@turf/distance',
+      '@turf/ellipse',
+      '@turf/length',
+      '@turf/sector',
+      '@vueuse/core',
+      'gcoord',
+      'lottie-web', // CJS
+      'mapbox-gl' // CJS
+    ]
+  }
 })
