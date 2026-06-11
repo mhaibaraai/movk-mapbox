@@ -76,7 +76,7 @@ export function windowTextureImage(options: WindowTextureOptions = {}): ImageDat
   const canvas = document.createElement('canvas')
   canvas.width = size
   canvas.height = size
-  const context = canvas.getContext('2d')
+  const context = canvas.getContext('2d', { willReadFrequently: true })
   if (!context) return undefined
 
   context.fillStyle = darkColor

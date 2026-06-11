@@ -90,7 +90,7 @@ export function radarSweepImage(size: number, color: string): ImageData | undefi
   const canvas = document.createElement('canvas')
   canvas.width = size
   canvas.height = size
-  const context = canvas.getContext('2d')
+  const context = canvas.getContext('2d', { willReadFrequently: true })
   if (!context) return undefined
 
   const half = size / 2
