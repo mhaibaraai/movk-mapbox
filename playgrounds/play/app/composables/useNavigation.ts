@@ -103,7 +103,8 @@ const annotationsNav: NavigationMenuItem = {
   defaultOpen: true,
   children: [
     { label: 'Marker 标记', to: '/annotations/marker' },
-    { label: 'Popup 弹窗', to: '/annotations/popup' }
+    { label: 'Popup 弹窗', to: '/annotations/popup' },
+    { label: 'LottieMarker 动画标记', to: '/annotations/lottie-marker' }
   ]
 }
 

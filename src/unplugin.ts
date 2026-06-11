@@ -17,6 +17,7 @@ const COMPONENT_MANIFEST: Record<string, string> = {
   Layer: 'Layer.vue',
   LayerGroup: 'LayerGroup.vue',
   Marker: 'Marker.vue',
+  LottieMarker: 'LottieMarker.vue',
   Popup: 'Popup.vue',
   Tooltip: 'Tooltip.vue',
   NavigationControl: 'controls/NavigationControl.vue',

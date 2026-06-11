@@ -18,6 +18,7 @@ export default defineNuxtConfig({
         '@turf/sector',
         '@vueuse/core',
         'gcoord',
+        'lottie-web', // CJS
         'mapbox-gl' // CJS
       ]
     }
