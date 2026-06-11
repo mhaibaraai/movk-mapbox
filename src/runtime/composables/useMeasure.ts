@@ -50,6 +50,17 @@ export function useMeasure(options: UseMeasureOptions = {}): UseMeasureReturn {
   let boundMap: MapboxMap | undefined
   let stopReady: (() => void) | undefined
 
+  // remove() 后 getCanvas() 返回 undefined：地图已销毁，getSource/getLayer 都会抛
+  function isAlive(map: MapboxMap): boolean {
+    return Boolean(map.getCanvas())
+  }
+
+  function setCursor(map: MapboxMap, value: string): void {
+    // 地图移除后 getCanvas() 返回 undefined，卸载期游标重置可安全跳过
+    const canvas = map.getCanvas()
+    if (canvas) canvas.style.cursor = value
+  }
+
   function ensureLayers(map: MapboxMap): void {
     if (!map.getSource(SOURCE_ID)) {
       map.addSource(SOURCE_ID, { type: 'geojson', data: collection() })
@@ -93,7 +104,7 @@ export function useMeasure(options: UseMeasureOptions = {}): UseMeasureReturn {
 
   function refresh(): void {
     const map = boundMap
-    if (!map) return
+    if (!map || !isAlive(map)) return
     const source = map.getSource(SOURCE_ID) as GeoJSONSource | undefined
     source?.setData(collection())
     const current = currentFeature()
@@ -160,7 +171,7 @@ export function useMeasure(options: UseMeasureOptions = {}): UseMeasureReturn {
     void ctx.whenLoaded().then((map) => {
       if (!active.value) return
       map.doubleClickZoom.disable()
-      map.getCanvas().style.cursor = 'crosshair'
+      setCursor(map, 'crosshair')
       map.on('click', onClick)
       map.on('mousemove', onMove)
       map.on('dblclick', onDblClick)
@@ -181,7 +192,7 @@ export function useMeasure(options: UseMeasureOptions = {}): UseMeasureReturn {
       map.off('mousemove', onMove)
       map.off('dblclick', onDblClick)
       map.doubleClickZoom.enable()
-      map.getCanvas().style.cursor = ''
+      setCursor(map, '')
       refresh()
     }
     window.removeEventListener('keydown', onKeydown)
@@ -198,7 +209,11 @@ export function useMeasure(options: UseMeasureOptions = {}): UseMeasureReturn {
   function teardown(): void {
     stop()
     const map = boundMap
-    if (!map) return
+    // 地图已被销毁（如子组件先卸载）：source/layer 已由 mapbox 清理，再访问必抛
+    if (!map || !isAlive(map)) {
+      boundMap = undefined
+      return
+    }
     for (const suffix of ['-fill', '-line', '-points', '-labels']) {
       const layerId = `${SOURCE_ID}${suffix}`
       if (map.getLayer(layerId)) map.removeLayer(layerId)

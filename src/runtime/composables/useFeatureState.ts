@@ -48,11 +48,17 @@ export function useFeatureState(layerId: string, options: UseFeatureStateOptions
     }
   }
 
+  function setCursor(map: MapboxMap, value: string): void {
+    // 地图移除后 getCanvas() 返回 undefined，卸载期游标重置可安全跳过
+    const canvas = map.getCanvas()
+    if (canvas) canvas.style.cursor = value
+  }
+
   function onMove(event: LayerMouseEvent): void {
     const map = boundMap
     const feature = event.features?.[0]
     if (!map || !feature || feature.id === undefined) return
-    if (cursor) map.getCanvas().style.cursor = 'pointer'
+    if (cursor) setCursor(map, 'pointer')
     if (hovered.value?.id === feature.id) return
     if (hovered.value) clearState(map, hovered.value, 'hover')
     map.setFeatureState(feature, { hover: true })
@@ -62,7 +68,7 @@ export function useFeatureState(layerId: string, options: UseFeatureStateOptions
   function onLeave(): void {
     const map = boundMap
     if (!map) return
-    if (cursor) map.getCanvas().style.cursor = ''
+    if (cursor) setCursor(map, '')
     if (hovered.value) clearState(map, hovered.value, 'hover')
     hovered.value = undefined
   }

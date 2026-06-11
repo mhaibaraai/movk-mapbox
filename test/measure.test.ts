@@ -13,6 +13,7 @@ const { maps, makeFakeMap } = vi.hoisted(() => {
     const layers = new Set<string>()
     const sources = new Map<string, unknown>()
     const canvas = { style: { cursor: '' } }
+    let removed = false
     const self = {
       layers,
       sources,
@@ -29,20 +30,30 @@ const { maps, makeFakeMap } = vi.hoisted(() => {
         handlers[type]?.forEach(fn => fn(e))
       },
       isStyleLoaded: () => true,
-      getLayer: (id: string) => (layers.has(id) ? { id } : undefined),
+      // 复刻 mapbox：remove() 后 style 为 undefined，getLayer/getSource 解引用即抛
+      getLayer: (id: string) => {
+        if (removed) throw new TypeError('Cannot read properties of undefined (reading \'getOwnLayer\')')
+        return layers.has(id) ? { id } : undefined
+      },
       addLayer: (spec: { id: string }) => layers.add(spec.id),
       removeLayer: (id: string) => layers.delete(id),
-      getSource: (id: string) => (sources.has(id)
-        ? { setData: (data: FeatureCollection) => {
-            self.lastData = data
-          } }
-        : undefined),
+      getSource: (id: string) => {
+        if (removed) throw new TypeError('Cannot read properties of undefined (reading \'getOwnSource\')')
+        return sources.has(id)
+          ? { setData: (data: FeatureCollection) => {
+              self.lastData = data
+            } }
+          : undefined
+      },
       addSource: (id: string, spec: unknown) => sources.set(id, spec),
       removeSource: (id: string) => sources.delete(id),
       doubleClickZoom: { disable: vi.fn(), enable: vi.fn() },
-      getCanvas: () => canvas,
+      // remove() 后 getCanvas() 返回 undefined（_canvas 被置空）
+      getCanvas: () => (removed ? undefined : canvas),
       resize() {},
-      remove() {},
+      remove() {
+        removed = true
+      },
       getCenter: () => ({ lng: 0, lat: 0 }),
       getZoom: () => 1,
       getBearing: () => 0,
@@ -154,5 +165,16 @@ describe('useMeasure', () => {
     // 停止后点击不再加点
     clickAt(map, 116.0, 39.0)
     expect(api.result.value).toBe('')
+  })
+
+  it('卸载时底层地图已 remove，teardown 不抛', async () => {
+    const { wrapper, map, api } = await mountMeasure()
+    api.start('distance')
+    await Promise.resolve()
+    await Promise.resolve()
+
+    // 模拟子组件（持图实例）先卸载销毁地图，父组件 teardown 随后运行
+    map.remove()
+    expect(() => wrapper.unmount()).not.toThrow()
   })
 })
