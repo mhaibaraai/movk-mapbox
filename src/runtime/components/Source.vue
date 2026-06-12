@@ -4,7 +4,7 @@ import type { GeoJSONSource, ImageSource, RasterTileSource, SourceSpecification,
 import { useMap } from '../composables/useMap'
 
 const props = defineProps<{
-  /** source id */
+  /** 数据源 id，供图层经 source 字段按字符串引用 */
   sourceId: string
   /**
    * 数据源定义
