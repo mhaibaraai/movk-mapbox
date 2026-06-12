@@ -4,6 +4,7 @@ packages:
 
 ignoreWorkspaceRootCheck: true
 linkWorkspacePackages: true
+minimumReleaseAge: 0
 
 allowBuilds:
   '@parcel/watcher': false

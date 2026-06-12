@@ -5,17 +5,35 @@ export interface WmsSourceOptions {
   url: string
   /** 图层 LAYERS（逗号分隔多层） */
   layers: string
-  /** WMS 版本，默认 '1.1.1'；1.3.0 用 CRS、否则用 SRS */
+  /**
+   * WMS 版本；1.3.0 用 CRS、否则用 SRS
+   * @defaultValue '1.1.1'
+   */
   version?: string
-  /** 图片格式 FORMAT，默认 'image/png' */
+  /**
+   * 图片格式 FORMAT
+   * @defaultValue 'image/png'
+   */
   format?: string
-  /** 是否透明 TRANSPARENT，默认 true */
+  /**
+   * 是否透明 TRANSPARENT
+   * @defaultValue true
+   */
   transparent?: boolean
-  /** 样式 STYLES，默认 '' */
+  /**
+   * 样式 STYLES
+   * @defaultValue ''
+   */
   styles?: string
-  /** 坐标参考系，默认 'EPSG:3857' */
+  /**
+   * 坐标参考系
+   * @defaultValue 'EPSG:3857'
+   */
   crs?: string
-  /** 瓦片尺寸（WIDTH/HEIGHT），默认 256 */
+  /**
+   * 瓦片尺寸（WIDTH/HEIGHT）
+   * @defaultValue 256
+   */
   tileSize?: number
   /** 版权信息 */
   attribution?: string

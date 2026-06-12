@@ -9,7 +9,7 @@ export default defineBuildConfig({
   ],
   declaration: true,
   failOnWarn: false,
-  externals: ['vite', 'mapbox-gl', '@mapbox/mapbox-gl-draw', 'vue', '@vueuse/core', 'unplugin', 'consola'],
+  externals: ['vite', 'mapbox-gl', '@mapbox/mapbox-gl-draw', 'lottie-web', 'vue', '@vueuse/core', 'unplugin', 'consola'],
   hooks: {
     'mkdist:entry:options'(_ctx, _entry, options) {
       options.addRelativeDeclarationExtensions = false

@@ -6,7 +6,7 @@ const appConfig = useAppConfig()
 const { components, groups, items } = useNavigation()
 const { current: basemap, options: basemapOptions } = useBasemap()
 
-// 共享态由 useState 单例提供（即时跨组件生效）；此处仅在根组件做一次 localStorage 持久化桥接
+// 共享态由模块级 ref 单例提供（即时跨组件生效）；此处仅在根组件做一次 localStorage 持久化桥接
 onMounted(() => {
   const saved = localStorage.getItem('movk-basemap') as BasemapKey | null
   if (saved) basemap.value = saved

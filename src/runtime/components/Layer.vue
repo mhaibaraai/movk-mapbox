@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onUnmounted, watch } from 'vue'
+import { inject, onUnmounted, watch } from 'vue'
 import { omitUndefined } from '@movk/core'
 import type {
   FilterSpecification,
@@ -9,6 +9,7 @@ import type {
   SourceSpecification
 } from 'mapbox-gl'
 import { useMap } from '../composables/useMap'
+import { LayerGroupKey } from '../domains/map/layer-group'
 import { applyLayerProps, type LayerUpdate } from '../utils/layer'
 import { bindMapEvents } from '../utils/events'
 
@@ -43,6 +44,8 @@ const emit = defineEmits<{
 const LAYER_EVENTS = ['click', 'dblclick', 'mousedown', 'mouseup', 'mousemove', 'mouseenter', 'mouseleave', 'contextmenu'] as const
 
 const ctx = useMap()
+// 所属图层组（可选）：提供缺省插入锚点与组级显隐
+const group = inject(LayerGroupKey, null)
 const inlineSourceId = `${props.layerId}__source`
 const hasInlineSource = typeof props.source === 'object'
 
@@ -71,8 +74,12 @@ function addLayer(map: MapboxMap): void {
   if (hasInlineSource && !map.getSource(inlineSourceId)) {
     map.addSource(inlineSourceId, props.source as SourceSpecification)
   }
-  const before = props.beforeId && map.getLayer(props.beforeId) ? props.beforeId : undefined
+  const anchor = props.beforeId ?? group?.beforeId.value
+  const before = anchor && map.getLayer(anchor) ? anchor : undefined
   map.addLayer(buildSpec(), before)
+  if (group && !group.visible.value) {
+    map.setLayoutProperty(props.layerId, 'visibility', 'none')
+  }
 }
 
 let stopEvents: (() => void) | undefined
@@ -115,6 +122,14 @@ watch(
   },
   { deep: true }
 )
+
+if (group) {
+  watch(group.visible, (visible) => {
+    const map = ctx.map.value
+    if (!map?.getLayer(props.layerId)) return
+    map.setLayoutProperty(props.layerId, 'visibility', visible ? 'visible' : 'none')
+  })
+}
 
 onUnmounted(() => {
   stopReady()

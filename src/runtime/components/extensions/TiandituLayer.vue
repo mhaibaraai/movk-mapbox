@@ -5,7 +5,10 @@ import MapboxSource from '../Source.vue'
 import MapboxLayer from '../Layer.vue'
 
 const props = withDefaults(defineProps<{
-  /** 天地图图层类型，默认 vec 矢量底图 */
+  /**
+   * 天地图图层类型（vec 矢量底图）
+   * @defaultValue 'vec'
+   */
   layer?: TiandituLayerType
   /** 天地图 token；缺省时回退运行时配置 */
   tk?: string

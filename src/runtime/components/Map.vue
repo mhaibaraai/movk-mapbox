@@ -15,7 +15,10 @@ defineOptions({ inheritAttrs: false })
 const props = withDefaults(defineProps<{
   /** 地图 id；省略时自动生成。提供后可经 useMapbox(id) 外部访问 */
   mapId?: string
-  /** mapbox-gl Map 初始化选项（container 由组件接管） */
+  /**
+   * mapbox-gl Map 初始化选项（container 由组件接管）
+   * @see https://docs.mapbox.com/mapbox-gl-js/api/map/
+   */
   options?: MapboxMapOptions
   /** 覆盖全局 access token */
   accessToken?: string
@@ -137,8 +140,12 @@ watch(pitch, (value) => {
   map.setPitch(value)
 })
 
+// 切换底图为整样式替换；mapbox diff 跨样式会产出未实现操作（如 setSprite）并告警，
+// 关闭 diff 直接整体重建，运行时 source/layer 由 style.load → onReady 重建
 watch(() => props.options?.style, (style) => {
-  if (style) context.map.value?.setStyle(style)
+  const map = context.map.value
+  if (!map || !style) return
+  map.setStyle(style, { diff: false } as Parameters<typeof map.setStyle>[1])
 })
 
 onUnmounted(() => {

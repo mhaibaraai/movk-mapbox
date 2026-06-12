@@ -39,26 +39,28 @@ export function createMapboxContext(id: string): { context: MapboxContext, attac
     whenLoaded: () => loadedPromise,
     onReady(callback) {
       readyCallbacks.add(callback)
+      const unregister = () => readyCallbacks.delete(callback)
       const instance = map.value
-      let onStyleData: (() => void) | undefined
-      if (instance) {
-        if (instance.isStyleLoaded()) {
-          callback(instance)
-        } else {
-          // style.load 仅初次/ setStyle 触发；挂载于样式瞬时未就绪时监听 styledata 补跑，
-          // 否则该组件永远无法建源建层（注记开关、动态增删图层场景）
-          onStyleData = () => {
-            if (!instance.isStyleLoaded()) return
-            instance.off('styledata', onStyleData!)
-            onStyleData = undefined
-            if (readyCallbacks.has(callback)) callback(instance)
-          }
-          instance.on('styledata', onStyleData)
-        }
+      if (!instance) {
+        return unregister
       }
+      if (instance.isStyleLoaded()) {
+        callback(instance)
+        return unregister
+      }
+      // 样式或其依赖源仍在加载窗口期：监听多类 data 事件，待 isStyleLoaded 为真后补跑一次。
+      // sourcedata 覆盖「同批新建 geojson 源加载完成」（仅触发 sourcedata 而非 styledata）的场景，
+      // idle 为静态地图兜底；否则注记开关、动态增删图层时该回调永远无法建源建层。
+      const events = ['styledata', 'sourcedata', 'idle'] as const
+      const onData = (): void => {
+        if (!instance.isStyleLoaded()) return
+        for (const e of events) instance.off(e, onData)
+        if (readyCallbacks.has(callback)) callback(instance)
+      }
+      for (const e of events) instance.on(e, onData)
       return () => {
-        readyCallbacks.delete(callback)
-        if (instance && onStyleData) instance.off('styledata', onStyleData)
+        unregister()
+        for (const e of events) instance.off(e, onData)
       }
     }
   }

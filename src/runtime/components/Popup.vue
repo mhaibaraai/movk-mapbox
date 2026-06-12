@@ -5,7 +5,12 @@ import type { LngLatLike, PopupOptions } from 'mapbox-gl'
 import { useMap } from '../composables/useMap'
 
 const props = defineProps<{
+  /** 弹窗锚定的经纬度 */
   lnglat: LngLatLike
+  /**
+   * Popup 选项
+   * @see https://docs.mapbox.com/mapbox-gl-js/api/markers/#popup
+   */
   options?: PopupOptions
 }>()
 
