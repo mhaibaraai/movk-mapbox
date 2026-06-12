@@ -19,7 +19,7 @@ const path = 'https://assets10.lottiefiles.com/packages/lf20_jcikwtux.json'
       <span class="text-xs text-muted">{{ speed.toFixed(1) }}×</span>
     </template>
 
-    <DemoMap map-style="mapbox://styles/mapbox/dark-v11" :center="[113.26, 23.13]" :zoom="13">
+    <DemoMap :center="[113.26, 23.13]" :zoom="13">
       <MapboxLottieMarker v-model:lnglat="lnglat" :path="path" :speed="speed" :width="96" :height="96" />
     </DemoMap>
   </MapShowcase>

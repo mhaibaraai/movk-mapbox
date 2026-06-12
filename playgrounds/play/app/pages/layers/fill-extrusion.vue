@@ -13,14 +13,12 @@ const source: VectorSourceSpecification = {
     title="FillExtrusion 3D 建筑"
     description="fill-extrusion 类型按属性字段拉伸高度，配合俯仰角呈现 3D 建筑。"
   >
-    <MapboxMap
-      :options="{
-        style: 'mapbox://styles/mapbox/light-v11',
-        center: [116.39, 39.91],
-        zoom: 15.5,
-        pitch: 55,
-        bearing: -20
-      }"
+    <DemoMap
+      map-style="mapbox://styles/mapbox/light-v11"
+      :center="[116.39, 39.91]"
+      :zoom="15.5"
+      :pitch="55"
+      :bearing="-20"
     >
       <MapboxSource source-id="composite" :source="source">
         <MapboxLayer
@@ -38,6 +36,6 @@ const source: VectorSourceSpecification = {
           }"
         />
       </MapboxSource>
-    </MapboxMap>
+    </DemoMap>
   </MapShowcase>
 </template>
