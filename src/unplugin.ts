@@ -7,7 +7,10 @@ import Components from 'unplugin-vue-components'
 import AutoImport from 'unplugin-auto-import'
 
 export interface MapboxResolverOptions {
-  /** 组件前缀，默认 'Mapbox' */
+  /**
+   * 组件前缀
+   * @defaultValue 'Mapbox'
+   */
   prefix?: string
 }
 
