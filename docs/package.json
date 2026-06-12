@@ -1,0 +1,21 @@
+{
+  "name": "@movk/mapbox-docs",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev"
+  },
+  "dependencies": {
+    "@iconify-json/lucide": "^1.2.111",
+    "@iconify-json/simple-icons": "^1.2.86",
+    "@iconify-json/vscode-icons": "^1.2.56",
+    "@mapbox/mapbox-gl-draw": "^1.5.1",
+    "@movk/mapbox": "workspace:*",
+    "@movk/nuxt-docs": "^1.19.8",
+    "better-sqlite3": "^12.10.0",
+    "mapbox-gl": "^3.24.0",
+    "nuxt": "^4.4.8",
+    "tailwindcss": "^4.3.0"
+  }
+}
