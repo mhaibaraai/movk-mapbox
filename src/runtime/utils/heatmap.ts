@@ -1,17 +1,32 @@
 type PropBag = Record<string, unknown>
 
 export interface HeatmapPaintOptions {
-  /** 权重取值的要素属性,默认 temperature */
+  /**
+   * 权重取值的要素属性
+   * @defaultValue 'temperature'
+   */
   weightProperty?: string
-  /** 权重属性取值范围 [min, max],线性映射到 0..1 热力权重,默认 [0, 40] */
+  /**
+   * 权重属性取值范围 [min, max]，线性映射到 0..1 热力权重
+   * @defaultValue `[0, 40]`
+   */
   weightRange?: [number, number]
-  /** 密度-颜色断点 [密度比 0..1, 颜色][],默认蓝→红五档;density 0 处自动透明 */
+  /** 密度-颜色断点 [密度比 0..1, 颜色][]；缺省为蓝→红五档；density 0 处自动透明 */
   colorStops?: [number, string][]
-  /** 热力半径(像素),默认 30 */
+  /**
+   * 热力半径（像素）
+   * @defaultValue 30
+   */
   radius?: number
-  /** 热力强度,默认 1 */
+  /**
+   * 热力强度
+   * @defaultValue 1
+   */
   intensity?: number
-  /** 整体不透明度,默认 1 */
+  /**
+   * 整体不透明度
+   * @defaultValue 1
+   */
   opacity?: number
 }
 

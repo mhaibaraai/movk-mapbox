@@ -12,15 +12,30 @@ const props = withDefaults(defineProps<{
   data: GeoJSONSourceSpecification['data']
   /** 图层 id 前缀；省略时自动生成 */
   layerId?: string
-  /** 主色，默认 #10b981 */
+  /**
+   * 主色
+   * @defaultValue '#10b981'
+   */
   color?: string
-  /** 底圆半径（像素），默认 6 */
+  /**
+   * 底圆半径（像素）
+   * @defaultValue 6
+   */
   baseRadius?: number
-  /** 波纹最大半径（像素），默认 36 */
+  /**
+   * 波纹最大半径（像素）
+   * @defaultValue 36
+   */
   maxRadius?: number
-  /** 波纹周期（毫秒），默认 2000 */
+  /**
+   * 波纹周期（毫秒）
+   * @defaultValue 2000
+   */
   duration?: number
-  /** 波纹圈数，默认 2 */
+  /**
+   * 波纹圈数
+   * @defaultValue 2
+   */
   rings?: number
   /** 插入到该图层之前 */
   beforeId?: string

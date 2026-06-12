@@ -15,7 +15,10 @@ defineOptions({ inheritAttrs: false })
 const props = withDefaults(defineProps<{
   /** 地图 id；省略时自动生成。提供后可经 useMapbox(id) 外部访问 */
   mapId?: string
-  /** mapbox-gl Map 初始化选项（container 由组件接管） */
+  /**
+   * mapbox-gl Map 初始化选项（container 由组件接管）
+   * @see https://docs.mapbox.com/mapbox-gl-js/api/map/
+   */
   options?: MapboxMapOptions
   /** 覆盖全局 access token */
   accessToken?: string

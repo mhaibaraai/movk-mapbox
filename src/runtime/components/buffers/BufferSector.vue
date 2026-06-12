@@ -16,7 +16,10 @@ const props = withDefaults(defineProps<{
   bearing1: number
   /** 结束方位角（度） */
   bearing2: number
-  /** 弧线采样段数，默认 64 */
+  /**
+   * 弧线采样段数
+   * @defaultValue 64
+   */
   steps?: number
   /** 图层 id 前缀；省略时自动生成 */
   layerId?: string

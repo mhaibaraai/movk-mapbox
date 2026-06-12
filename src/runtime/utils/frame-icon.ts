@@ -26,9 +26,12 @@ export interface FrameStyleImageOptions {
   frames: () => ImageData[]
   /** 取地图实例以触发重绘 */
   getMap: () => MapboxMap | undefined
-  /** 固定帧率,durations 缺省时生效,默认 12 */
+  /**
+   * 固定帧率；durations 缺省时生效
+   * @defaultValue 12
+   */
   fps?: number
-  /** 每帧时长 ms(响应式取值),优先于 fps */
+  /** 每帧时长 ms（响应式取值），优先于 fps */
   durations?: () => number[] | undefined
 }
 

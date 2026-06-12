@@ -7,7 +7,12 @@ import { useMap } from '../../composables/useMap'
 import { DrawKey } from '../../domains/map/draw'
 
 const props = defineProps<{
+  /** 控件停靠位置；省略用地图默认位置 */
   position?: ControlPosition
+  /**
+   * MapboxDraw 构造选项
+   * @see https://github.com/mapbox/mapbox-gl-draw/blob/main/docs/API.md
+   */
   options?: ConstructorParameters<typeof MapboxDraw>[0]
 }>()
 

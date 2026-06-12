@@ -7,27 +7,36 @@ import { useFrameIcon } from '../../composables/useFrameIcon'
 import MapboxSource from '../Source.vue'
 import MapboxLayer from '../Layer.vue'
 
-/** 帧动画图标层:雪碧图切帧后由 StyleImageInterface.render 逐帧驱动 symbol 循环播放,零解码依赖。 */
+/** 帧动画图标层：雪碧图切帧后由 StyleImageInterface.render 逐帧驱动 symbol 循环播放，零解码依赖。 */
 const props = withDefaults(defineProps<{
-  /** 点要素数据(GeoJSON 或其 URL) */
+  /** 点要素数据（GeoJSON 或其 URL） */
   data: GeoJSONSourceSpecification['data']
-  /** 雪碧图 URL(所有帧拼一张图,行优先排布) */
+  /** 雪碧图 URL（所有帧拼一张图，行优先排布） */
   image: string
   /** 总帧数 */
   frames: number
-  /** 列数,默认等于 frames(单行) */
+  /** 列数；省略时等于 frames（单行） */
   columns?: number
-  /** 行数,默认 1 */
+  /**
+   * 行数
+   * @defaultValue 1
+   */
   rows?: number
-  /** 单帧宽(像素);省略由图宽/列数推算 */
+  /** 单帧宽（像素）；省略由图宽/列数推算 */
   frameWidth?: number
-  /** 单帧高(像素);省略由图高/行数推算 */
+  /** 单帧高（像素）；省略由图高/行数推算 */
   frameHeight?: number
-  /** 播放帧率(帧/秒),默认 12 */
+  /**
+   * 播放帧率（帧/秒）
+   * @defaultValue 12
+   */
   fps?: number
-  /** 上图图标边长(像素),默认 64 */
+  /**
+   * 上图图标边长（像素）
+   * @defaultValue 64
+   */
   size?: number
-  /** 图层 id;省略时自动生成 */
+  /** 图层 id；省略时自动生成 */
   layerId?: string
   /** 插入到该图层之前 */
   beforeId?: string

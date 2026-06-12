@@ -7,15 +7,30 @@ import MapboxLayer from '../Layer.vue'
 const props = defineProps<{
   /** 图层 id；省略时自动生成 */
   layerId?: string
-  /** 矢量数据源 id，默认 composite */
+  /**
+   * 矢量数据源 id
+   * @defaultValue 'composite'
+   */
   source?: string
-  /** 数据源图层名，默认 building */
+  /**
+   * 数据源图层名
+   * @defaultValue 'building'
+   */
   sourceLayer?: string
-  /** 建筑颜色，默认 #aaa */
+  /**
+   * 建筑颜色
+   * @defaultValue '#aaa'
+   */
   color?: string
-  /** 整体透明度，默认 0.8 */
+  /**
+   * 整体透明度
+   * @defaultValue 0.8
+   */
   opacity?: number
-  /** 显示建筑的最小缩放级别，默认 15 */
+  /**
+   * 显示建筑的最小缩放级别
+   * @defaultValue 15
+   */
   minzoom?: number
   /** 整体覆盖 paint（提供时忽略 color/opacity 预设） */
   paint?: Record<string, unknown>

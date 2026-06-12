@@ -14,9 +14,15 @@ const props = withDefaults(defineProps<{
   data: GeoJSONSourceSpecification['data']
   /** source 与图层 id 前缀；省略时自动生成 */
   sourceId?: string
-  /** 聚合半径（像素），默认 50 */
+  /**
+   * 聚合半径（像素）
+   * @defaultValue 50
+   */
   clusterRadius?: number
-  /** 超过该缩放级别不再聚合，默认 14 */
+  /**
+   * 超过该缩放级别不再聚合
+   * @defaultValue 14
+   */
   clusterMaxZoom?: number
   /** 覆盖聚合圆 paint */
   clusterPaint?: PropBag
@@ -26,7 +32,10 @@ const props = withDefaults(defineProps<{
   countPaint?: PropBag
   /** 覆盖散点 paint */
   pointPaint?: PropBag
-  /** 点击聚合圆自动放大到展开级别，默认 true */
+  /**
+   * 点击聚合圆自动放大到展开级别
+   * @defaultValue true
+   */
   autoExpand?: boolean
   /** 插入到该图层之前 */
   beforeId?: string

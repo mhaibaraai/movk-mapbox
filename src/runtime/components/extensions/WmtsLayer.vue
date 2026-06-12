@@ -9,17 +9,32 @@ const props = withDefaults(defineProps<{
   url: string
   /** 图层标识 LAYER */
   layer: string
-  /** source/layer id，默认 wmts-${layer} */
+  /**
+   * source/layer id
+   * @defaultValue `wmts-${layer}`
+   */
   layerId?: string
-  /** 瓦片矩阵集，默认 'w' */
+  /**
+   * 瓦片矩阵集
+   * @defaultValue 'w'
+   */
   tileMatrixSet?: string
-  /** 样式，默认 'default' */
+  /**
+   * 样式
+   * @defaultValue 'default'
+   */
   style?: string
-  /** 瓦片格式，默认 'tiles' */
+  /**
+   * 瓦片格式
+   * @defaultValue 'tiles'
+   */
   format?: string
   /** 子域名列表，替换 url 中的 {s} */
   subdomains?: string[]
-  /** 瓦片尺寸，默认 256 */
+  /**
+   * 瓦片尺寸
+   * @defaultValue 256
+   */
   tileSize?: number
   /** 版权信息 */
   attribution?: string

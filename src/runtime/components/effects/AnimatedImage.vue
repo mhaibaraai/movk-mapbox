@@ -7,17 +7,23 @@ import { useFrameIcon } from '../../composables/useFrameIcon'
 import MapboxSource from '../Source.vue'
 import MapboxLayer from '../Layer.vue'
 
-/** 动图图标层:ImageDecoder 解码 GIF/APNG/WebP 为帧,按各帧时长驱动 symbol 循环播放,零解码依赖。 */
+/** 动图图标层：ImageDecoder 解码 GIF/APNG/WebP 为帧，按各帧时长驱动 symbol 循环播放，零解码依赖。 */
 const props = withDefaults(defineProps<{
-  /** 点要素数据(GeoJSON 或其 URL) */
+  /** 点要素数据（GeoJSON 或其 URL） */
   data: GeoJSONSourceSpecification['data']
-  /** 动图 URL(GIF/APNG/WebP/AVIF) */
+  /** 动图 URL（GIF/APNG/WebP/AVIF） */
   image: string
-  /** 图标边长(像素),帧统一缩放到 size×size,默认 64 */
+  /**
+   * 图标边长（像素），帧统一缩放到 size×size
+   * @defaultValue 64
+   */
   size?: number
-  /** 解码无原生帧时长时的回退帧率,默认 12 */
+  /**
+   * 解码无原生帧时长时的回退帧率
+   * @defaultValue 12
+   */
   fps?: number
-  /** 图层 id;省略时自动生成 */
+  /** 图层 id；省略时自动生成 */
   layerId?: string
   /** 插入到该图层之前 */
   beforeId?: string

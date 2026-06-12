@@ -12,15 +12,30 @@ const props = withDefaults(defineProps<{
   data: GeoJSONSourceSpecification['data']
   /** 图层 id 前缀；省略时自动生成 */
   layerId?: string
-  /** 主色，默认 #8b5cf6 */
+  /**
+   * 主色
+   * @defaultValue '#8b5cf6'
+   */
   color?: string
-  /** 线宽（像素），默认 4 */
+  /**
+   * 线宽（像素）
+   * @defaultValue 4
+   */
   lineWidth?: number
-  /** 彗尾长度（line-progress 占比 0-1），默认 0.25 */
+  /**
+   * 彗尾长度（line-progress 占比 0-1）
+   * @defaultValue 0.25
+   */
   trailLength?: number
-  /** 跑完全程的周期（毫秒），默认 3000 */
+  /**
+   * 跑完全程的周期（毫秒）
+   * @defaultValue 3000
+   */
   duration?: number
-  /** 是否同时绘制半透明底线，默认 true */
+  /**
+   * 是否同时绘制半透明底线
+   * @defaultValue true
+   */
   baseLine?: boolean
   /** 插入到该图层之前 */
   beforeId?: string

@@ -1,13 +1,28 @@
 export interface DrawThemeOptions {
-  /** 非激活态主色,默认 #3b82f6 */
+  /**
+   * 非激活态主色
+   * @defaultValue '#3b82f6'
+   */
   color?: string
-  /** 激活态(绘制/选中)主色,默认 #f59e0b */
+  /**
+   * 激活态（绘制/选中）主色
+   * @defaultValue '#f59e0b'
+   */
   activeColor?: string
-  /** 多边形填充不透明度,默认 0.1 */
+  /**
+   * 多边形填充不透明度
+   * @defaultValue 0.1
+   */
   fillOpacity?: number
-  /** 线宽,默认 2 */
+  /**
+   * 线宽
+   * @defaultValue 2
+   */
   lineWidth?: number
-  /** 顶点圆半径,默认 5 */
+  /**
+   * 顶点圆半径
+   * @defaultValue 5
+   */
   vertexRadius?: number
 }
 

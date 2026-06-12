@@ -1,11 +1,17 @@
 type PropBag = Record<string, unknown>
 
 export interface BuildingGradientOptions {
-  /** 高度-颜色断点,默认低矮到高耸的蓝紫渐变 */
+  /** 高度-颜色断点；缺省为低矮到高耸的蓝紫渐变 */
   stops?: [number, string][]
-  /** 整体透明度,默认 0.85 */
+  /**
+   * 整体透明度
+   * @defaultValue 0.85
+   */
   opacity?: number
-  /** 显示建筑的最小缩放级别,默认 15 */
+  /**
+   * 显示建筑的最小缩放级别
+   * @defaultValue 15
+   */
   minzoom?: number
 }
 
@@ -44,19 +50,40 @@ export function buildingGradientPaint(options: BuildingGradientOptions = {}): Pr
 }
 
 export interface WindowTextureOptions {
-  /** 贴图边长(像素),默认 128 */
+  /**
+   * 贴图边长（像素）
+   * @defaultValue 128
+   */
   size?: number
-  /** 窗户行数,默认 8 */
+  /**
+   * 窗户行数
+   * @defaultValue 8
+   */
   rows?: number
-  /** 窗户列数,默认 6 */
+  /**
+   * 窗户列数
+   * @defaultValue 6
+   */
   cols?: number
-  /** 亮窗颜色,默认 #fde68a */
+  /**
+   * 亮窗颜色
+   * @defaultValue '#fde68a'
+   */
   litColor?: string
-  /** 暗窗/墙体颜色,默认 #1f2937 */
+  /**
+   * 暗窗/墙体颜色
+   * @defaultValue '#1f2937'
+   */
   darkColor?: string
-  /** 亮窗比例 0-1,默认 0.45 */
+  /**
+   * 亮窗比例 0-1
+   * @defaultValue 0.45
+   */
   litRatio?: number
-  /** 随机种子(决定亮窗分布,保证可复现),默认 1 */
+  /**
+   * 随机种子（决定亮窗分布，保证可复现）
+   * @defaultValue 1
+   */
   seed?: number
 }
 

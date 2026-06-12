@@ -8,9 +8,15 @@ import { useMap } from '../composables/useMap'
 const props = withDefaults(defineProps<{
   /** 目标图层 id */
   layerId: string
-  /** Popup 选项（closeButton/closeOnClick 由组件接管） */
+  /**
+   * Popup 选项（closeButton/closeOnClick 由组件接管）
+   * @see https://docs.mapbox.com/mapbox-gl-js/api/markers/#popup
+   */
   options?: PopupOptions
-  /** 悬浮时鼠标指针样式，默认 pointer */
+  /**
+   * 悬浮时鼠标指针样式
+   * @defaultValue 'pointer'
+   */
   cursor?: string
 }>(), {
   cursor: 'pointer'

@@ -4,23 +4,44 @@ import { buildingGradientPaint } from '../../utils/building-effects'
 import { useMapAnimation } from '../../composables/useMapAnimation'
 import MapboxBuildingLayer from '../layers/BuildingLayer.vue'
 
-/** 流动建筑:渐变着色 + 高亮带沿建筑高度循环流动。 */
+/** 流动建筑：渐变着色 + 高亮带沿建筑高度循环流动。 */
 const props = withDefaults(defineProps<{
-  /** 图层 id;省略时自动生成 */
+  /** 图层 id；省略时自动生成 */
   layerId?: string
-  /** 基色,默认 #1e3a8a */
+  /**
+   * 基色
+   * @defaultValue '#1e3a8a'
+   */
   color?: string
-  /** 流动高亮色,默认 #67e8f9 */
+  /**
+   * 流动高亮色
+   * @defaultValue '#67e8f9'
+   */
   flowColor?: string
-  /** 流动周期(毫秒),默认 3000 */
+  /**
+   * 流动周期（毫秒）
+   * @defaultValue 3000
+   */
   duration?: number
-  /** 高亮带覆盖的高度范围(米),默认 60 */
+  /**
+   * 高亮带覆盖的高度范围（米）
+   * @defaultValue 60
+   */
   bandHeight?: number
-  /** 建筑最大参考高度(米),默认 300 */
+  /**
+   * 建筑最大参考高度（米）
+   * @defaultValue 300
+   */
   maxHeight?: number
-  /** 整体透明度,默认 0.9 */
+  /**
+   * 整体透明度
+   * @defaultValue 0.85
+   */
   opacity?: number
-  /** 最小缩放级别,默认 15 */
+  /**
+   * 最小缩放级别
+   * @defaultValue 15
+   */
   minzoom?: number
   /** 插入到该图层之前 */
   beforeId?: string

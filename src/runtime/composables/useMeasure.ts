@@ -13,7 +13,10 @@ export type MeasureMode = 'distance' | 'area'
 export interface UseMeasureOptions {
   /** 目标地图 id；在 MapboxMap 子树外使用时必填 */
   mapId?: string
-  /** 主色，默认 #f59e0b */
+  /**
+   * 主色
+   * @defaultValue '#f59e0b'
+   */
   color?: string
 }
 

@@ -4,7 +4,12 @@ import type { GeoJSONSource, ImageSource, RasterTileSource, SourceSpecification,
 import { useMap } from '../composables/useMap'
 
 const props = defineProps<{
+  /** source id */
   sourceId: string
+  /**
+   * 数据源定义
+   * @see https://docs.mapbox.com/style-spec/reference/sources
+   */
   source: SourceSpecification
 }>()
 

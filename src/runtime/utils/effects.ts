@@ -1,9 +1,15 @@
 export type Position2D = [number, number]
 
 export interface ArcLineOptions {
-  /** 弧线弯曲程度（相对两点距离的比例），默认 0.3 */
+  /**
+   * 弧线弯曲程度（相对两点距离的比例）
+   * @defaultValue 0.3
+   */
   curvature?: number
-  /** 采样段数，默认 64 */
+  /**
+   * 采样段数
+   * @defaultValue 64
+   */
   segments?: number
 }
 

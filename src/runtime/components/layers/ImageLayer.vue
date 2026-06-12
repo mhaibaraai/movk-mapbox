@@ -11,7 +11,10 @@ const props = withDefaults(defineProps<{
   url: string
   /** 四角经纬度：左上/右上/右下/左下 */
   coordinates: ImageSourceSpecification['coordinates']
-  /** 不透明度，默认 1 */
+  /**
+   * 不透明度
+   * @defaultValue 1
+   */
   opacity?: number
   /** 插入到该图层之前 */
   beforeId?: string

@@ -13,11 +13,20 @@ const props = withDefaults(defineProps<{
   data: GeoJSONSourceSpecification['data']
   /** 图层 id 前缀；省略时自动生成 */
   layerId?: string
-  /** 主色，默认 #22c55e */
+  /**
+   * 主色
+   * @defaultValue '#22c55e'
+   */
   color?: string
-  /** 扫描半径（像素），默认 60 */
+  /**
+   * 扫描半径（像素）
+   * @defaultValue 60
+   */
   radius?: number
-  /** 旋转速度（度/秒），默认 120 */
+  /**
+   * 旋转速度（度/秒）
+   * @defaultValue 120
+   */
   speed?: number
   /** 插入到该图层之前 */
   beforeId?: string

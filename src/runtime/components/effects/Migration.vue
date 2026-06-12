@@ -20,15 +20,30 @@ const props = withDefaults(defineProps<{
   data: MigrationRoute[]
   /** 图层 id 前缀；省略时自动生成 */
   layerId?: string
-  /** 主色，默认 #f43f5e */
+  /**
+   * 主色
+   * @defaultValue '#f43f5e'
+   */
   color?: string
-  /** 弧线弯曲程度，默认 0.3 */
+  /**
+   * 弧线弯曲程度
+   * @defaultValue 0.3
+   */
   curvature?: number
-  /** 单程飞行周期（毫秒），默认 3000 */
+  /**
+   * 单程飞行周期（毫秒）
+   * @defaultValue 3000
+   */
   duration?: number
-  /** 线宽（像素），默认 2 */
+  /**
+   * 线宽（像素）
+   * @defaultValue 2
+   */
   lineWidth?: number
-  /** 粒子半径（像素），默认 4 */
+  /**
+   * 粒子半径（像素）
+   * @defaultValue 4
+   */
   particleRadius?: number
   /** 插入到该图层之前 */
   beforeId?: string

@@ -14,9 +14,15 @@ const props = withDefaults(defineProps<{
   xSemiAxis: number
   /** y 半轴（米） */
   ySemiAxis: number
-  /** 旋转角（度，正北顺时针），默认 0 */
+  /**
+   * 旋转角（度，正北顺时针）
+   * @defaultValue 0
+   */
   angle?: number
-  /** 周长采样段数，默认 64 */
+  /**
+   * 周长采样段数
+   * @defaultValue 64
+   */
   steps?: number
   /** 图层 id 前缀；省略时自动生成 */
   layerId?: string

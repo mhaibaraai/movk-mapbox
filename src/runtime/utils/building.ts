@@ -5,15 +5,30 @@ type PropBag = Record<string, unknown>
 export interface BuildingLayerOptions {
   /** 图层 id */
   id: string
-  /** 矢量数据源 id，默认 Mapbox 官方样式的 composite */
+  /**
+   * 矢量数据源 id（Mapbox 官方样式的 composite）
+   * @defaultValue 'composite'
+   */
   source?: string
-  /** 数据源图层名，默认 building */
+  /**
+   * 数据源图层名
+   * @defaultValue 'building'
+   */
   sourceLayer?: string
-  /** 建筑颜色，默认 #aaa */
+  /**
+   * 建筑颜色
+   * @defaultValue '#aaa'
+   */
   color?: string
-  /** 整体透明度，默认 0.8 */
+  /**
+   * 整体透明度
+   * @defaultValue 0.8
+   */
   opacity?: number
-  /** 显示建筑的最小缩放级别，默认 15 */
+  /**
+   * 显示建筑的最小缩放级别
+   * @defaultValue 15
+   */
   minzoom?: number
   /** 整体覆盖 paint（提供时忽略 color/opacity 预设） */
   paint?: PropBag

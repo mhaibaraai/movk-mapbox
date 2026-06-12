@@ -6,7 +6,10 @@ import { LayerGroupKey } from '../domains/map/layer-group'
 const props = withDefaults(defineProps<{
   /** 组内图层缺省插入到该图层之前 */
   beforeId?: string
-  /** 组级显隐，默认 true */
+  /**
+   * 组级显隐
+   * @defaultValue true
+   */
   visible?: boolean
 }>(), {
   visible: true

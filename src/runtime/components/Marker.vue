@@ -5,7 +5,10 @@ import type { LngLatLike, MarkerOptions } from 'mapbox-gl'
 import { useMap } from '../composables/useMap'
 
 const props = defineProps<{
-  /** 标记选项；element 由默认插槽提供，无需在此传入 */
+  /**
+   * 标记选项；element 由默认插槽提供，无需在此传入
+   * @see https://docs.mapbox.com/mapbox-gl-js/api/markers/#marker
+   */
   options?: Omit<MarkerOptions, 'element'>
 }>()
 

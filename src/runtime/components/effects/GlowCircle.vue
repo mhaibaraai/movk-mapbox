@@ -11,15 +11,30 @@ const props = withDefaults(defineProps<{
   data: GeoJSONSourceSpecification['data']
   /** 图层 id 前缀；省略时自动生成 */
   layerId?: string
-  /** 主色，默认 #f59e0b */
+  /**
+   * 主色
+   * @defaultValue '#f59e0b'
+   */
   color?: string
-  /** 内核半径（像素），默认 6 */
+  /**
+   * 内核半径（像素）
+   * @defaultValue 6
+   */
   radius?: number
-  /** 光晕半径倍数，默认 3 */
+  /**
+   * 光晕半径倍数
+   * @defaultValue 3
+   */
   glowScale?: number
-  /** 呼吸脉冲（光晕半径 ±25% 正弦摆动），默认 false */
+  /**
+   * 呼吸脉冲（光晕半径 ±25% 正弦摆动）
+   * @defaultValue false
+   */
   pulse?: boolean
-  /** 脉冲周期（毫秒），默认 2000 */
+  /**
+   * 脉冲周期（毫秒）
+   * @defaultValue 2000
+   */
   duration?: number
   /** 插入到该图层之前 */
   beforeId?: string

@@ -5,25 +5,40 @@ import { heatmapPaint } from '../../utils/heatmap'
 import MapboxSource from '../Source.vue'
 import MapboxLayer from '../Layer.vue'
 
-/** 温度热力层:GeoJSON 点按温度属性渲染 mapbox 原生 heatmap。 */
+/** 温度热力层：GeoJSON 点按温度属性渲染 mapbox 原生 heatmap。 */
 const props = withDefaults(defineProps<{
-  /** 点要素数据(GeoJSON 或其 URL) */
+  /** 点要素数据（GeoJSON 或其 URL） */
   data: GeoJSONSourceSpecification['data']
-  /** 图层 id;省略时自动生成 */
+  /** 图层 id；省略时自动生成 */
   layerId?: string
-  /** 权重取值的要素属性,默认 temperature */
+  /**
+   * 权重取值的要素属性
+   * @defaultValue 'temperature'
+   */
   weightProperty?: string
-  /** 温度取值范围 [min,max],线性映射到热力权重,默认 [0,40] */
+  /**
+   * 温度取值范围 [min, max]，线性映射到热力权重
+   * @defaultValue `[0, 40]`
+   */
   weightRange?: [number, number]
-  /** 密度-颜色断点,默认蓝→红五档 */
+  /** 密度-颜色断点；缺省为蓝→红五档 */
   colorStops?: [number, string][]
-  /** 热力半径(像素),默认 30 */
+  /**
+   * 热力半径（像素）
+   * @defaultValue 30
+   */
   radius?: number
-  /** 热力强度,默认 1 */
+  /**
+   * 热力强度
+   * @defaultValue 1
+   */
   intensity?: number
-  /** 不透明度,默认 1 */
+  /**
+   * 不透明度
+   * @defaultValue 1
+   */
   opacity?: number
-  /** 超过该缩放级别隐藏热力(通常切到点图);省略不限制 */
+  /** 超过该缩放级别隐藏热力（通常切到点图）；省略不限制 */
   maxzoom?: number
   /** 插入到该图层之前 */
   beforeId?: string

@@ -5,21 +5,36 @@ import type { AnimationItem } from 'lottie-web'
 import type { LngLatLike } from 'mapbox-gl'
 import MapboxMarker from './Marker.vue'
 
-/** Lottie 标记:在地图标记位用 lottie-web 渲染矢量动画(走 Marker DOM,非 icon 帧驱动)。 */
+/** Lottie 标记：在地图标记位用 lottie-web 渲染矢量动画（走 Marker DOM，非 icon 帧驱动）。 */
 const props = withDefaults(defineProps<{
-  /** lottie 动画数据(JSON 对象);与 path 二选一 */
+  /** lottie 动画数据（JSON 对象）；与 path 二选一 */
   animationData?: object
-  /** lottie 动画 URL;与 animationData 二选一 */
+  /** lottie 动画 URL；与 animationData 二选一 */
   path?: string
-  /** 是否循环,默认 true */
+  /**
+   * 是否循环
+   * @defaultValue true
+   */
   loop?: boolean
-  /** 是否自动播放,默认 true */
+  /**
+   * 是否自动播放
+   * @defaultValue true
+   */
   autoplay?: boolean
-  /** 播放速度倍率,默认 1 */
+  /**
+   * 播放速度倍率
+   * @defaultValue 1
+   */
   speed?: number
-  /** 容器宽(像素),默认 64 */
+  /**
+   * 容器宽（像素）
+   * @defaultValue 64
+   */
   width?: number
-  /** 容器高(像素),默认 64 */
+  /**
+   * 容器高（像素）
+   * @defaultValue 64
+   */
   height?: number
 }>(), {
   loop: true,

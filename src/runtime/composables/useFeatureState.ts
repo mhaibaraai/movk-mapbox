@@ -7,11 +7,20 @@ import { logger } from '../utils/logger'
 export interface UseFeatureStateOptions {
   /** 目标地图 id；在 MapboxMap 子树外使用时必填 */
   mapId?: string
-  /** 维护 hover 状态，默认 true */
+  /**
+   * 维护 hover 状态
+   * @defaultValue true
+   */
   hover?: boolean
-  /** 维护 click 选中状态，默认 true */
+  /**
+   * 维护 click 选中状态
+   * @defaultValue true
+   */
   select?: boolean
-  /** 悬浮时设置 pointer 指针，默认 true */
+  /**
+   * 悬浮时设置 pointer 指针
+   * @defaultValue true
+   */
   cursor?: boolean
 }
 

@@ -1,13 +1,16 @@
 export interface SpriteGrid {
   /** 雪碧图列数 */
   columns: number
-  /** 雪碧图行数,默认 1 */
+  /**
+   * 雪碧图行数
+   * @defaultValue 1
+   */
   rows?: number
-  /** 单帧宽(像素) */
+  /** 单帧宽（像素） */
   frameWidth: number
-  /** 单帧高(像素) */
+  /** 单帧高（像素） */
   frameHeight: number
-  /** 总帧数,默认 columns*rows */
+  /** 总帧数；缺省为 columns * rows */
   frames?: number
 }
 

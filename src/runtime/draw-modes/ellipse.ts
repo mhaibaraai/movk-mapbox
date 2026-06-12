@@ -5,9 +5,15 @@ import type { MapMouseEvent } from 'mapbox-gl'
 import { cancelFeature, completeFeature, createPolygonFeature, discardIfIncomplete } from './shared'
 
 interface EllipseOptions {
-  /** y 半轴与 x 半轴之比,默认 0.6 */
+  /**
+   * y 半轴与 x 半轴之比
+   * @defaultValue 0.6
+   */
   ratio?: number
-  /** 周长采样段数,默认 64 */
+  /**
+   * 周长采样段数
+   * @defaultValue 64
+   */
   steps?: number
 }
 

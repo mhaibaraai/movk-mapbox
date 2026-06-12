@@ -12,15 +12,30 @@ const props = withDefaults(defineProps<{
   data: GeoJSONSourceSpecification['data']
   /** 图层 id 前缀；省略时自动生成 */
   layerId?: string
-  /** 主色，默认 #3b82f6 */
+  /**
+   * 主色
+   * @defaultValue '#3b82f6'
+   */
   color?: string
-  /** 最大扩散半径（像素），默认 40 */
+  /**
+   * 最大扩散半径（像素）
+   * @defaultValue 40
+   */
   maxRadius?: number
-  /** 单圈扩散周期（毫秒），默认 2400 */
+  /**
+   * 单圈扩散周期（毫秒）
+   * @defaultValue 2400
+   */
   duration?: number
-  /** 同时扩散的圈数，默认 3 */
+  /**
+   * 同时扩散的圈数
+   * @defaultValue 3
+   */
   rings?: number
-  /** 峰值不透明度，默认 0.6 */
+  /**
+   * 峰值不透明度
+   * @defaultValue 0.6
+   */
   opacity?: number
   /** 插入到该图层之前 */
   beforeId?: string

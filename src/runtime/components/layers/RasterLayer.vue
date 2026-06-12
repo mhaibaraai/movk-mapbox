@@ -10,9 +10,15 @@ const props = withDefaults(defineProps<{
   layerId?: string
   /** URL 模板瓦片地址（{z}/{x}/{y} 占位） */
   tiles: string[]
-  /** 瓦片尺寸，默认 256 */
+  /**
+   * 瓦片尺寸
+   * @defaultValue 256
+   */
   tileSize?: number
-  /** 瓦片坐标方案，默认 xyz */
+  /**
+   * 瓦片坐标方案
+   * @defaultValue 'xyz'
+   */
   scheme?: 'xyz' | 'tms'
   /** 数据源最小缩放级别 */
   minzoom?: number
@@ -20,7 +26,10 @@ const props = withDefaults(defineProps<{
   maxzoom?: number
   /** 版权信息 */
   attribution?: string
-  /** 不透明度，默认 1 */
+  /**
+   * 不透明度
+   * @defaultValue 1
+   */
   opacity?: number
   /** 插入到该图层之前 */
   beforeId?: string

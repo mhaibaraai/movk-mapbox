@@ -4,11 +4,20 @@ import type { Map as MapboxMap, RasterDEMSourceSpecification } from 'mapbox-gl'
 import { useMap } from '../../composables/useMap'
 
 const props = withDefaults(defineProps<{
-  /** 地形夸张系数，默认 1 */
+  /**
+   * 地形夸张系数
+   * @defaultValue 1
+   */
   exaggeration?: number
-  /** DEM 数据源，缺省用 Mapbox 官方 terrain-dem-v1 */
+  /**
+   * DEM 数据源，缺省用 Mapbox 官方 terrain-dem-v1
+   * @see https://docs.mapbox.com/style-spec/reference/sources/#raster-dem
+   */
   source?: RasterDEMSourceSpecification
-  /** DEM source id，默认 movk-terrain-dem */
+  /**
+   * DEM source id
+   * @defaultValue 'movk-terrain-dem'
+   */
   sourceId?: string
 }>(), {
   exaggeration: 1,

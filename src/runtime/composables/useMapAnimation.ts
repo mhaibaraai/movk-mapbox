@@ -6,7 +6,10 @@ import { useContextResolver } from '../domains/map/resolve'
 export interface UseMapAnimationOptions {
   /** 目标地图 id；在 MapboxMap 子树外使用时必填 */
   mapId?: string
-  /** 创建后立即启动，默认 true */
+  /**
+   * 创建后立即启动
+   * @defaultValue true
+   */
   immediate?: boolean
 }
 

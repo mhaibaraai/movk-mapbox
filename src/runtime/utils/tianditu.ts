@@ -21,9 +21,15 @@ export function tiandituAnnotationFor(base: TiandituLayerType): TiandituLayerTyp
 export interface TiandituSourceOptions {
   /** 天地图 token（tk）；缺省时回退到运行时配置的 tiandituToken */
   tk?: string
-  /** 瓦片尺寸，默认 256 */
+  /**
+   * 瓦片尺寸
+   * @defaultValue 256
+   */
   tileSize?: number
-  /** 子域名数量（t0..t{n-1}），默认 8 */
+  /**
+   * 子域名数量（t0..t{n-1}）
+   * @defaultValue 8
+   */
   subdomains?: number
 }
 

@@ -1,11 +1,20 @@
 type PropBag = Record<string, unknown>
 
 export interface BufferPaintOptions {
-  /** 主色，默认 #3b82f6 */
+  /**
+   * 主色
+   * @defaultValue '#3b82f6'
+   */
   color?: string
-  /** 填充不透明度，默认 0.25 */
+  /**
+   * 填充不透明度
+   * @defaultValue 0.25
+   */
   fillOpacity?: number
-  /** 描边宽度，默认 2 */
+  /**
+   * 描边宽度
+   * @defaultValue 2
+   */
   lineWidth?: number
 }
 

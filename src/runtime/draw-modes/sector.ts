@@ -6,7 +6,10 @@ import type { MapMouseEvent } from 'mapbox-gl'
 import { cancelFeature, completeFeature, createPolygonFeature, discardIfIncomplete } from './shared'
 
 interface SectorOptions {
-  /** 弧线采样段数,默认 64 */
+  /**
+   * 弧线采样段数
+   * @defaultValue 64
+   */
   steps?: number
 }
 

@@ -4,25 +4,49 @@ import { windowTextureImage } from '../../utils/building-effects'
 import { useMap } from '../../composables/useMap'
 import MapboxBuildingLayer from '../layers/BuildingLayer.vue'
 
-/** 窗户建筑:程序生成窗户点阵贴图 fill-extrusion-pattern。依赖 Mapbox composite/building。 */
+/** 窗户建筑：程序生成窗户点阵贴图 fill-extrusion-pattern。依赖 Mapbox composite/building。 */
 const props = withDefaults(defineProps<{
-  /** 图层 id;省略时自动生成 */
+  /** 图层 id；省略时自动生成 */
   layerId?: string
-  /** 窗户行数,默认 8 */
+  /**
+   * 窗户行数
+   * @defaultValue 8
+   */
   rows?: number
-  /** 窗户列数,默认 6 */
+  /**
+   * 窗户列数
+   * @defaultValue 6
+   */
   cols?: number
-  /** 亮窗颜色,默认 #fde68a */
+  /**
+   * 亮窗颜色
+   * @defaultValue '#fde68a'
+   */
   litColor?: string
-  /** 暗窗/墙体颜色,默认 #1f2937 */
+  /**
+   * 暗窗/墙体颜色
+   * @defaultValue '#1f2937'
+   */
   darkColor?: string
-  /** 亮窗比例,默认 0.45 */
+  /**
+   * 亮窗比例
+   * @defaultValue 0.45
+   */
   litRatio?: number
-  /** 随机种子,默认 1 */
+  /**
+   * 随机种子
+   * @defaultValue 1
+   */
   seed?: number
-  /** 整体透明度,默认 1 */
+  /**
+   * 整体透明度
+   * @defaultValue 1
+   */
   opacity?: number
-  /** 最小缩放级别,默认 15 */
+  /**
+   * 最小缩放级别
+   * @defaultValue 15
+   */
   minzoom?: number
   /** 插入到该图层之前 */
   beforeId?: string

@@ -5,15 +5,27 @@ export interface WmtsSourceOptions {
   url: string
   /** 图层标识 LAYER */
   layer: string
-  /** 瓦片矩阵集 TILEMATRIXSET，默认 'w'（球面墨卡托 EPSG:3857） */
+  /**
+   * 瓦片矩阵集 TILEMATRIXSET（球面墨卡托 EPSG:3857）
+   * @defaultValue 'w'
+   */
   tileMatrixSet?: string
-  /** 样式 STYLE，默认 'default' */
+  /**
+   * 样式 STYLE
+   * @defaultValue 'default'
+   */
   style?: string
-  /** 瓦片格式 FORMAT，默认 'tiles' */
+  /**
+   * 瓦片格式 FORMAT
+   * @defaultValue 'tiles'
+   */
   format?: string
   /** 子域名列表，替换 url 中的 {s} 展开为多条 tiles */
   subdomains?: string[]
-  /** 瓦片尺寸，默认 256 */
+  /**
+   * 瓦片尺寸
+   * @defaultValue 256
+   */
   tileSize?: number
   /** 版权信息 */
   attribution?: string

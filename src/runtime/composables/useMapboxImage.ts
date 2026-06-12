@@ -9,7 +9,10 @@ export interface UseMapboxImageOptions {
   mapId?: string
   /** 作为 SDF 图标（可经 icon-color 着色） */
   sdf?: boolean
-  /** 像素密度，默认 1 */
+  /**
+   * 像素密度
+   * @defaultValue 1
+   */
   pixelRatio?: number
 }
 

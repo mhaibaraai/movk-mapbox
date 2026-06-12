@@ -3,7 +3,10 @@ import type { LightsSpecification } from 'mapbox-gl'
 import { useStyleEffect } from '../../domains/map/style-effect'
 
 const props = defineProps<{
-  /** 3D 光照列表（ambient/directional/flat） */
+  /**
+   * 3D 光照列表（ambient/directional/flat）
+   * @see https://docs.mapbox.com/style-spec/reference/light
+   */
   lights: LightsSpecification[]
 }>()
 
