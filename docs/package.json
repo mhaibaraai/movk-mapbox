@@ -7,15 +7,16 @@
     "dev": "nuxt dev"
   },
   "dependencies": {
-    "@iconify-json/lucide": "^1.2.111",
+    "@iconify-json/lucide": "^1.2.112",
     "@iconify-json/simple-icons": "^1.2.86",
-    "@iconify-json/vscode-icons": "^1.2.56",
+    "@iconify-json/vscode-icons": "^1.2.57",
     "@mapbox/mapbox-gl-draw": "^1.5.1",
     "@movk/mapbox": "workspace:*",
-    "@movk/nuxt-docs": "^1.19.8",
+    "@movk/nuxt-docs": "^1.19.9",
+    "@nuxt/content": "^3.14.0",
     "better-sqlite3": "^12.10.0",
-    "mapbox-gl": "^3.24.0",
+    "mapbox-gl": "^3.24.1",
     "nuxt": "^4.4.8",
-    "tailwindcss": "^4.3.0"
+    "tailwindcss": "^4.3.1"
   }
 }
