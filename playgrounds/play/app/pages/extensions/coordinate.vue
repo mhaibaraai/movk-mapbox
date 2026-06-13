@@ -2,7 +2,7 @@
 import { transformPoint } from '#mapbox/utils/coordinate'
 import type { LngLatLike } from 'mapbox-gl'
 
-// WGS84 原始坐标（GPS），转换为 GCJ02（国测局，高德/腾讯）后存在偏移
+// WGS84（GPS，对齐 WGS84/天地图底图）转 GCJ02（高德/腾讯）、BD09（百度）后均存在偏移
 const wgs84 = ref<[number, number]>([116.397, 39.909])
 
 const gcj02 = computed<[number, number]>(() => transformPoint(wgs84.value, 'WGS84', 'GCJ02'))
