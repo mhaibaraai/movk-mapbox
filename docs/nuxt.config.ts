@@ -19,6 +19,8 @@ export default defineNuxtConfig({
 
   devtools: { enabled: true },
 
+  css: ['~/assets/css/main.css'],
+
   site: {
     name: 'Movk Mapbox'
   },
@@ -34,11 +36,11 @@ export default defineNuxtConfig({
     '/docs/core': { redirect: '/docs/core/map', prerender: false },
     '/docs/layers': { redirect: '/docs/layers/circle', prerender: false },
     '/docs/controls': { redirect: '/docs/controls/navigation', prerender: false },
-    '/docs/effects': { redirect: '/docs/effects/radar', prerender: false },
+    '/docs/effects': { redirect: '/docs/effects/window-building', prerender: false },
     '/docs/environment': { redirect: '/docs/environment/fog', prerender: false },
     '/docs/extensions': { redirect: '/docs/extensions/draw', prerender: false },
     '/docs/composables': { redirect: '/docs/composables/use-map', prerender: false },
-    '/docs/utils': { redirect: '/docs/utils/coordinate', prerender: false }
+    '/docs/utils': { redirect: '/docs/utils/buffer', prerender: false }
   },
 
   compatibilityDate: 'latest',
@@ -46,6 +48,7 @@ export default defineNuxtConfig({
   vite: {
     optimizeDeps: {
       include: [
+        '@movk/nuxt-docs > shiki-stream/vue',
         '@mapbox/mapbox-gl-draw',
         '@movk/core',
         '@turf/area',

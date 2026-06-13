@@ -1,5 +1,17 @@
 export function useCategory() {
   const categories = {
+    'getting-started': [
+      {
+        id: 'intro',
+        title: '入门',
+        icon: 'i-lucide-rocket'
+      },
+      {
+        id: 'frameworks',
+        title: '框架集成',
+        icon: 'i-lucide-blocks'
+      }
+    ],
     'core': [
       {
         id: 'basics',
@@ -7,26 +19,9 @@ export function useCategory() {
         icon: 'i-lucide-box'
       },
       {
-        id: 'organization',
-        title: '图层组织',
-        icon: 'i-lucide-layers'
-      },
-      {
         id: 'overlay',
         title: '标注与浮层',
         icon: 'i-lucide-map-pin'
-      }
-    ],
-    'getting-started': [
-      {
-        id: 'concepts',
-        title: '核心概念',
-        icon: 'i-lucide-settings'
-      },
-      {
-        id: 'ai',
-        title: 'AI 集成',
-        icon: 'i-lucide-bot'
       }
     ],
     'layers': [
@@ -46,7 +41,24 @@ export function useCategory() {
         icon: 'i-lucide-circle-dashed'
       }
     ],
+    'controls': [
+      {
+        id: 'interactive',
+        title: '交互控件',
+        icon: 'i-lucide-mouse-pointer-click'
+      },
+      {
+        id: 'info',
+        title: '信息控件',
+        icon: 'i-lucide-info'
+      }
+    ],
     'effects': [
+      {
+        id: 'dynamic',
+        title: '动态',
+        icon: 'i-lucide-activity'
+      },
       {
         id: 'building',
         title: '建筑',
@@ -56,11 +68,18 @@ export function useCategory() {
         id: 'annotation',
         title: '标注',
         icon: 'i-lucide-map-pin'
+      }
+    ],
+    'environment': [
+      {
+        id: 'ambience',
+        title: '场景氛围',
+        icon: 'i-lucide-mountain'
       },
       {
-        id: 'dynamic',
-        title: '动态',
-        icon: 'i-lucide-activity'
+        id: 'weather',
+        title: '天气与温度',
+        icon: 'i-lucide-cloud-rain'
       }
     ],
     'extensions': [
@@ -71,30 +90,37 @@ export function useCategory() {
       },
       {
         id: 'basemap',
-        title: '底图服务',
+        title: '底图与坐标',
         icon: 'i-lucide-map'
+      }
+    ],
+    'composables': [
+      {
+        id: 'context',
+        title: '上下文注入',
+        icon: 'i-lucide-network'
       },
       {
-        id: 'coordinate',
-        title: '坐标',
-        icon: 'i-lucide-locate-fixed'
+        id: 'interaction',
+        title: '相机与交互',
+        icon: 'i-lucide-mouse-pointer-click'
+      },
+      {
+        id: 'icon-export',
+        title: '图标与导出',
+        icon: 'i-lucide-download'
       }
     ],
     'utils': [
       {
         id: 'geometry',
-        title: '几何',
+        title: '几何与样式',
         icon: 'i-lucide-shapes'
       },
       {
         id: 'coordinate',
-        title: '坐标',
+        title: '坐标与度量',
         icon: 'i-lucide-locate-fixed'
-      },
-      {
-        id: 'misc',
-        title: '其他',
-        icon: 'i-lucide-wrench'
       }
     ]
   }

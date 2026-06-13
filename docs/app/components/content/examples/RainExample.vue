@@ -1,0 +1,14 @@
+<template>
+  <div class="h-115 w-full overflow-hidden rounded-(--ui-radius) border border-default">
+    <MapboxMap
+      :options="{
+        style: 'mapbox://styles/mapbox/standard',
+        center: [116.391, 39.908],
+        zoom: 16,
+        pitch: 60
+      }"
+    >
+      <MapboxRain :options="{ density: 0.5, intensity: 1, color: '#a8b3c4' }" />
+    </MapboxMap>
+  </div>
+</template>
