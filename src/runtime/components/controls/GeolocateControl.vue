@@ -14,7 +14,11 @@ const props = defineProps<{
   options?: ConstructorParameters<typeof GeolocateControl>[0]
 }>()
 
-useControl(() => new GeolocateControl(omitUndefined(props.options ?? {})), props.position)
+useControl(
+  () => new GeolocateControl(omitUndefined(props.options ?? {})),
+  () => props.position,
+  () => props.options
+)
 </script>
 
 <template>

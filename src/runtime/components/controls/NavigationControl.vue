@@ -14,7 +14,11 @@ const props = defineProps<{
   options?: ConstructorParameters<typeof NavigationControl>[0]
 }>()
 
-useControl(() => new NavigationControl(omitUndefined(props.options ?? {})), props.position)
+useControl(
+  () => new NavigationControl(omitUndefined(props.options ?? {})),
+  () => props.position,
+  () => props.options
+)
 </script>
 
 <template>

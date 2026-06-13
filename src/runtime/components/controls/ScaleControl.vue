@@ -14,7 +14,11 @@ const props = defineProps<{
   options?: ConstructorParameters<typeof ScaleControl>[0]
 }>()
 
-useControl(() => new ScaleControl(omitUndefined(props.options ?? {})), props.position)
+useControl(
+  () => new ScaleControl(omitUndefined(props.options ?? {})),
+  () => props.position,
+  () => props.options
+)
 </script>
 
 <template>
