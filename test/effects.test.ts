@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { arcLine, createLineSampler, radarSweepImage, ringProgress, trailGradient } from '../src/runtime/utils/effects'
+import { arcLine, createLineSampler, radarSweepImage, ringFade, ringProgress, trailGradient } from '../src/runtime/utils/effects'
 
 describe('arcLine', () => {
   const from: [number, number] = [116, 39]
@@ -51,6 +51,18 @@ describe('ringProgress', () => {
     expect(ringProgress(0, 2, 1000, 1000)).toBe(0)
     // 第二圈相位偏移 1/2 周期
     expect(ringProgress(1, 2, 0, 1000)).toBeCloseTo(0.5, 8)
+  })
+})
+
+describe('ringFade', () => {
+  it('两端为 0、中点峰值 1，保证取模回绕处无缝', () => {
+    expect(ringFade(0)).toBe(0)
+    expect(ringFade(1)).toBeCloseTo(0, 8)
+    expect(ringFade(0.5)).toBeCloseTo(1, 8)
+  })
+
+  it('相位全程不透明度非负', () => {
+    for (let p = 0; p <= 1; p += 0.1) expect(ringFade(p)).toBeGreaterThanOrEqual(0)
   })
 })
 
