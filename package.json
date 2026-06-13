@@ -47,7 +47,40 @@
     },
     "./runtime/*": "./dist/runtime/*",
     "./components/*": "./dist/runtime/components/*",
-    "./utils/*": "./dist/runtime/utils/*"
+    "./utils/*": {
+      "types": [
+        "./dist/runtime/utils/*.d.mts",
+        "./dist/runtime/utils/*.d.ts",
+        "./dist/runtime/utils/*.ts"
+      ],
+      "import": "./dist/runtime/utils/*"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      ".": [
+        "./dist/module.d.mts"
+      ],
+      "vite": [
+        "./dist/vite.d.mts"
+      ],
+      "unplugin": [
+        "./dist/unplugin.d.mts"
+      ],
+      "vue-plugin": [
+        "./dist/vue-plugin.d.mts"
+      ],
+      "runtime/*": [
+        "./dist/runtime/*"
+      ],
+      "components/*": [
+        "./dist/runtime/components/*"
+      ],
+      "utils/*": [
+        "./dist/runtime/utils/*.d.mts",
+        "./dist/runtime/utils/*.ts"
+      ]
+    }
   },
   "style": "./dist/runtime/index.css",
   "main": "./dist/module.mjs",
