@@ -16,7 +16,7 @@ function buildFrames(): ImageData[] {
   const canvas = document.createElement('canvas')
   canvas.width = size
   canvas.height = size
-  const context = canvas.getContext('2d')!
+  const context = canvas.getContext('2d', { willReadFrequently: true })!
   return Array.from({ length: FRAME_COUNT }, (_, i) => {
     const t = i / FRAME_COUNT
     context.clearRect(0, 0, size, size)

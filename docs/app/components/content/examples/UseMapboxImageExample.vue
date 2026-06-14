@@ -17,6 +17,7 @@ const { loaded } = useMapboxImage('demo-cat', 'https://docs.mapbox.com/mapbox-gl
   <div class="relative h-115 w-full overflow-hidden rounded-(--ui-radius) border border-default">
     <MapboxMap :map-id="mapId" :options="{ style: 'mapbox://styles/mapbox/light-v11', center: [116.397, 39.908], zoom: 13 }">
       <MapboxLayer
+        v-if="loaded"
         layer-id="cats"
         type="symbol"
         :source="{ type: 'geojson', data }"
