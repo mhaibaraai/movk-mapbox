@@ -1,5 +1,9 @@
 {
   "mcpServers": {
+    "movk-mapbox": {
+      "type": "http",
+      "url": "https://mapbox.mhaibaraai.cn/mcp"
+    },
     "mapbox-docs-mcp": {
       "type": "http",
       "url": "https://mcp-docs.mapbox.com/mcp"
