@@ -2,14 +2,9 @@ export function useCategory() {
   const categories = {
     'getting-started': [
       {
-        id: 'intro',
-        title: '入门',
-        icon: 'i-lucide-rocket'
-      },
-      {
-        id: 'frameworks',
-        title: '框架集成',
-        icon: 'i-lucide-blocks'
+        id: 'ai',
+        title: 'AI 集成',
+        icon: 'i-lucide-bot'
       }
     ],
     'core': [
