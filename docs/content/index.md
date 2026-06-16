@@ -1,7 +1,7 @@
 ---
 seo:
   title: Movk Mapbox — 声明式 Mapbox GL v3 封装库
-  description: 用 MapboxMap / MapboxSource / MapboxLayer 等组件与 composables 声明式组合地图、数据源、图层、标记与控件；原生支持 Nuxt 4 模块，并经 Vite 插件在纯 Vue + Vite 项目中通用；内置绘制、天地图、WMS/WMTS 与多坐标系本土化。
+  description: Compose maps, sources, layers, markers and controls declaratively with MapboxMap / MapboxLayer components and composables. Native Nuxt 4 module plus a Vite plugin for plain Vue. Ships 3D buildings, radar / diffusion / glow effects, fog / terrain / weather, Tianditu and WMS / WMTS basemaps, and multi-CRS localization.
 ---
 
 ::u-page-hero{class="dark:bg-gradient-to-b from-neutral-900 to-neutral-950"}
@@ -21,7 +21,7 @@ orientation: horizontal
 ---
 transition: { duration: 0.6, delay: 0.3 }
 ---
-用组件组合地图、数据源、图层、标记、弹窗与控件。`MapboxContext` 注入架构让子组件经 `useMap()` 直接取实例，相机参数双向绑定，跨路由持久化；同一套组件在 Nuxt 4 与纯 Vue + Vite 下通用。内置绘制、天地图、WMS/WMTS 与多坐标系本土化支持。
+声明式组合地图、图层、标记与控件，相机参数 `v-model` 双向绑定。一套组件通用于 Nuxt 4 与纯 Vue + Vite，内置 3D 建筑、动态效果、天气环境与本土化底图。
 :::
 
 #links
@@ -52,28 +52,11 @@ transition: { duration: 0.6, delay: 0.5 }
 :::
 
 #default
-:::motion{class="mx-auto"}
+:::motion{class="mx-auto w-full"}
 ---
 transition: { duration: 0.6, delay: 0.1 }
 ---
-  ```vue [Map.vue]
-  <script setup lang="ts">
-  const center = ref<[number, number]>([116.397, 39.908])
-  const zoom = ref(9)
-  </script>
-
-  <template>
-    <MapboxMap v-model:center="center" v-model:zoom="zoom" :options="{ style: 'mapbox://styles/mapbox/streets-v12' }">
-      <MapboxLayer
-        layer-id="points"
-        type="circle"
-        :source="{ type: 'geojson', data: '/points.geojson' }"
-        :paint="{ 'circle-radius': 8, 'circle-color': '#e11d48' }"
-      />
-      <MapboxNavigationControl position="top-right" />
-    </MapboxMap>
-  </template>
-  ```
+:home-hero-demo
 :::
 ::
 
@@ -114,7 +97,15 @@ transition: { duration: 0.6, delay: 0.1 }
   丰富图层与效果
 
   #description
-  内置 circle/fill/line/symbol/heatmap 等类型，叠加聚合、建筑、扩散、雷达、迁徙、轨迹等动态效果。
+  内置 circle / fill / line / symbol / fill-extrusion / heatmap 与聚合、建筑、栅格、视频图层，叠加雷达、扩散、辉光、波纹、迁徙、轨迹等动态效果。
+  :::
+
+  :::u-page-feature{icon="i-lucide-cloud-sun"}
+  #title
+  环境与天气
+
+  #description
+  fog 大气、3D lights、terrain 地形与 temperature / rain / snow 天气，配合相机倾斜还原沉浸式三维场景。
   :::
 
   :::u-page-feature{icon="i-lucide-map"}
@@ -122,7 +113,7 @@ transition: { duration: 0.6, delay: 0.1 }
   本土化扩展
 
   #description
-  天地图底图、WMS/WMTS 服务、mapbox-gl-draw 绘制与基于 gcoord 的多坐标系转换，开箱即用。
+  天地图底图、WMS / WMTS 服务、mapbox-gl-draw 绘制，以及基于 gcoord 的 WGS84 / GCJ02 / BD09 坐标转换，开箱即用。
   :::
 
   :::u-page-feature{icon="i-lucide-package"}
@@ -131,6 +122,14 @@ transition: { duration: 0.6, delay: 0.1 }
 
   #description
   既是 Nuxt 4 模块，也提供 @movk/mapbox/vite + vue-plugin，让同一套组件在纯 Vue + Vite 项目中通用。
+  :::
+
+  :::u-page-feature{icon="i-lucide-toy-brick"}
+  #title
+  Composables 与工具
+
+  #description
+  useMap、useMapboxCamera、useMeasure、useMapExport 等 composables，搭配坐标、缓冲、几何与量算工具，按需渐进式采用。
   :::
 ::
 
