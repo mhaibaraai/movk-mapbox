@@ -72,6 +72,11 @@ export function ringProgress(ring: number, rings: number, elapsedMs: number, dur
   return (elapsedMs / durationMs + ring / rings) % 1
 }
 
+/** 扩散圈不透明度包络：两端为 0（保证取模回绕处无缝），中点峰值 1。 */
+export function ringFade(progress: number): number {
+  return Math.sin(progress * Math.PI)
+}
+
 /**
  * 轨迹彗尾的 line-gradient 表达式：head 为头部 line-progress，
  * 尾部到头部由透明渐变到主色，头部之后立即透明。停靠点保证严格递增。

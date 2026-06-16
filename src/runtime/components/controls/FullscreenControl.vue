@@ -14,7 +14,11 @@ const props = defineProps<{
   options?: ConstructorParameters<typeof FullscreenControl>[0]
 }>()
 
-useControl(() => new FullscreenControl(omitUndefined(props.options ?? {})), props.position)
+useControl(
+  () => new FullscreenControl(omitUndefined(props.options ?? {})),
+  () => props.position,
+  () => props.options
+)
 </script>
 
 <template>

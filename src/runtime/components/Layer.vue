@@ -16,17 +16,43 @@ import { bindMapEvents } from '../utils/events'
 type PropBag = Record<string, unknown>
 
 const props = defineProps<{
+  /** 图层 id，全局唯一 */
   layerId: string
+  /**
+   * 图层类型，决定渲染方式与可用的 paint / layout 属性
+   * @see https://docs.mapbox.com/style-spec/reference/layers
+   */
   type: LayerSpecification['type']
-  /** source id 字符串引用，或内联 source 对象（自动创建匿名源） */
+  /** source id 字符串引用，或内联 source 对象（自动创建匿名源并随图层卸载） */
   source?: string | SourceSpecification
+  /** 矢量瓦片源内的子图层名（source-layer），消费矢量源时必填 */
   sourceLayer?: string
+  /**
+   * 绘制样式属性，响应式变更经 setPaintProperty 增量下发
+   * @see https://docs.mapbox.com/style-spec/reference/layers
+   */
   paint?: PropBag
+  /**
+   * 布局属性，响应式变更经 setLayoutProperty 增量下发
+   * @see https://docs.mapbox.com/style-spec/reference/layers
+   */
   layout?: PropBag
+  /**
+   * 过滤表达式，仅渲染匹配的要素
+   * @see https://docs.mapbox.com/style-spec/reference/expressions
+   */
   filter?: FilterSpecification
+  /**
+   * 最小缩放级别，低于此级别不渲染
+   * @defaultValue 0
+   */
   minzoom?: number
+  /**
+   * 最大缩放级别，高于此级别不渲染
+   * @defaultValue 24
+   */
   maxzoom?: number
-  /** 插入到该图层之前 */
+  /** 插入到该 id 图层之前；省略则追加到图层栈顶部 */
   beforeId?: string
 }>()
 

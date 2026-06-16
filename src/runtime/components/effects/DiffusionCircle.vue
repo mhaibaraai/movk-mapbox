@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, useId } from 'vue'
 import type { GeoJSONSourceSpecification } from 'mapbox-gl'
-import { ringProgress } from '../../utils/effects'
+import { ringFade, ringProgress } from '../../utils/effects'
 import { useMapAnimation } from '../../composables/useMapAnimation'
 import MapboxSource from '../Source.vue'
 import MapboxLayer from '../Layer.vue'
@@ -62,7 +62,7 @@ useMapAnimation((map, elapsed) => {
     if (!map.getLayer(layerId)) continue
     const progress = ringProgress(ring, props.rings, elapsed, props.duration)
     map.setPaintProperty(layerId, 'circle-radius', progress * props.maxRadius)
-    map.setPaintProperty(layerId, 'circle-opacity', (1 - progress) * props.opacity)
+    map.setPaintProperty(layerId, 'circle-opacity', ringFade(progress) * props.opacity)
   }
 })
 </script>

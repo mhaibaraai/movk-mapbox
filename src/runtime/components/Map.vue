@@ -22,7 +22,7 @@ const props = withDefaults(defineProps<{
   options?: MapboxMapOptions
   /** 覆盖全局 access token */
   accessToken?: string
-  /** 卸载时不销毁实例，配合 keepalive / <KeepAlive> 跨路由复用 */
+  /** 卸载时不销毁实例，配合 keepalive / `<keep-alive>` 跨路由复用 */
   persistent?: boolean
 }>(), {
   persistent: false

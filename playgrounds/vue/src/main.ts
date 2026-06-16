@@ -1,5 +1,5 @@
 import './assets/css/main.css'
-import '@movk/mapbox/runtime/index.css'
+import '@movk/mapbox/index.css'
 import { createApp } from 'vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
