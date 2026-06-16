@@ -16,7 +16,7 @@
     "vue-router": "^5.1.0"
   },
   "devDependencies": {
-    "@iconify-json/lucide": "^1.2.112",
+    "@iconify-json/lucide": "^1.2.113",
     "@vitejs/plugin-vue": "^6.0.7",
     "tailwindcss": "^4.3.1",
     "vite": "^8.0.16",

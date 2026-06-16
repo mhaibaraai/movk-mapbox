@@ -7,9 +7,9 @@
     "dev": "nuxt dev"
   },
   "dependencies": {
-    "@iconify-json/lucide": "^1.2.112",
+    "@iconify-json/lucide": "^1.2.113",
     "@iconify-json/simple-icons": "^1.2.86",
-    "@iconify-json/vscode-icons": "^1.2.57",
+    "@iconify-json/vscode-icons": "^1.2.58",
     "@mapbox/mapbox-gl-draw": "^1.5.1",
     "@movk/mapbox": "workspace:*",
     "@movk/nuxt-docs": "^1.19.9",
