@@ -4,7 +4,7 @@ import type { DrawCustomMode, DrawPolygon } from '@mapbox/mapbox-gl-draw'
 import type { MapMouseEvent } from 'mapbox-gl'
 import { cancelFeature, completeFeature, createPolygonFeature, discardIfIncomplete } from './shared'
 
-interface EllipseOptions {
+export interface EllipseOptions {
   /**
    * y 半轴与 x 半轴之比
    * @defaultValue 0.6
@@ -17,7 +17,7 @@ interface EllipseOptions {
   steps?: number
 }
 
-interface EllipseState {
+export interface EllipseState {
   feature: DrawPolygon
   center?: [number, number]
   ratio: number

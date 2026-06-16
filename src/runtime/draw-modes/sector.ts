@@ -5,7 +5,7 @@ import type { DrawCustomMode, DrawPolygon } from '@mapbox/mapbox-gl-draw'
 import type { MapMouseEvent } from 'mapbox-gl'
 import { cancelFeature, completeFeature, createPolygonFeature, discardIfIncomplete } from './shared'
 
-interface SectorOptions {
+export interface SectorOptions {
   /**
    * 弧线采样段数
    * @defaultValue 64
@@ -13,7 +13,7 @@ interface SectorOptions {
   steps?: number
 }
 
-interface SectorState {
+export interface SectorState {
   feature: DrawPolygon
   center?: [number, number]
   radiusInM?: number

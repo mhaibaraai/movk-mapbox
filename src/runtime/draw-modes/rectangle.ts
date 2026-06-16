@@ -2,7 +2,7 @@ import type { DrawCustomMode, DrawPolygon } from '@mapbox/mapbox-gl-draw'
 import type { MapMouseEvent } from 'mapbox-gl'
 import { cancelFeature, completeFeature, createPolygonFeature, discardIfIncomplete } from './shared'
 
-interface RectangleState {
+export interface RectangleState {
   feature: DrawPolygon
   start?: [number, number]
 }

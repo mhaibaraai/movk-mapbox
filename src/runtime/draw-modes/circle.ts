@@ -4,7 +4,7 @@ import type { DrawCustomMode, DrawPolygon } from '@mapbox/mapbox-gl-draw'
 import type { MapMouseEvent } from 'mapbox-gl'
 import { cancelFeature, completeFeature, createPolygonFeature, discardIfIncomplete } from './shared'
 
-interface CircleOptions {
+export interface CircleOptions {
   /**
    * 圆周采样段数
    * @defaultValue 64
@@ -12,7 +12,7 @@ interface CircleOptions {
   steps?: number
 }
 
-interface CircleState {
+export interface CircleState {
   feature: DrawPolygon
   center?: [number, number]
   steps: number
