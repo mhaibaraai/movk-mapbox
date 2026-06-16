@@ -45,6 +45,7 @@
       "types": "./dist/vue-plugin.d.mts",
       "import": "./dist/vue-plugin.mjs"
     },
+    "./index.css": "./dist/runtime/index.css",
     "./runtime/*": "./dist/runtime/*",
     "./components/*": "./dist/runtime/components/*",
     "./utils/*": {
