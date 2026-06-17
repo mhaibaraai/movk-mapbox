@@ -46,7 +46,7 @@ export default defineAppConfig({
   },
   ui: {
     colors: {
-      primary: 'blue'
+      primary: 'indigo'
     }
   },
   github: {
