@@ -8,11 +8,11 @@
   },
   "dependencies": {
     "@mapbox/mapbox-gl-draw": "^1.5.1",
-    "@nuxt/ui": "^4.8.2",
-    "mapbox-gl": "^3.24.1"
+    "@nuxt/ui": "^4.9.0",
+    "mapbox-gl": "^3.25.0"
   },
   "devDependencies": {
-    "@iconify-json/lucide": "^1.2.113",
+    "@iconify-json/lucide": "^1.2.114",
     "nuxt": "^4.4.8",
     "tailwindcss": "^4.3.1"
   }
