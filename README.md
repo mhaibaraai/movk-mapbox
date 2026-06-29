@@ -1,5 +1,7 @@
 [![Movk Mapbox](https://mapbox.mhaibaraai.cn/og-image.png)](https://mapbox.mhaibaraai.cn/)
 
+简体中文 | [English](./README.en.md)
+
 > 声明式 Mapbox GL v3 封装库 —— 用 `MapboxMap` / `MapboxSource` / `MapboxLayer` 等组件与 composables 组合地图。同一套 `src/runtime` 既作为 Nuxt 4 模块发布，也经 Vite 插件在纯 Vue + Vite 项目中使用。内置 3D 建筑、雷达 / 扩散 / 辉光等动态效果，fog / terrain / 天气环境，绘制（mapbox-gl-draw）、天地图、WMS / WMTS 与多坐标系本土化支持。
 
 [![Install MCP in Cursor](https://mapbox.mhaibaraai.cn/mcp/badge.svg)](https://mapbox.mhaibaraai.cn/mcp/deeplink)
