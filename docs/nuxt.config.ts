@@ -3,7 +3,7 @@ import pkg from '../package.json'
 export default defineNuxtConfig({
   extends: ['@movk/nuxt-docs'],
 
-  modules: ['@movk/mapbox'],
+  modules: ['@movk/mapbox', '@nuxtjs/i18n'],
 
   $development: {
     site: {
@@ -40,7 +40,16 @@ export default defineNuxtConfig({
     '/docs/environment': { redirect: '/docs/environment/fog', prerender: false },
     '/docs/extensions': { redirect: '/docs/extensions/draw', prerender: false },
     '/docs/composables': { redirect: '/docs/composables/use-map', prerender: false },
-    '/docs/utils': { redirect: '/docs/utils/buffer', prerender: false }
+    '/docs/utils': { redirect: '/docs/utils/buffer', prerender: false },
+    '/en/docs': { redirect: '/en/docs/getting-started', prerender: false },
+    '/en/docs/core': { redirect: '/en/docs/core/map', prerender: false },
+    '/en/docs/layers': { redirect: '/en/docs/layers/circle', prerender: false },
+    '/en/docs/controls': { redirect: '/en/docs/controls/navigation', prerender: false },
+    '/en/docs/effects': { redirect: '/en/docs/effects/window-building', prerender: false },
+    '/en/docs/environment': { redirect: '/en/docs/environment/fog', prerender: false },
+    '/en/docs/extensions': { redirect: '/en/docs/extensions/draw', prerender: false },
+    '/en/docs/composables': { redirect: '/en/docs/composables/use-map', prerender: false },
+    '/en/docs/utils': { redirect: '/en/docs/utils/buffer', prerender: false }
   },
 
   compatibilityDate: 'latest',
@@ -73,6 +82,14 @@ export default defineNuxtConfig({
       'alibaba/qwen3.7-plus',
       'alibaba/glm-5.1',
       'alibaba/deepseek-v3.2'
+    ]
+  },
+
+  i18n: {
+    defaultLocale: 'zh-CN',
+    locales: [
+      { code: 'zh-CN', name: '简体中文', file: 'zh-CN.json' },
+      { code: 'en', name: 'English', file: 'en.json' }
     ]
   },
 

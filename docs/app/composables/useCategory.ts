@@ -1,124 +1,127 @@
 export function useCategory() {
-  const categories = {
+  const { t } = useI18n()
+
+  const categories = computed(() => ({
     'getting-started': [
       {
         id: 'ai',
-        title: 'AI 集成',
+        title: t('category.gettingStarted.ai'),
         icon: 'i-lucide-bot'
       }
     ],
     'core': [
       {
         id: 'basics',
-        title: '基础',
+        title: t('category.core.basics'),
         icon: 'i-lucide-box'
       },
       {
         id: 'overlay',
-        title: '标注与浮层',
+        title: t('category.core.overlay'),
         icon: 'i-lucide-map-pin'
       }
     ],
     'layers': [
       {
         id: 'builtin',
-        title: '内置类型',
+        title: t('category.layers.builtin'),
         icon: 'i-lucide-shapes'
       },
       {
         id: 'data-driven',
-        title: '数据驱动',
+        title: t('category.layers.dataDriven'),
         icon: 'i-lucide-database'
       },
       {
         id: 'buffers',
-        title: '缓冲区',
+        title: t('category.layers.buffers'),
         icon: 'i-lucide-circle-dashed'
       }
     ],
     'controls': [
       {
         id: 'interactive',
-        title: '交互控件',
+        title: t('category.controls.interactive'),
         icon: 'i-lucide-mouse-pointer-click'
       },
       {
         id: 'info',
-        title: '信息控件',
+        title: t('category.controls.info'),
         icon: 'i-lucide-info'
       }
     ],
     'effects': [
       {
         id: 'dynamic',
-        title: '动态',
+        title: t('category.effects.dynamic'),
         icon: 'i-lucide-activity'
       },
       {
         id: 'building',
-        title: '建筑',
+        title: t('category.effects.building'),
         icon: 'i-lucide-building-2'
       },
       {
         id: 'annotation',
-        title: '标注',
+        title: t('category.effects.annotation'),
         icon: 'i-lucide-map-pin'
       }
     ],
     'environment': [
       {
         id: 'ambience',
-        title: '场景氛围',
+        title: t('category.environment.ambience'),
         icon: 'i-lucide-mountain'
       },
       {
         id: 'weather',
-        title: '天气与温度',
+        title: t('category.environment.weather'),
         icon: 'i-lucide-cloud-rain'
       }
     ],
     'extensions': [
       {
         id: 'draw',
-        title: '绘制',
+        title: t('category.extensions.draw'),
         icon: 'i-lucide-pencil-ruler'
       },
       {
         id: 'basemap',
-        title: '底图与坐标',
+        title: t('category.extensions.basemap'),
         icon: 'i-lucide-map'
       }
     ],
     'composables': [
       {
         id: 'context',
-        title: '上下文注入',
+        title: t('category.composables.context'),
         icon: 'i-lucide-network'
       },
       {
         id: 'interaction',
-        title: '相机与交互',
+        title: t('category.composables.interaction'),
         icon: 'i-lucide-mouse-pointer-click'
       },
       {
         id: 'icon-export',
-        title: '图标与导出',
+        title: t('category.composables.iconExport'),
         icon: 'i-lucide-download'
       }
     ],
     'utils': [
       {
         id: 'geometry',
-        title: '几何与样式',
+        title: t('category.utils.geometry'),
         icon: 'i-lucide-shapes'
       },
       {
         id: 'coordinate',
-        title: '坐标与度量',
+        title: t('category.utils.coordinate'),
         icon: 'i-lucide-locate-fixed'
       }
     ]
-  }
+  }))
+
   return {
     categories
   }
