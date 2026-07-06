@@ -1,4 +1,4 @@
-import { addComponentsDir, addImports, addImportsDir, addPlugin, createResolver, defineNuxtModule, useLogger } from '@nuxt/kit'
+import { addComponentsDir, addImports, addImportsDir, addPlugin, createResolver, defineNuxtModule, extendViteConfig, useLogger } from '@nuxt/kit'
 import { defu } from 'defu'
 import { name, version } from '../package.json'
 
@@ -57,5 +57,16 @@ export default defineNuxtModule<ModuleOptions>({
       { name: 'drawThemeStyles', from: resolve('./runtime/utils/draw-theme') }
     ])
     addPlugin({ src: resolve('./runtime/plugins/access-token') })
+
+    // mapbox-gl 是伪装成 ESM 的 UMD 包（否则具名导入 500），lottie-web 是纯 CJS
+    extendViteConfig((config) => {
+      config.optimizeDeps ||= {}
+      config.optimizeDeps.include ||= []
+      for (const dep of ['mapbox-gl', 'lottie-web']) {
+        if (!config.optimizeDeps.include.includes(dep)) {
+          config.optimizeDeps.include.push(dep)
+        }
+      }
+    })
   }
 })

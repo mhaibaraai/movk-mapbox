@@ -105,8 +105,13 @@ onMounted(() => {
   if (!created || !container.value) return
 
   // 剔除 undefined：mapbox jumpTo 以 `key in options` 判定，`+undefined` 会得 NaN 污染相机矩阵
+  // 相机 model 初始值并入初始化选项（model 优先，回退 options，皆无则由 omitUndefined 交还 mapbox 默认）
   const map = createMapboxGl(omitUndefined({
     ...props.options,
+    center: center.value ?? props.options?.center,
+    zoom: zoom.value ?? props.options?.zoom,
+    bearing: bearing.value ?? props.options?.bearing,
+    pitch: pitch.value ?? props.options?.pitch,
     ...(props.accessToken ? { accessToken: props.accessToken } : {}),
     container: container.value
   }) as MapOptions)
