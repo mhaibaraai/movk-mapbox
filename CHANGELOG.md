@@ -1,5 +1,15 @@
 # 📋 Changelog
 
+## [1.0.1](https://github.com/mhaibaraai/movk-mapbox/compare/v1.0.0...v1.0.1) (2026-07-06)
+
+### 🐛 Bug Fixes
+
+* **module:** 自动注册 CJS 依赖至 optimizeDeps 并修正相机初始值 ([3e2f898](https://github.com/mhaibaraai/movk-mapbox/commit/3e2f898adcb9d2dbe559d8e82bc6aab241884310))
+
+### 🔧 Chores
+
+* 升级 pnpm 至 11.9.0 及各依赖版本 ([9db79bc](https://github.com/mhaibaraai/movk-mapbox/commit/9db79bc9a651c894202d2c6c65123102885187bc))
+
 ## 1.0.0 (2026-06-16)
 
 ### ✨ Features

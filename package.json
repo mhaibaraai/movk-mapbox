@@ -1,7 +1,7 @@
 {
   "name": "@movk/mapbox",
   "type": "module",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "packageManager": "pnpm@11.9.0",
   "description": "声明式 Mapbox GL v3 封装库：MapboxMap/Source/Layer 等组件与 composables，原生支持 Nuxt 4 模块，并通过 Vite 插件在纯 Vue + Vite 项目中可用。内置 3D 建筑、雷达/扩散/辉光等动态效果，fog/terrain/天气环境，绘制（mapbox-gl-draw）、天地图、WMS/WMTS 与多坐标系本土化支持。",
   "author": "YiXuan <mhaibaraai@gmail.com>",
