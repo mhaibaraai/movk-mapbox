@@ -77,10 +77,10 @@ export default defineNuxtConfig({
   },
 
   aiChat: {
-    model: 'alibaba/glm-5.1',
+    model: 'alibaba/glm-5.2',
     models: [
       'alibaba/qwen3.7-plus',
-      'alibaba/glm-5.1',
+      'alibaba/glm-5.2',
       'alibaba/deepseek-v3.2'
     ]
   },
@@ -104,7 +104,6 @@ export default defineNuxtConfig({
     notes: ['mapbox', 'mapbox-gl', 'mapbox-gl-v3', 'declarative', 'nuxt', 'nuxt4', 'vue', 'vite', 'vue-plugin', 'unplugin', 'auto-import', 'map', 'source', 'layer', 'marker', 'popup', 'controls', 'navigation', '3d-buildings', 'effects', 'radar', 'glow', 'fog', 'terrain', 'weather', 'draw', 'tianditu', 'wms', 'wmts', 'coordinate', 'wgs84', 'gcj02', 'bd09', 'turf', 'composables', 'use-map', '纯 Vue + Vite 场景经 @movk/mapbox/vite 自动导入组件与 composables，并经 @movk/mapbox/vue-plugin 注入 token；token 在 Nuxt 模式由模块配置注入，地图实例仅客户端创建，无需 ClientOnly 包裹']
   },
 
-  // token 由环境变量注入，模块写入 runtimeConfig.public.mapbox 供组件读取
   mapbox: {
     accessToken: process.env.NUXT_MAPBOX_TOKEN || '',
     tiandituToken: process.env.NUXT_TIANDITU_TOKEN || ''
