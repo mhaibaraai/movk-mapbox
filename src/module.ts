@@ -33,14 +33,15 @@ export default defineNuxtModule<ModuleOptions>({
 
     nuxt.options.alias['#mapbox'] = resolve('./runtime')
 
+    const accessToken = options.accessToken || process.env.NUXT_PUBLIC_MAPBOX_ACCESS_TOKEN || ''
     const publicConfig = nuxt.options.runtimeConfig.public as Record<string, unknown>
     publicConfig.mapbox = defu(publicConfig.mapbox as Record<string, unknown> | undefined, {
-      accessToken: options.accessToken ?? '',
-      tiandituToken: options.tiandituToken
+      accessToken,
+      tiandituToken: options.tiandituToken || process.env.NUXT_PUBLIC_MAPBOX_TIANDITU_TOKEN
     })
 
-    if (!options.accessToken) {
-      logger.warn('No Mapbox accessToken configured; set `mapbox.accessToken` in nuxt.config.')
+    if (!accessToken) {
+      logger.warn('No Mapbox accessToken configured; set NUXT_PUBLIC_MAPBOX_ACCESS_TOKEN in .env or `mapbox.accessToken` in nuxt.config.')
     }
 
     nuxt.options.css.push(resolve('./runtime/index.css'))

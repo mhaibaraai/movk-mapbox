@@ -43,8 +43,6 @@ jobs:
           NODE_OPTIONS: --max-old-space-size=10240
           NUXT_GITHUB_TOKEN: ${{ secrets.NUXT_GITHUB_TOKEN }}
           ALIBABA_API_KEY: ${{ secrets.ALIBABA_API_KEY }}
-          NUXT_MAPBOX_TOKEN: ${{ secrets.NUXT_MAPBOX_TOKEN }}
-          NUXT_TIANDITU_TOKEN: ${{ secrets.NUXT_TIANDITU_TOKEN }}
         run: pnpm dev:prepare && pnpm docs:build
 
       - name: Log in to GHCR

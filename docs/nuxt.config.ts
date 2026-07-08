@@ -26,6 +26,7 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
+    tiandituApiToken: '',
     public: {
       version: pkg.version
     }
@@ -103,8 +104,8 @@ export default defineNuxtConfig({
   },
 
   mapbox: {
-    accessToken: process.env.NUXT_MAPBOX_TOKEN || '',
-    tiandituToken: process.env.NUXT_TIANDITU_TOKEN || ''
+    accessToken: '',
+    tiandituToken: ''
   },
 
   mcp: {
