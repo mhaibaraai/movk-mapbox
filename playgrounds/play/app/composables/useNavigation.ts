@@ -126,6 +126,11 @@ const extensionsNav: NavigationMenuItem = {
     { label: 'Draw 自定义模式', to: '/extensions/draw-modes' },
     { label: 'Draw 样式主题', to: '/extensions/draw-theme' },
     { label: '天地图底图', to: '/extensions/tianditu' },
+    { label: '天地图地名定位/检索', to: '/extensions/tianditu-search' },
+    { label: '天地图地名搜索其他类型', to: '/extensions/tianditu-search-types' },
+    { label: '天地图逆地理编码', to: '/extensions/tianditu-reverse-geocode' },
+    { label: '天地图行政区划边界', to: '/extensions/tianditu-administrative' },
+    { label: '天地图路线规划', to: '/extensions/tianditu-route' },
     { label: 'WMTS 图层', to: '/extensions/wmts' },
     { label: 'WMS 图层', to: '/extensions/wms' },
     { label: '坐标系转换', to: '/extensions/coordinate' }

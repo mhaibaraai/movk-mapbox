@@ -81,3 +81,4 @@ Read [references/conventions.md](references/conventions.md) before writing code.
 - [references/components.md](references/components.md) — component catalog with minimal usage for Map, Source, Layer, Marker, Popup, controls, Tianditu, Draw.
 - [references/recipes.md](references/recipes.md) — task recipes: GeoJSON layers, Tianditu basemap, coordinate conversion, drawing, buffer/measure.
 - [references/conventions.md](references/conventions.md) — auto-import, lifecycle, camera loop and other hard constraints.
+- [references/tianditu-api.md](references/tianditu-api.md) — Tianditu (天地图) WEB service API reference (search, bus, geocoding, administrative divisions, driving directions, static map); source of truth for `utils/tianditu-*.ts` fields, since the official docs are incomplete/outdated for some endpoints.

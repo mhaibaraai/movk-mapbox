@@ -1,8 +1,16 @@
 export default defineNuxtConfig({
   modules: ['../../src/module', '@nuxt/ui'],
+
   devtools: { enabled: true },
+
   css: ['~/assets/css/main.css'],
-  compatibilityDate: 'latest',
+
+  runtimeConfig: {
+    tiandituApiToken: ''
+  },
+
+  compatibilityDate: '2026-06-30',
+
   vite: {
     optimizeDeps: {
       include: [
@@ -17,14 +25,13 @@ export default defineNuxtConfig({
         '@turf/length',
         '@turf/sector',
         '@vueuse/core',
-        'gcoord',
-        'lottie-web', // CJS
-        'mapbox-gl' // CJS
+        'gcoord'
       ]
     }
   },
+
   mapbox: {
-    accessToken: process.env.NUXT_MAPBOX_TOKEN || '',
-    tiandituToken: process.env.NUXT_TIANDITU_TOKEN || ''
+    accessToken: '',
+    tiandituToken: ''
   }
 })

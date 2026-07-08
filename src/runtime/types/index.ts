@@ -1,6 +1,8 @@
 import type { Ref, ShallowRef } from 'vue'
 import type { Map as MapboxMap, MapOptions } from 'mapbox-gl'
 
+export * from './tianditu'
+
 /** 运行时全局配置；Nuxt 模式由 client 插件注入，Vue 模式由 vue-plugin 注入 */
 export interface MapboxRuntimeConfig {
   /** Mapbox access token */
