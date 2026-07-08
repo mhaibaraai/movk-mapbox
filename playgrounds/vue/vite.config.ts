@@ -51,9 +51,7 @@ export default defineConfig({
       '@turf/length',
       '@turf/sector',
       '@vueuse/core',
-      'gcoord',
-      'lottie-web', // CJS
-      'mapbox-gl' // CJS
+      'gcoord'
     ]
   }
 })
