@@ -6,6 +6,9 @@ ignoreWorkspaceRootCheck: true
 linkWorkspacePackages: true
 minimumReleaseAge: 0
 
+overrides:
+  vue-tsc: 3.3.5
+
 allowBuilds:
   '@parcel/watcher': false
   better-sqlite3: true
