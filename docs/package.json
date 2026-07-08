@@ -12,7 +12,7 @@
     "@iconify-json/vscode-icons": "^1.2.64",
     "@mapbox/mapbox-gl-draw": "^1.5.1",
     "@movk/mapbox": "workspace:*",
-    "@movk/nuxt-docs": "^2.0.2",
+    "@movk/nuxt-docs": "^2.0.3",
     "@nuxt/content": "^3.15.0",
     "@nuxtjs/i18n": "^10.4.0",
     "better-sqlite3": "^12.11.1",
