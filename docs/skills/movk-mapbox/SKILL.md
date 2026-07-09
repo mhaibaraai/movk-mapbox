@@ -22,16 +22,17 @@ pnpm add @movk/mapbox mapbox-gl
 pnpm add @mapbox/mapbox-gl-draw
 ```
 
-Nuxt — register the module and provide tokens (never hardcode; use env vars):
+Nuxt — register the module; tokens come from env vars (never hardcode):
 
 ```ts [nuxt.config.ts]
 export default defineNuxtConfig({
-  modules: ['@movk/mapbox'],
-  mapbox: {
-    accessToken: process.env.NUXT_MAPBOX_TOKEN,
-    tiandituToken: process.env.NUXT_TIANDITU_TOKEN
-  }
+  modules: ['@movk/mapbox']
 })
+```
+
+```bash [.env]
+NUXT_PUBLIC_MAPBOX_ACCESS_TOKEN=pk.your_mapbox_access_token
+NUXT_PUBLIC_MAPBOX_TIANDITU_TOKEN=your_tianditu_tk
 ```
 
 For Vue + Vite setup, query the docs (`/docs/getting-started/vue`).

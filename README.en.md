@@ -56,12 +56,15 @@ Register the module in `nuxt.config.ts`:
 
 ```ts
 export default defineNuxtConfig({
-  modules: ['@movk/mapbox'],
-  mapbox: {
-    accessToken: process.env.NUXT_PUBLIC_MAPBOX_TOKEN,
-    tiandituToken: process.env.NUXT_PUBLIC_TIANDITU_TOKEN
-  }
+  modules: ['@movk/mapbox']
 })
+```
+
+Tokens are read from environment variables:
+
+```bash
+NUXT_PUBLIC_MAPBOX_ACCESS_TOKEN=pk.your_mapbox_access_token
+NUXT_PUBLIC_MAPBOX_TIANDITU_TOKEN=your_tianditu_tk
 ```
 
 Components and composables are auto-imported — ready to use out of the box.

@@ -35,7 +35,8 @@ Follow the `Layer.vue` pattern:
 
 ## Tokens
 
-- Inject Mapbox / Tianditu tokens via `runtimeConfig.public.mapbox` (Nuxt) or the Vue plugin config — never hardcode. Prefer environment variables (`NUXT_MAPBOX_TOKEN`, `NUXT_TIANDITU_TOKEN`).
+- Inject Mapbox / Tianditu tokens via `runtimeConfig.public.mapbox` (Nuxt) or the Vue plugin config — never hardcode. Prefer environment variables (`NUXT_PUBLIC_MAPBOX_ACCESS_TOKEN`, `NUXT_PUBLIC_MAPBOX_TIANDITU_TOKEN`).
+- With prerendering or `nuxt generate`, tokens are baked into the static output at build time; runtime env vars cannot override already-prerendered pages.
 - The config is held in a singleton, shared across the Nuxt and Vue + Vite builds.
 
 ## Coordinate systems

@@ -55,12 +55,15 @@ pnpm add @mapbox/mapbox-gl-draw
 
 ```ts
 export default defineNuxtConfig({
-  modules: ['@movk/mapbox'],
-  mapbox: {
-    accessToken: process.env.NUXT_PUBLIC_MAPBOX_TOKEN,
-    tiandituToken: process.env.NUXT_PUBLIC_TIANDITU_TOKEN
-  }
+  modules: ['@movk/mapbox']
 })
+```
+
+token 从环境变量读取：
+
+```bash
+NUXT_PUBLIC_MAPBOX_ACCESS_TOKEN=pk.your_mapbox_access_token
+NUXT_PUBLIC_MAPBOX_TIANDITU_TOKEN=your_tianditu_tk
 ```
 
 组件与 composables 自动导入，开箱即用。
