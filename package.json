@@ -53,11 +53,7 @@
     "./runtime/*": "./dist/runtime/*",
     "./components/*": "./dist/runtime/components/*",
     "./utils/*": {
-      "types": [
-        "./dist/runtime/utils/*.d.mts",
-        "./dist/runtime/utils/*.d.ts",
-        "./dist/runtime/utils/*.ts"
-      ],
+      "types": "./dist/runtime/utils/*.d.ts",
       "import": "./dist/runtime/utils/*.js"
     }
   },
@@ -82,8 +78,7 @@
         "./dist/runtime/components/*"
       ],
       "utils/*": [
-        "./dist/runtime/utils/*.d.mts",
-        "./dist/runtime/utils/*.ts"
+        "./dist/runtime/utils/*.d.ts"
       ]
     }
   },

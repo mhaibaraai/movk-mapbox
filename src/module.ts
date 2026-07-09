@@ -2,7 +2,7 @@ import { addComponentsDir, addImports, addImportsDir, addPlugin, createResolver,
 import { defu } from 'defu'
 import { name, version } from '../package.json'
 
-export type { MapboxContext, MapboxMapOptions, MapboxRuntimeConfig } from './runtime/types'
+export type * from './runtime/types'
 
 export interface ModuleOptions {
   /** Mapbox access token */
