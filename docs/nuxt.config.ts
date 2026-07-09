@@ -26,7 +26,6 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
-    tiandituApiToken: '',
     public: {
       version: pkg.version
     }
@@ -101,11 +100,6 @@ export default defineNuxtConfig({
       description: '声明式 Mapbox GL v3 封装库的完整文档：同一套 src/runtime 既作为 Nuxt 4 模块发布，也经 Vite / unplugin 插件在纯 Vue + Vite 项目通用。涵盖快速开始与双分发接入、核心组件（MapboxMap / MapboxSource / MapboxLayer 等）、图层与控件、3D 建筑及雷达 / 扩散 / 辉光等动态效果、fog / terrain / 天气环境、绘制扩展、天地图与 WMS / WMTS、多坐标系（WGS84 / GCJ02 / BD09）本土化、composables 与工具函数的全部 API 与示例。'
     },
     notes: ['mapbox', 'mapbox-gl', 'mapbox-gl-v3', 'declarative', 'nuxt', 'nuxt4', 'vue', 'vite', 'vue-plugin', 'unplugin', 'auto-import', 'map', 'source', 'layer', 'marker', 'popup', 'controls', 'navigation', '3d-buildings', 'effects', 'radar', 'glow', 'fog', 'terrain', 'weather', 'draw', 'tianditu', 'wms', 'wmts', 'coordinate', 'wgs84', 'gcj02', 'bd09', 'turf', 'composables', 'use-map', '纯 Vue + Vite 场景经 @movk/mapbox/vite 自动导入组件与 composables，并经 @movk/mapbox/vue-plugin 注入 token；token 在 Nuxt 模式由模块配置注入，地图实例仅客户端创建，无需 ClientOnly 包裹']
-  },
-
-  mapbox: {
-    accessToken: '',
-    tiandituToken: ''
   },
 
   mcp: {
