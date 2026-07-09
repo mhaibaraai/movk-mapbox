@@ -1,5 +1,15 @@
 # 📋 Changelog
 
+## [1.1.1](https://github.com/mhaibaraai/movk-mapbox/compare/v1.1.0...v1.1.1) (2026-07-09)
+
+### ♻️ Code Refactoring
+
+* **types:** 拆分运行时类型定义并统一类型导出方式 ([a47bd84](https://github.com/mhaibaraai/movk-mapbox/commit/a47bd84ae214446f22236db3117fc2522262bdb6))
+
+### 🔧 Chores
+
+* **play:** 移除空的 mapbox token 占位配置 ([cfd5ca4](https://github.com/mhaibaraai/movk-mapbox/commit/cfd5ca4dd486eaca228d648b55c3b4d5df593d88))
+
 ## [1.1.0](https://github.com/mhaibaraai/movk-mapbox/compare/v1.0.1...v1.1.0) (2026-07-09)
 
 ### ✨ Features
