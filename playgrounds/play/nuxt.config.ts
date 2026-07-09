@@ -28,10 +28,5 @@ export default defineNuxtConfig({
         'gcoord'
       ]
     }
-  },
-
-  mapbox: {
-    accessToken: '',
-    tiandituToken: ''
   }
 })
