@@ -1,5 +1,30 @@
 # 📋 Changelog
 
+## [1.1.0](https://github.com/mhaibaraai/movk-mapbox/compare/v1.0.1...v1.1.0) (2026-07-09)
+
+### ✨ Features
+
+* **tianditu:** 新增天地图 WEB 服务 API 工具与类型 ([4c552f2](https://github.com/mhaibaraai/movk-mapbox/commit/4c552f2b8453837a4dd980b773226a73e4f16bc7))
+
+### 🐛 Bug Fixes
+
+* **build:** 修正 utils 导出后缀并移除 optimizeDeps 中的 CJS 依赖 ([58a5f60](https://github.com/mhaibaraai/movk-mapbox/commit/58a5f609caebc6df8939f2fc9b128cb9a24fd86d))
+
+### 📝 Documentation
+
+* **tianditu:** 修正天地图坐标系说明为 WGS84 ([fb0bd9d](https://github.com/mhaibaraai/movk-mapbox/commit/fb0bd9dac475b1339553c6012bf31430cc8467db))
+* 新增天地图 API 文档与技能参考 ([8e9e419](https://github.com/mhaibaraai/movk-mapbox/commit/8e9e419a7be8b0fb374a071dea2deee7819fa0ef))
+* 更新天地图文档链接和changelog组件配置 ([9adbd0c](https://github.com/mhaibaraai/movk-mapbox/commit/9adbd0c2c660fbc3c97e78af97a773f9a27868a1))
+* 添加 optimizeDeps 配置文档说明 ([82799d4](https://github.com/mhaibaraai/movk-mapbox/commit/82799d4142617b26ab1f8515417269fd11bf5c61))
+
+### ♻️ Code Refactoring
+
+* **config:** 统一 Mapbox/天地图 token 环境变量注入 ([3f27e32](https://github.com/mhaibaraai/movk-mapbox/commit/3f27e3260df3f7465cbcb010ac6bd96407449154))
+
+### 🔧 Chores
+
+* **deps:** 升级各包依赖与 packageManager 版本 ([9c0428b](https://github.com/mhaibaraai/movk-mapbox/commit/9c0428b534e81ffe9872792a6533c4c60be2a02f))
+
 ## [1.0.1](https://github.com/mhaibaraai/movk-mapbox/compare/v1.0.0...v1.0.1) (2026-07-06)
 
 ### 🐛 Bug Fixes
