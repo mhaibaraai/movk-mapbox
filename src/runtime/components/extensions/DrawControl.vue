@@ -1,10 +1,13 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, provide, shallowRef, watch } from 'vue'
+import { onMounted, onUnmounted, provide, watch } from 'vue'
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
 import type { ControlPosition } from 'mapbox-gl'
-import type { Feature, FeatureCollection, Geometry } from 'geojson'
+import type { Feature } from 'geojson'
 import { useMap } from '../../composables/useMap'
 import { DrawKey } from '../../domains/map/draw'
+import { createDrawContext } from '../../domains/map/draw-context'
+import { registerDraw, unregisterDraw } from '../../domains/map/draw-registry'
+import { getMapContext } from '../../domains/map/registry'
 
 const props = defineProps<{
   /** 控件停靠位置；省略用地图默认位置 */
@@ -30,18 +33,31 @@ const features = defineModel<Feature[]>('features')
 const mode = defineModel<string>('mode')
 
 const ctx = useMap()
-const draw = shallowRef<MapboxDraw>()
-provide(DrawKey, draw)
 
 // 断环：内部回写前记录序列化签名，外部 watch 比对相同即跳过（同 Map.vue 相机比对哲学）
 let lastSyncedJson = ''
 
+function applyFeatures(list: Feature[]): void {
+  lastSyncedJson = JSON.stringify(list)
+  features.value = list
+}
+
+const { context: drawContext, attach } = createDrawContext(ctx.id, {
+  onFeatures: applyFeatures,
+  onMode: (value) => {
+    mode.value = value
+  }
+})
+const draw = drawContext.draw
+
+provide(DrawKey, drawContext)
+// 仅当地图显式设了 map-id（即已进 map 注册表）才登记：自动生成的 id 外部无从知晓，注册无意义
+const addressable = getMapContext(ctx.id) === ctx
+if (addressable) registerDraw(drawContext)
+
 function syncFeaturesFromDraw(): void {
-  const instance = draw.value
-  if (!instance) return
-  const all = instance.getAll().features
-  lastSyncedJson = JSON.stringify(all)
-  features.value = all
+  const all = drawContext.getAll()
+  if (all) applyFeatures(all.features)
 }
 
 // 持有 [事件名, handler] 以便卸载时逐个解绑，避免监听残留
@@ -51,7 +67,7 @@ onMounted(async () => {
   const map = await ctx.whenLoaded()
   const instance = new MapboxDraw(props.options)
   map.addControl(instance as never, props.position)
-  draw.value = instance
+  attach(instance)
 
   if (features.value?.length) {
     instance.set({ type: 'FeatureCollection', features: features.value })
@@ -103,6 +119,7 @@ watch(mode, (value) => {
 })
 
 onUnmounted(() => {
+  if (addressable) unregisterDraw(drawContext)
   const map = ctx.map.value
   if (!map) return
   for (const [type, handler] of listeners) map.off(type as never, handler)
@@ -110,32 +127,18 @@ onUnmounted(() => {
   if (draw.value) map.removeControl(draw.value as never)
 })
 
+const { whenReady, getAll, getMode, add, deleteAll, changeMode, setFeatureProperty } = drawContext
+
 defineExpose({
-  draw: () => draw.value,
-  /** 当前全部要素集合 */
-  getAll: () => draw.value?.getAll(),
-  /** 添加要素，返回要素 id 列表 */
-  add: (geojson: Feature | FeatureCollection | Geometry) => draw.value?.add(geojson),
-  /** 清空全部要素并同步模型 */
-  deleteAll: () => {
-    draw.value?.deleteAll()
-    syncFeaturesFromDraw()
-  },
-  /** 切换绘制模式并同步模型 */
-  changeMode: (next: string) => {
-    draw.value?.changeMode(next as never)
-    mode.value = next
-  },
-  /** 设置要素的 user_* 属性(driver theme 样式)并同步模型 */
-  setFeatureProperty: (featureId: string, property: string, value: unknown) => {
-    const instance = draw.value
-    if (!instance) return
-    instance.setFeatureProperty(featureId, property, value)
-    // setFeatureProperty 仅标脏不重绘,re-add 同一要素触发 store.render() 且保留选中态
-    const feature = instance.get(featureId)
-    if (feature) instance.add(feature)
-    syncFeaturesFromDraw()
-  }
+  /** 绘制实例引用；挂载前为 undefined */
+  draw,
+  whenReady,
+  getAll,
+  getMode,
+  add,
+  deleteAll,
+  changeMode,
+  setFeatureProperty
 })
 </script>
 
