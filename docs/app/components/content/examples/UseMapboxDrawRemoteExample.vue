@@ -11,7 +11,7 @@ const { changeMode, deleteAll } = useMapboxDraw({ mapId: MAP_ID })
 </script>
 
 <template>
-  <div class="flex flex-col gap-2 h-115 w-full">
+  <div class="flex flex-col gap-2 w-full">
     <div class="flex flex-wrap gap-1">
       <UButton size="xs" variant="soft" @click="changeMode('draw_point')">
         画点
@@ -31,6 +31,7 @@ const { changeMode, deleteAll } = useMapboxDraw({ mapId: MAP_ID })
     </div>
 
     <MapboxMap
+      class="h-115"
       :map-id="MAP_ID"
       :options="{ style: 'mapbox://styles/mapbox/light-v11', center: [116.397, 39.908], zoom: 11 }"
     >
