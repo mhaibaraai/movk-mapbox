@@ -20,6 +20,9 @@ export interface MapboxRuntimeConfig {
 /** MapboxMap 组件 options：剔除 container（由组件内部接管） */
 export type MapboxMapOptions = Omit<MapOptions, 'container'>
 
+/** 弹窗触发时机；'none' 表示不绑定自动触发，由外部受控 */
+export type PopupTrigger = 'click' | 'hover' | 'none'
+
 /**
  * 由 MapboxMap 向子组件下发的地图上下文。
  * 子组件经 useMap() 注入，直接访问实例与就绪状态，无需 id 查表。
