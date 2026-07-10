@@ -16,6 +16,8 @@ const props = defineProps<{
 
 const emit = defineEmits<{ close: [] }>()
 
+defineOptions({ inheritAttrs: false })
+
 const ctx = useMap()
 const el = useTemplateRef<HTMLDivElement>('el')
 let popup: Popup | undefined
@@ -37,7 +39,9 @@ defineExpose({ popup: () => popup })
 </script>
 
 <template>
-  <div ref="el">
-    <slot />
+  <div style="display: none">
+    <div ref="el" v-bind="$attrs">
+      <slot />
+    </div>
   </div>
 </template>
