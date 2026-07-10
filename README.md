@@ -144,7 +144,7 @@ const zoom = ref(9)
 - `useMapAnimation()` — 逐帧动画驱动与生命周期控制。
 - `useMapExport()` — 地图画布截图导出。
 - `useMeasure()` — 距离 / 面积量算。
-- `useMapboxDraw()` — 注入当前绘制实例。
+- `useMapboxDraw(options?)` — 获取绘制上下文；传 `mapId` 可在组件树外驱动绘制。
 - `defineMapboxControl(onAdd, onRemove)` — 定义自定义控件。
 
 ### 坐标转换

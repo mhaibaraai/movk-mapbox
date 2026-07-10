@@ -125,6 +125,7 @@ const extensionsNav: NavigationMenuItem = {
     { label: 'Draw 绘制', to: '/extensions/draw' },
     { label: 'Draw 自定义模式', to: '/extensions/draw-modes' },
     { label: 'Draw 样式主题', to: '/extensions/draw-theme' },
+    { label: 'Draw 跨组件树驱动', to: '/extensions/draw-remote' },
     { label: '天地图底图', to: '/extensions/tianditu' },
     { label: '天地图地名定位/检索', to: '/extensions/tianditu-search' },
     { label: '天地图地名搜索其他类型', to: '/extensions/tianditu-search-types' },

@@ -173,12 +173,15 @@ defineExpose({
 </template>
 
 <style>
-.movk-mapbox {
-  position: relative;
-  width: 100%;
-  height: 100%;
+@layer components {
+  :where(.movk-mapbox) {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
 }
-.movk-mapbox__container {
+
+.movk-mapbox > .movk-mapbox__container {
   position: absolute;
   inset: 0;
 }
