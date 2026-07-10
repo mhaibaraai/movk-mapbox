@@ -145,7 +145,7 @@ All components are prefixed with `Mapbox` by default (configurable). Grouped by 
 - `useMapAnimation()` — Frame-by-frame animation driver with lifecycle control.
 - `useMapExport()` — Export map canvas as an image.
 - `useMeasure()` — Distance and area measurement.
-- `useMapboxDraw()` — Inject the current draw instance.
+- `useMapboxDraw(options?)` — Access the draw context; pass `mapId` to drive drawing from outside the component tree.
 - `defineMapboxControl(onAdd, onRemove)` — Define a custom map control.
 
 ### Coordinate Conversion
