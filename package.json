@@ -153,10 +153,10 @@
     "@types/mapbox__mapbox-gl-draw": "^1.4.9",
     "@vitejs/plugin-vue": "^6.0.7",
     "@vue/test-utils": "^2.4.11",
-    "eslint": "^10.6.0",
+    "eslint": "^10.7.0",
     "happy-dom": "^20.10.6",
     "lottie-web": "^5.13.0",
-    "mapbox-gl": "^3.25.0",
+    "mapbox-gl": "^3.26.0",
     "nuxt": "^4.4.8",
     "release-it": "^20.2.1",
     "typescript": "^6.0.3",
@@ -164,6 +164,6 @@
     "unplugin": "^3.3.0",
     "vitest": "^4.1.10",
     "vue": "^3.5.39",
-    "vue-tsc": "^3.3.6"
+    "vue-tsc": "^3.3.7"
   }
 }
