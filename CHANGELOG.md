@@ -1,5 +1,45 @@
 # 📋 Changelog
 
+## [1.2.0](https://github.com/mhaibaraai/movk-mapbox/compare/v1.1.1...v1.2.0) (2026-07-13)
+
+### ⚠ BREAKING CHANGES
+
+* **draw:** useMapboxDraw() 返回值由 ShallowRef<MapboxDraw | undefined>
+改为 MapboxDrawContext；MapboxDrawControl 的 defineExpose.draw 由函数改为 ref，
+命令式方法均改为返回 Promise。
+
+### ✨ Features
+
+* **build:** 新增 @movk/mapbox/draw-modes 子路径导出 ([b8d265b](https://github.com/mhaibaraai/movk-mapbox/commit/b8d265ba76e37b1515a6a6ad1e20e423c51070fd))
+* **draw:** useMapboxDraw 支持按 mapId 跨组件树驱动绘制 ([7b45c70](https://github.com/mhaibaraai/movk-mapbox/commit/7b45c70de830a5008d0512a89fd4104186eeeda1))
+* **marker:** 新增 [#popup](https://github.com/mhaibaraai/movk-mapbox/issues/popup) 插槽与 trigger 触发配置 ([298d58d](https://github.com/mhaibaraai/movk-mapbox/commit/298d58de4567ff7978ae2f260d236f35ac2b8841))
+* **play:** 新增 Draw 跨组件树驱动示例页 ([9f5ab82](https://github.com/mhaibaraai/movk-mapbox/commit/9f5ab82447653242390e49130ba5609e2fd9f469))
+* **tooltip:** trigger 支持 hover/click/none 并向插槽暴露 close ([f7ee356](https://github.com/mhaibaraai/movk-mapbox/commit/f7ee3563d547347523b0c6752565cf32e722198f))
+
+### 🐛 Bug Fixes
+
+* **map:** 修复地图容器高度塌陷为 300px ([8f2e7af](https://github.com/mhaibaraai/movk-mapbox/commit/8f2e7af13eeb6caa7c6f2200df49b24c8532a8f0))
+* **popup:** 修复地图挂载前弹窗内容裸露在文档流 ([b57a1a9](https://github.com/mhaibaraai/movk-mapbox/commit/b57a1a9e3eb44188df6c3831daf2498ecc4f97d0))
+
+### 📝 Documentation
+
+* **draw-modes:** 补充显式导入路径说明 ([da9e824](https://github.com/mhaibaraai/movk-mapbox/commit/da9e8248f900fe6a1ed3e66ce66db73e89f8853b))
+* **draw:** 补充绘制上下文 API 与跨组件树驱动示例 ([0ecf220](https://github.com/mhaibaraai/movk-mapbox/commit/0ecf22087bdbba7193397cd55478791ffae95b6b))
+* **examples:** Draw 跨组件树示例改由 MapboxMap 自身定高 ([d2fd1eb](https://github.com/mhaibaraai/movk-mapbox/commit/d2fd1ebd6399f08a72b64cd8157622a814fd2537))
+* **examples:** Draw 跨组件树示例改由外层容器定高 ([e3bc560](https://github.com/mhaibaraai/movk-mapbox/commit/e3bc560e9eee95a0c344db6bed98949976eaefb0))
+* **popup:** 新增多弹窗共存示例与选型说明 ([00d5edb](https://github.com/mhaibaraai/movk-mapbox/commit/00d5edba13e2fdda89326fbf2d4ce7ba2adbe830))
+* 未发布特性徽章统一为 v1.2.0+ ([908ceec](https://github.com/mhaibaraai/movk-mapbox/commit/908ceec9c045a7339e1dd2519cf83db10c846e00))
+
+### ✅ Tests
+
+* **draw:** 覆盖 draw 注册表与跨组件树绘制上下文 ([ce29120](https://github.com/mhaibaraai/movk-mapbox/commit/ce291201d5daf01099e800026ba9dc08a32624ea))
+
+### 🔧 Chores
+
+* **deps:** update all non-major dependencies ([8b08af9](https://github.com/mhaibaraai/movk-mapbox/commit/8b08af900afc62eb3a10c4f2b516213a585237a0))
+* **deps:** 回退部分依赖版本 ([b238a8c](https://github.com/mhaibaraai/movk-mapbox/commit/b238a8c1ff0b70b85528c1a806d26e26fe5cca0a))
+* **gitignore:** 忽略 .playwright-mcp ([0599986](https://github.com/mhaibaraai/movk-mapbox/commit/059998638e2d119d0e6d6e1c9d5ecbabc8ca2025))
+
 ## [1.1.1](https://github.com/mhaibaraai/movk-mapbox/compare/v1.1.0...v1.1.1) (2026-07-09)
 
 ### ♻️ Code Refactoring
