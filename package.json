@@ -159,7 +159,7 @@
     "mapbox-gl": "^3.26.0",
     "nuxt": "^4.4.8",
     "release-it": "^20.2.1",
-    "typescript": "^6.0.3",
+    "typescript": "^7.0.2",
     "unbuild": "^3.6.1",
     "unplugin": "^3.3.0",
     "vitest": "^4.1.10",
