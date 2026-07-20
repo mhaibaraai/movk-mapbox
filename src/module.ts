@@ -1,3 +1,4 @@
+import { createRequire } from 'node:module'
 import { addComponentsDir, addImports, addImportsDir, addPlugin, createResolver, defineNuxtModule, extendViteConfig, useLogger } from '@nuxt/kit'
 import { defu } from 'defu'
 import { name, version } from '../package.json'
@@ -62,10 +63,17 @@ export default defineNuxtModule<ModuleOptions>({
     // mapbox-gl 是伪装成 ESM 的 UMD 包（否则具名导入 500），lottie-web 是纯 CJS
     extendViteConfig((config) => {
       config.optimizeDeps ||= {}
-      config.optimizeDeps.include ||= []
+      const include = (config.optimizeDeps.include ||= [])
+      const require = createRequire(import.meta.url)
       for (const dep of ['mapbox-gl', 'lottie-web']) {
-        if (!config.optimizeDeps.include.includes(dep)) {
-          config.optimizeDeps.include.push(dep)
+        if (include.includes(dep)) {
+          continue
+        }
+        try {
+          require.resolve(dep, { paths: [nuxt.options.rootDir] })
+          include.push(dep)
+        } catch {
+          // 可选依赖（lottie-web）未安装时跳过，避免 Vite optimizeDeps 解析告警
         }
       }
     })
