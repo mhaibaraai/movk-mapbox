@@ -57,7 +57,7 @@ export default defineNuxtConfig({
   vite: {
     optimizeDeps: {
       include: [
-        '@movk/nuxt-docs > shiki-stream/vue',
+        '@unhead/schema-org/vue',
         '@mapbox/mapbox-gl-draw',
         '@movk/core',
         '@turf/area',
