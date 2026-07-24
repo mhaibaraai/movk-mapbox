@@ -24,8 +24,14 @@ const props = withDefaults(defineProps<{
   accessToken?: string
   /** 卸载时不销毁实例，配合 keepalive / `<keep-alive>` 跨路由复用 */
   persistent?: boolean
+  /**
+   * 隐藏地图左下角的 Mapbox 字标
+   * @defaultValue false
+   */
+  hideLogo?: boolean
 }>(), {
-  persistent: false
+  persistent: false,
+  hideLogo: false
 })
 
 const emit = defineEmits<{
@@ -166,7 +172,7 @@ defineExpose({
 </script>
 
 <template>
-  <div class="movk-mapbox" v-bind="$attrs">
+  <div class="movk-mapbox" :class="{ 'movk-mapbox--hide-logo': hideLogo }" v-bind="$attrs">
     <div ref="container" class="movk-mapbox__container" />
     <slot />
   </div>
@@ -184,5 +190,10 @@ defineExpose({
 .movk-mapbox > .movk-mapbox__container {
   position: absolute;
   inset: 0;
+}
+
+/* mapbox-gl.css 未分层，分层规则会被其 display:block 盖掉，故此处不入 @layer */
+.movk-mapbox--hide-logo .mapboxgl-ctrl-logo {
+  display: none;
 }
 </style>

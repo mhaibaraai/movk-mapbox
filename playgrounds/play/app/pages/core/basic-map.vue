@@ -16,7 +16,8 @@ function onLoad(_map: MapboxMap) {
     state-label="Map"
   >
     <MapboxMap
-      :options="{ style: 'mapbox://styles/mapbox/streets-v12', center: [116.39, 39.91], zoom: 10 }"
+      :options="{ style: 'mapbox://styles/mapbox/streets-v12', center: [116.39, 39.91], zoom: 10, attributionControl: false }"
+      hide-logo
       @load="onLoad"
     />
   </MapShowcase>
