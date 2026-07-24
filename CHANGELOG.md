@@ -1,5 +1,23 @@
 # 📋 Changelog
 
+## [1.3.0](https://github.com/mhaibaraai/movk-mapbox/compare/v1.2.0...v1.3.0) (2026-07-24)
+
+### ✨ Features
+
+* **map:** 新增 hideLogo 隐藏 Mapbox 字标 ([f674556](https://github.com/mhaibaraai/movk-mapbox/commit/f6745569826dbf757e8b802dc4d2cd919beadb60))
+
+### 🐛 Bug Fixes
+
+* **module:** 仅在可解析时加入 optimizeDeps 条目 ([0660322](https://github.com/mhaibaraai/movk-mapbox/commit/0660322e4726af0643440c2b3bb6be72be85d13e))
+
+### 🔧 Chores
+
+* **deps:** 切换 @movk/nuxt-docs 预发布版本并调整 overrides ([ef11b70](https://github.com/mhaibaraai/movk-mapbox/commit/ef11b70a9e3cfc66673bda5f0942288eb44945a0))
+* **deps:** 升级 mapbox-gl 至 3.27 及相关依赖 ([9b35fb7](https://github.com/mhaibaraai/movk-mapbox/commit/9b35fb703ac58cc53332b51ade9a29efbe6e89ed))
+* **deps:** 升级依赖并切回 @movk/nuxt-docs 正式版 ([824a1e4](https://github.com/mhaibaraai/movk-mapbox/commit/824a1e4ecaed60ad79963fabc6db9ca192df169c))
+* **deps:** 升级依赖版本 ([1afc5ec](https://github.com/mhaibaraai/movk-mapbox/commit/1afc5ec5f79a397d66668adce7745839bc0957ac))
+* **docs:** 调整 Vite 预构建条目为 @unhead/schema-org/vue ([53394be](https://github.com/mhaibaraai/movk-mapbox/commit/53394be4d69b0b56d0b8de527d1f2c29dbd24a88))
+
 ## [1.2.0](https://github.com/mhaibaraai/movk-mapbox/compare/v1.1.1...v1.2.0) (2026-07-13)
 
 ### ⚠ BREAKING CHANGES
