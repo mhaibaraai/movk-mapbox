@@ -233,3 +233,15 @@ describe('相机回环', () => {
     wrapper.unmount()
   })
 })
+
+describe('hideLogo', () => {
+  it('随 prop 增删根节点状态类', async () => {
+    const wrapper = mount(MapboxMap, { props: { hideLogo: true } as never, attrs: { class: 'h-115' } })
+    // 状态类与 $attrs 透传的 class 合并共存
+    expect(wrapper.classes()).toEqual(expect.arrayContaining(['movk-mapbox', 'movk-mapbox--hide-logo', 'h-115']))
+
+    await wrapper.setProps({ hideLogo: false } as never)
+    expect(wrapper.classes()).not.toContain('movk-mapbox--hide-logo')
+    wrapper.unmount()
+  })
+})
