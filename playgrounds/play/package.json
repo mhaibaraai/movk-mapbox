@@ -9,7 +9,7 @@
   "dependencies": {
     "@mapbox/mapbox-gl-draw": "^1.5.1",
     "@nuxt/ui": "^4.10.0",
-    "mapbox-gl": "^3.26.0"
+    "mapbox-gl": "^3.27.0"
   },
   "devDependencies": {
     "@iconify-json/lucide": "^1.2.118",
