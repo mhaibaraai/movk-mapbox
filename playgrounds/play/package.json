@@ -12,7 +12,7 @@
     "mapbox-gl": "^3.27.0"
   },
   "devDependencies": {
-    "@iconify-json/lucide": "^1.2.118",
+    "@iconify-json/lucide": "^1.2.119",
     "nuxt": "^4.5.0",
     "tailwindcss": "^4.3.3"
   }
