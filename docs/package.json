@@ -7,13 +7,13 @@
     "dev": "nuxt dev"
   },
   "dependencies": {
-    "@iconify-json/lucide": "^1.2.118",
+    "@iconify-json/lucide": "^1.2.119",
     "@iconify-json/simple-icons": "^1.2.91",
     "@iconify-json/vscode-icons": "^1.2.67",
     "@mapbox/mapbox-gl-draw": "^1.5.1",
     "@movk/mapbox": "workspace:*",
     "@movk/nuxt-docs": "^2.0.6",
-    "@nuxt/content": "^3.15.1",
+    "@nuxt/content": "^3.15.2",
     "@nuxtjs/i18n": "^10.5.0",
     "better-sqlite3": "^13.0.1",
     "mapbox-gl": "^3.27.0",
