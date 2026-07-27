@@ -17,7 +17,7 @@
     "@nuxtjs/i18n": "^10.5.0",
     "better-sqlite3": "^13.0.1",
     "mapbox-gl": "^3.27.0",
-    "nuxt": "^4.5.0",
+    "nuxt": "^4.5.1",
     "tailwindcss": "^4.3.3",
     "zod": "^4.4.3"
   }
