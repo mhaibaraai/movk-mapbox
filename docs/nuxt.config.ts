@@ -3,7 +3,12 @@ import pkg from '../package.json'
 export default defineNuxtConfig({
   extends: ['@movk/nuxt-docs'],
 
-  modules: ['@movk/mapbox', '@nuxtjs/i18n'],
+  modules: [
+    '@movk/mapbox',
+    '@nuxtjs/i18n',
+    '@vercel/analytics',
+    '@vercel/speed-insights'
+  ],
 
   $development: {
     site: {
@@ -52,7 +57,7 @@ export default defineNuxtConfig({
     '/en/docs/utils': { redirect: '/en/docs/utils/buffer', prerender: false }
   },
 
-  compatibilityDate: 'latest',
+  compatibilityDate: '2026-06-30',
 
   vite: {
     optimizeDeps: {
