@@ -4,7 +4,7 @@ export default defineNuxtConfig({
   extends: ['@movk/nuxt-docs'],
 
   modules: [
-    '@movk/mapbox',
+    '../src/module',
     '@nuxtjs/i18n',
     '@vercel/analytics',
     '@vercel/speed-insights'
