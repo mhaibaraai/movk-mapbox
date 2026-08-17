@@ -9,10 +9,10 @@
   "dependencies": {
     "@mapbox/mapbox-gl-draw": "^1.5.1",
     "@nuxt/ui": "^4.10.0",
-    "mapbox-gl": "^3.27.0"
+    "mapbox-gl": "^3.28.1"
   },
   "devDependencies": {
-    "@iconify-json/lucide": "^1.2.121",
+    "@iconify-json/lucide": "^1.2.123",
     "nuxt": "^4.5.1",
     "tailwindcss": "^4.3.3"
   }
