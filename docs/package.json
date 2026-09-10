@@ -7,18 +7,18 @@
     "dev": "nuxt dev"
   },
   "dependencies": {
-    "@iconify-json/lucide": "^1.2.128",
-    "@iconify-json/simple-icons": "^1.2.94",
-    "@iconify-json/vscode-icons": "^1.2.76",
+    "@iconify-json/lucide": "^1.2.130",
+    "@iconify-json/simple-icons": "^1.2.95",
+    "@iconify-json/vscode-icons": "^1.2.77",
     "@mapbox/mapbox-gl-draw": "^1.5.1",
     "@movk/mapbox": "workspace:*",
-    "@movk/nuxt-docs": "^2.2.2",
+    "@movk/nuxt-docs": "^2.3.0",
     "@nuxt/content": "^3.16.0",
     "@nuxtjs/i18n": "^10.6.0",
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
     "better-sqlite3": "^13.0.3",
-    "mapbox-gl": "^3.29.0",
+    "mapbox-gl": "^3.30.0",
     "nuxt": "^4.5.2",
     "tailwindcss": "^4.3.3",
     "zod": "^4.5.4"

@@ -10,14 +10,14 @@
   "dependencies": {
     "@mapbox/mapbox-gl-draw": "^1.5.1",
     "@movk/mapbox": "workspace:*",
-    "@nuxt/ui": "^4.11.0",
-    "mapbox-gl": "^3.29.0",
+    "@nuxt/ui": "^4.11.1",
+    "mapbox-gl": "^3.30.0",
     "ofetch": "^1.5.1",
     "vue": "^3.5.42",
-    "vue-router": "^5.3.0"
+    "vue-router": "^5.3.1"
   },
   "devDependencies": {
-    "@iconify-json/lucide": "^1.2.128",
+    "@iconify-json/lucide": "^1.2.130",
     "@vitejs/plugin-vue": "^6.0.8",
     "tailwindcss": "^4.3.3",
     "vite": "^8.2.2",
