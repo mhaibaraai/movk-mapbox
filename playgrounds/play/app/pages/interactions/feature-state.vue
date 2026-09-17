@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { GeoJSONSourceSpecification } from 'mapbox-gl'
+import type { GeoJSONSourceSpecification } from '@maplibre/maplibre-gl-style-spec'
 
 // generateId 为要素生成数值 id，feature-state 必需
 const source: GeoJSONSourceSpecification = {
@@ -42,10 +42,10 @@ const state = computed(() => ({
     </template>
 
     <DemoMap map-id="feature-state-demo" :center="[116.43, 39.92]" :zoom="10.5">
-      <MapboxSource source-id="districts" :source="source">
-        <MapboxLayer layer-id="district-fill" type="fill" source="districts" :paint="fillPaint" />
-        <MapboxLayer layer-id="district-line" type="line" source="districts" :paint="{ 'line-color': '#1d4ed8', 'line-width': 1.5 }" />
-      </MapboxSource>
+      <MaplibreSource source-id="districts" :source="source">
+        <MaplibreLayer layer-id="district-fill" type="fill" source="districts" :paint="fillPaint" />
+        <MaplibreLayer layer-id="district-line" type="line" source="districts" :paint="{ 'line-color': '#1d4ed8', 'line-width': 1.5 }" />
+      </MaplibreSource>
     </DemoMap>
   </MapShowcase>
 </template>

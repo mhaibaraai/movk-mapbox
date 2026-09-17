@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { GeoJSONSourceSpecification } from 'mapbox-gl'
+import type { GeoJSONSourceSpecification } from '@maplibre/maplibre-gl-style-spec'
 
 const opacity = ref(0.4)
 
@@ -37,10 +37,10 @@ const paint = computed(() => ({
     </template>
 
     <DemoMap :center="[116.41, 39.91]" :zoom="11">
-      <MapboxSource source-id="area" :source="source">
-        <MapboxLayer layer-id="area-fill" type="fill" source="area" :paint="paint" />
-        <MapboxLayer layer-id="area-outline" type="line" source="area" :paint="{ 'line-color': '#1d4ed8', 'line-width': 2 }" />
-      </MapboxSource>
+      <MaplibreSource source-id="area" :source="source">
+        <MaplibreLayer layer-id="area-fill" type="fill" source="area" :paint="paint" />
+        <MaplibreLayer layer-id="area-outline" type="line" source="area" :paint="{ 'line-color': '#1d4ed8', 'line-width': 2 }" />
+      </MaplibreSource>
     </DemoMap>
   </MapShowcase>
 </template>

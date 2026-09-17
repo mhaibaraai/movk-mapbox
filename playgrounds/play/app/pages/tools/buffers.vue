@@ -35,8 +35,8 @@ const polygon: [number, number][] = [
     </template>
 
     <DemoMap :center="[116.40, 39.91]" :zoom="11">
-      <MapboxBufferCircle v-if="shape === 'circle'" :center="center" :radius="size" />
-      <MapboxBufferEllipse
+      <MaplibreBufferCircle v-if="shape === 'circle'" :center="center" :radius="size" />
+      <MaplibreBufferEllipse
         v-else-if="shape === 'ellipse'"
         :center="center"
         :x-semi-axis="size * 1.5"
@@ -44,7 +44,7 @@ const polygon: [number, number][] = [
         :angle="30"
         color="#10b981"
       />
-      <MapboxBufferSector
+      <MaplibreBufferSector
         v-else-if="shape === 'sector'"
         :center="center"
         :radius="size * 1.5"
@@ -52,8 +52,8 @@ const polygon: [number, number][] = [
         :bearing2="120"
         color="#f59e0b"
       />
-      <MapboxBufferLine v-else-if="shape === 'line'" :line="line" :width="size / 2" color="#8b5cf6" />
-      <MapboxBufferPolygon v-else :polygon="polygon" :width="size / 2" color="#f43f5e" />
+      <MaplibreBufferLine v-else-if="shape === 'line'" :line="line" :width="size / 2" color="#8b5cf6" />
+      <MaplibreBufferPolygon v-else :polygon="polygon" :width="size / 2" color="#f43f5e" />
     </DemoMap>
   </MapShowcase>
 </template>

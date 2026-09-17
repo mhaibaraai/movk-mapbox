@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { transformPoint } from '#mapbox/utils/coordinate'
-import type { LngLatLike } from 'mapbox-gl'
+import { transformPoint } from '#maplibre/utils/coordinate'
+import type { LngLatLike } from 'maplibre-gl'
 
 // WGS84（GPS，对齐 WGS84/天地图底图）转 GCJ02（高德/腾讯）、BD09（百度）后均存在偏移
 const wgs84 = ref<[number, number]>([116.397, 39.909])
@@ -19,12 +19,12 @@ const gcjPos = computed<LngLatLike>(() => gcj02.value)
     state-label="Coordinates"
   >
     <DemoMap :center="[116.397, 39.909]" :zoom="16">
-      <MapboxMarker v-model:lnglat="wgs84">
+      <MaplibreMarker v-model:lnglat="wgs84">
         <div class="rounded-full bg-info size-3 ring-2 ring-white" />
-      </MapboxMarker>
-      <MapboxMarker :lnglat="gcjPos">
+      </MaplibreMarker>
+      <MaplibreMarker :lnglat="gcjPos">
         <div class="rounded-full bg-primary size-3 ring-2 ring-white" />
-      </MapboxMarker>
+      </MaplibreMarker>
     </DemoMap>
   </MapShowcase>
 </template>

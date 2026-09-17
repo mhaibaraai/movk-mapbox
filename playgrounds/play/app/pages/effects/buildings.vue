@@ -14,25 +14,27 @@ const items = [
 <template>
   <MapShowcase
     title="Building 特效"
-    description="渐变/流动/窗户/纹理四类 3D 建筑特效,复用 BuildingLayer + useMapAnimation + 贴图。依赖 Mapbox 官方样式,本页固定 dark。"
+    description="渐变/流动/窗户/纹理四类 3D 建筑特效,复用 BuildingLayer + useMapAnimation + 贴图。使用 OpenFreeMap dark 样式自带的 openmaptiles/building 源。"
   >
     <template #toolbar>
       <URadioGroup v-model="effect" orientation="horizontal" :items="items" />
     </template>
 
     <DemoMap
-      map-style="mapbox://styles/mapbox/dark-v11"
+      map-style="https://tiles.openfreemap.org/styles/dark"
       :center="[-74.0066, 40.7135]"
       :zoom="15.5"
       :pitch="60"
       :bearing="-17.6"
     >
-      <MapboxGradientBuilding v-if="effect === 'gradient'" />
-      <MapboxFlowBuilding v-else-if="effect === 'flow'" />
-      <MapboxWindowBuilding v-else-if="effect === 'window'" :lit-ratio="0.5" />
-      <MapboxTextureBuilding
+      <MaplibreGradientBuilding v-if="effect === 'gradient'" source="openmaptiles" source-layer="building" />
+      <MaplibreFlowBuilding v-else-if="effect === 'flow'" source="openmaptiles" source-layer="building" />
+      <MaplibreWindowBuilding v-else-if="effect === 'window'" source="openmaptiles" source-layer="building" :lit-ratio="0.5" />
+      <MaplibreTextureBuilding
         v-else
-        url="https://docs.mapbox.com/mapbox-gl-js/assets/popup.png"
+        source="openmaptiles"
+        source-layer="building"
+        url="https://maplibre.org/maplibre-gl-js/docs/assets/popup.png"
       />
     </DemoMap>
   </MapShowcase>

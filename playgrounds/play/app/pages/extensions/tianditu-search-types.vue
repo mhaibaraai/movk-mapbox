@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { SearchResult } from '#mapbox/types'
+import type { SearchResult } from '#maplibre/types'
 
 type SearchType = 'inView' | 'polygon' | 'district' | 'category' | 'statistics'
 
@@ -21,7 +21,7 @@ const polygon: [number, number][] = [
   [121.48, 31.23]
 ]
 
-const { fitBounds } = useMapboxCamera({ mapId: 'tianditu-search-types-demo' })
+const { fitBounds } = useMaplibreCamera({ mapId: 'tianditu-search-types-demo' })
 
 const categories = computed(() => (result.value?.kind === 'categories' ? result.value.categories : []))
 const pois = computed(() => {
@@ -110,7 +110,7 @@ const state = computed(() => ({
     </template>
 
     <DemoMap map-id="tianditu-search-types-demo" :center="[121.495, 31.24]" :zoom="13">
-      <MapboxLayer
+      <MaplibreLayer
         v-if="type === 'polygon'"
         layer-id="search-types-polygon"
         type="line"
@@ -118,13 +118,13 @@ const state = computed(() => ({
         :paint="{ 'line-color': '#f59e0b', 'line-width': 2, 'line-dasharray': [2, 2] }"
       />
 
-      <MapboxMarker v-for="(poi, index) in pois" :key="`poi-${index}`" :lnglat="poi.location">
+      <MaplibreMarker v-for="(poi, index) in pois" :key="`poi-${index}`" :lnglat="poi.location">
         <div class="rounded-full bg-info size-3 ring-2 ring-white" :title="poi.name" />
-      </MapboxMarker>
+      </MaplibreMarker>
 
-      <MapboxMarker v-for="(city, index) in priorityCities" :key="`city-${index}`" :lnglat="city.location">
+      <MaplibreMarker v-for="(city, index) in priorityCities" :key="`city-${index}`" :lnglat="city.location">
         <div class="rounded-sm rotate-45 bg-warning size-2.5 ring-2 ring-white" :title="`${city.name}（${city.count}）`" />
-      </MapboxMarker>
+      </MaplibreMarker>
     </DemoMap>
   </MapShowcase>
 </template>

@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import type { VectorSourceSpecification } from 'mapbox-gl'
+import type { VectorSourceSpecification } from '@maplibre/maplibre-gl-style-spec'
 
-// Mapbox Streets 矢量瓦片源，需 access token
+// OpenFreeMap 矢量瓦片（OpenMapTiles 规范），无需 key
 const source: VectorSourceSpecification = {
   type: 'vector',
-  url: 'mapbox://mapbox.mapbox-streets-v8'
+  url: 'https://tiles.openfreemap.org/planet'
 }
 </script>
 
@@ -14,15 +14,15 @@ const source: VectorSourceSpecification = {
     description="vector 源经 url 引用矢量切片，图层用 source-layer 指定子图层（此处高亮道路）。"
   >
     <DemoMap :center="[116.39, 39.91]" :zoom="12">
-      <MapboxSource source-id="streets" :source="source">
-        <MapboxLayer
+      <MaplibreSource source-id="streets" :source="source">
+        <MaplibreLayer
           layer-id="roads"
           type="line"
           source="streets"
-          source-layer="road"
+          source-layer="transportation"
           :paint="{ 'line-color': '#6366f1', 'line-width': 1.5 }"
         />
-      </MapboxSource>
+      </MaplibreSource>
     </DemoMap>
   </MapShowcase>
 </template>

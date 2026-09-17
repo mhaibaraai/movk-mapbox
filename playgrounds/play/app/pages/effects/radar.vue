@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { GeoJSONSourceSpecification } from 'mapbox-gl'
+import type { GeoJSONSourceSpecification } from '@maplibre/maplibre-gl-style-spec'
 
 const speed = ref(120)
 const radius = ref(70)
@@ -24,8 +24,8 @@ const data: GeoJSONSourceSpecification['data'] = {
       <USlider v-model="radius" :min="40" :max="120" :step="10" class="w-24" />
     </template>
 
-    <DemoMap map-style="mapbox://styles/mapbox/dark-v11" :center="[113.26, 23.13]" :zoom="12">
-      <MapboxRadar :data="data" color="#22c55e" :radius="radius" :speed="speed" />
+    <DemoMap map-style="https://tiles.openfreemap.org/styles/dark" :center="[113.26, 23.13]" :zoom="12">
+      <MaplibreRadar :data="data" color="#22c55e" :radius="radius" :speed="speed" />
     </DemoMap>
   </MapShowcase>
 </template>

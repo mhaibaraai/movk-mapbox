@@ -20,11 +20,11 @@ const showAttribution = ref(true)
     </template>
 
     <DemoMap :center="[116.39, 39.91]" :zoom="10">
-      <MapboxNavigationControl v-if="showNav" position="top-right" :options="{ visualizePitch: true }" />
-      <MapboxGeolocateControl v-if="showGeolocate" position="top-right" :options="{ trackUserLocation: true }" />
-      <MapboxFullscreenControl v-if="showFullscreen" position="top-right" />
-      <MapboxScaleControl v-if="showScale" position="bottom-left" :options="{ unit: 'metric' }" />
-      <MapboxAttributionControl v-if="showAttribution" position="bottom-right" :options="{ compact: true }" />
+      <MaplibreNavigationControl v-if="showNav" position="top-right" :options="{ visualizePitch: true }" />
+      <MaplibreGeolocateControl v-if="showGeolocate" position="top-right" :options="{ trackUserLocation: true }" />
+      <MaplibreFullscreenControl v-if="showFullscreen" position="top-right" />
+      <MaplibreScaleControl v-if="showScale" position="bottom-left" :options="{ unit: 'metric' }" />
+      <MaplibreAttributionControl v-if="showAttribution" position="bottom-right" :options="{ compact: true }" />
     </DemoMap>
   </MapShowcase>
 </template>

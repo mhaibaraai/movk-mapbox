@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { GeoJSONSourceSpecification } from 'mapbox-gl'
+import type { GeoJSONSourceSpecification } from '@maplibre/maplibre-gl-style-spec'
 
 const trailLength = ref(0.25)
 
@@ -30,8 +30,8 @@ const data: GeoJSONSourceSpecification['data'] = {
       <USlider v-model="trailLength" :min="0.05" :max="0.6" :step="0.05" class="w-32" />
     </template>
 
-    <DemoMap map-style="mapbox://styles/mapbox/dark-v11" :center="[116.38, 39.91]" :zoom="11">
-      <MapboxTrail :data="data" color="#a78bfa" :line-width="5" :trail-length="trailLength" />
+    <DemoMap map-style="https://tiles.openfreemap.org/styles/dark" :center="[116.38, 39.91]" :zoom="11">
+      <MaplibreTrail :data="data" color="#a78bfa" :line-width="5" :trail-length="trailLength" />
     </DemoMap>
   </MapShowcase>
 </template>

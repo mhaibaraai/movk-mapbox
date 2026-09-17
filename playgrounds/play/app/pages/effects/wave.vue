@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { GeoJSONSourceSpecification } from 'mapbox-gl'
+import type { GeoJSONSourceSpecification } from '@maplibre/maplibre-gl-style-spec'
 
 const data: GeoJSONSourceSpecification['data'] = {
   type: 'FeatureCollection',
@@ -15,8 +15,8 @@ const data: GeoJSONSourceSpecification['data'] = {
     title="WaveCircle 波浪圆"
     description="常驻底圆 + 周期扩张的描边波纹，与扩散圆共享相位驱动。"
   >
-    <DemoMap map-style="mapbox://styles/mapbox/dark-v11" :center="[120.18, 30.24]" :zoom="11.5">
-      <MapboxWaveCircle :data="data" color="#34d399" :base-radius="6" :max-radius="36" />
+    <DemoMap map-style="https://tiles.openfreemap.org/styles/dark" :center="[120.18, 30.24]" :zoom="11.5">
+      <MaplibreWaveCircle :data="data" color="#34d399" :base-radius="6" :max-radius="36" />
     </DemoMap>
   </MapShowcase>
 </template>

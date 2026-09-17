@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { GeoJSONSourceSpecification } from 'mapbox-gl'
+import type { GeoJSONSourceSpecification } from '@maplibre/maplibre-gl-style-spec'
 
 const radius = ref(8)
 const color = ref('#10b981')
@@ -34,9 +34,9 @@ const paint = computed(() => ({
     </template>
 
     <DemoMap :center="[116.39, 39.91]" :zoom="10">
-      <MapboxSource source-id="dots" :source="source">
-        <MapboxLayer layer-id="dots" type="circle" source="dots" :paint="paint" />
-      </MapboxSource>
+      <MaplibreSource source-id="dots" :source="source">
+        <MaplibreLayer layer-id="dots" type="circle" source="dots" :paint="paint" />
+      </MaplibreSource>
     </DemoMap>
   </MapShowcase>
 </template>

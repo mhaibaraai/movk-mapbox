@@ -2,7 +2,7 @@ import { fileURLToPath } from 'node:url'
 import { defineConfig, loadEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import ui from '@nuxt/ui/vite'
-import { mapboxAutoImports, mapboxComponentResolver } from '@movk/mapbox/unplugin'
+import { maplibreAutoImports, maplibreComponentResolver } from '@movk/maplibre/unplugin'
 import { tiandituDevServer } from './vite-plugins/tianditu-dev-server'
 
 // @nuxt/ui 的 Vite 插件内置唯一的 unplugin-auto-import / unplugin-vue-components 实例，
@@ -16,11 +16,11 @@ export default defineConfig(({ mode }) => {
   return {
     resolve: {
       alias: {
-        // 对齐 Nuxt 模块的 #mapbox 别名，使复用的 play 页面中 '#mapbox/utils/*' 可解析
-        '#mapbox': fileURLToPath(new URL('../../src/runtime', import.meta.url)),
+        // 对齐 Nuxt 模块的 #maplibre 别名，使复用的 play 页面中 '#maplibre/utils/*' 可解析
+        '#maplibre': fileURLToPath(new URL('../../src/runtime', import.meta.url)),
         // dev:prepare 用 --stub 产出的 dist 入口经 jiti 运行时加载 TS 源，浏览器打包会拖入 jiti；
         // 故 vue 模式直接指向源码 vue-plugin
-        '@movk/mapbox/vue-plugin': fileURLToPath(new URL('../../src/vue-plugin.ts', import.meta.url))
+        '@movk/maplibre/vue-plugin': fileURLToPath(new URL('../../src/vue-plugin.ts', import.meta.url))
       }
     },
     plugins: [
@@ -31,8 +31,8 @@ export default defineConfig(({ mode }) => {
         components: {
           // 复用 playgrounds/play 的演示组件（MapShowcase 等）
           dirs: ['../play/app/components'],
-          // 解析本库 Mapbox* 组件
-          resolvers: [mapboxComponentResolver()]
+          // 解析本库 Maplibre* 组件
+          resolvers: [maplibreComponentResolver()]
         },
         autoImport: {
           // 复用 playgrounds/play 的 composables（useNavigation）
@@ -40,14 +40,15 @@ export default defineConfig(({ mode }) => {
           imports: [
             'vue',
             'vue-router',
-            ...mapboxAutoImports()
+            ...maplibreAutoImports()
           ]
         }
       })
     ],
     optimizeDeps: {
       include: [
-        '@mapbox/mapbox-gl-draw',
+        'terra-draw',
+        'terra-draw-maplibre-gl-adapter',
         '@movk/core',
         '@turf/area',
         '@turf/bearing',

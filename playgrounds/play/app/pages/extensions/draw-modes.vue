@@ -1,22 +1,15 @@
 <script setup lang="ts">
-import MapboxDraw from '@mapbox/mapbox-gl-draw'
 import type { Feature } from 'geojson'
 
 const features = ref<Feature[]>([])
-const mode = ref('simple_select')
-
-// 基础模式 + movk 自定义模式(矩形/圆/椭圆/扇形)
-const options = {
-  displayControlsDefault: false,
-  modes: { ...MapboxDraw.modes, ...movkDrawModes }
-}
+const mode = ref('select')
 
 const tools = [
-  { label: '矩形', value: 'draw_rectangle' },
-  { label: '圆', value: 'draw_circle' },
-  { label: '椭圆', value: 'draw_ellipse' },
-  { label: '扇形', value: 'draw_sector' },
-  { label: '选择', value: 'simple_select' }
+  { label: '矩形', value: 'rectangle' },
+  { label: '圆', value: 'circle' },
+  { label: '椭圆', value: 'ellipse' },
+  { label: '扇形', value: 'sector' },
+  { label: '选择', value: 'select' }
 ]
 
 const state = computed(() => ({ mode: mode.value, count: features.value.length }))
@@ -25,7 +18,7 @@ const state = computed(() => ({ mode: mode.value, count: features.value.length }
 <template>
   <MapShowcase
     title="Draw 自定义模式"
-    description="矩形/圆/椭圆/扇形四个 turf 驱动的自定义绘制模式;圆与扇形 properties 记录几何参数。"
+    description="movkDrawModes 预设的 terra-draw 规则图形模式：矩形 / 圆 / 椭圆 / 扇形，选择模式下可整体拖拽。"
     :state="state"
   >
     <template #toolbar>
@@ -41,11 +34,11 @@ const state = computed(() => ({ mode: mode.value, count: features.value.length }
     </template>
 
     <DemoMap :center="[116.39, 39.91]" :zoom="12">
-      <MapboxDrawControl
+      <MaplibreDrawControl
         v-model:features="features"
         v-model:mode="mode"
         position="top-left"
-        :options="options"
+        :controls="false"
       />
     </DemoMap>
   </MapShowcase>

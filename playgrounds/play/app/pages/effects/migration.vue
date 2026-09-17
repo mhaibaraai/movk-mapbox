@@ -13,8 +13,8 @@ const routes = [
     title="Migration 迁徙图"
     description="OD 对生成贝塞尔弧线，粒子沿预计算长度表循环飞行 + 渐变尾迹。"
   >
-    <DemoMap map-style="mapbox://styles/mapbox/dark-v11" :center="[112, 32]" :zoom="4.2">
-      <MapboxMigration :data="routes" color="#fb7185" :duration="3600" />
+    <DemoMap map-style="https://tiles.openfreemap.org/styles/dark" :center="[112, 32]" :zoom="4.2">
+      <MaplibreMigration :data="routes" color="#fb7185" :duration="3600" />
     </DemoMap>
   </MapShowcase>
 </template>

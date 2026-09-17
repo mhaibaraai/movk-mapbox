@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ReverseGeocodeResult } from '#mapbox/types'
+import type { ReverseGeocodeResult } from '#maplibre/types'
 
 const point = ref<[number, number]>([116.37304, 39.92594])
 const result = ref<ReverseGeocodeResult>()
@@ -32,10 +32,10 @@ const state = computed(() => ({ point: point.value, loading: loading.value, erro
     :state="state"
   >
     <DemoMap map-id="reverse-geocode-demo" :center="[116.37304, 39.92594]" :zoom="15">
-      <MapboxMarker v-model:lnglat="point" :options="{ draggable: true }">
+      <MaplibreMarker v-model:lnglat="point" :options="{ draggable: true }">
         <div class="rounded-full bg-primary size-3.5 ring-2 ring-white shadow" />
-      </MapboxMarker>
-      <MapboxPopup v-if="result?.formattedAddress" :lnglat="point" :options="{ offset: 16, closeOnClick: false }">
+      </MaplibreMarker>
+      <MaplibrePopup v-if="result?.formattedAddress" :lnglat="point" :options="{ offset: 16, closeOnClick: false }">
         <div class="p-1 max-w-56">
           <p class="text-sm font-semibold text-highlighted">
             {{ result.formattedAddress }}
@@ -44,7 +44,7 @@ const state = computed(() => ({ point: point.value, loading: loading.value, erro
             {{ [result.province, result.county, result.road].filter(Boolean).join(' / ') }}
           </p>
         </div>
-      </MapboxPopup>
+      </MaplibrePopup>
     </DemoMap>
   </MapShowcase>
 </template>

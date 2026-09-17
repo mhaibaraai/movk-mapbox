@@ -14,7 +14,8 @@ export default defineNuxtConfig({
   vite: {
     optimizeDeps: {
       include: [
-        '@mapbox/mapbox-gl-draw',
+        'terra-draw',
+        'terra-draw-maplibre-gl-adapter',
         '@movk/core',
         '@turf/area',
         '@turf/bearing',
@@ -28,5 +29,11 @@ export default defineNuxtConfig({
         'gcoord'
       ]
     }
+  },
+
+  maplibre: {
+    // OpenFreeMap 公开字体服务：空白样式与内置文字图层共用
+    glyphs: 'https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf',
+    textFont: ['Noto Sans Regular']
   }
 })

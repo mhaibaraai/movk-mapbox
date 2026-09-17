@@ -4,10 +4,10 @@ import type { Feature } from 'geojson'
 const MAP_ID = 'play-draw-remote'
 
 const features = ref<Feature[]>([])
-const mode = ref('simple_select')
+const mode = ref('select')
 
-// 工具栏位于 MapboxMap 组件树之外：按 mapId 查注册表驱动绘制
-const { changeMode, deleteAll, add, getMode } = useMapboxDraw({ mapId: MAP_ID })
+// 工具栏位于 MaplibreMap 组件树之外：按 mapId 查注册表驱动绘制
+const { changeMode, deleteAll, add, getMode } = useMaplibreDraw({ mapId: MAP_ID })
 
 const samplePoint: Feature = {
   type: 'Feature',
@@ -25,17 +25,17 @@ const state = computed(() => ({
 <template>
   <MapShowcase
     title="Draw 跨组件树驱动"
-    description="useMapboxDraw({ mapId }) 在 MapboxMap 之外按 id 查注册表；写操作等待实例就绪并回写 v-model:features / v-model:mode。"
+    description="useMaplibreDraw({ mapId }) 在 MaplibreMap 之外按 id 查注册表；写操作等待实例就绪并回写 v-model:features / v-model:mode。"
     :state="state"
   >
     <template #toolbar>
-      <UButton size="sm" variant="soft" @click="changeMode('draw_point')">
+      <UButton size="sm" variant="soft" @click="changeMode('point')">
         画点
       </UButton>
-      <UButton size="sm" variant="soft" @click="changeMode('draw_line_string')">
+      <UButton size="sm" variant="soft" @click="changeMode('linestring')">
         画线
       </UButton>
-      <UButton size="sm" variant="soft" @click="changeMode('draw_polygon')">
+      <UButton size="sm" variant="soft" @click="changeMode('polygon')">
         画面
       </UButton>
       <UButton size="sm" @click="add(samplePoint)">
@@ -47,14 +47,11 @@ const state = computed(() => ({
     </template>
 
     <DemoMap :map-id="MAP_ID" :center="[116.39, 39.91]" :zoom="11">
-      <MapboxDrawControl
+      <MaplibreDrawControl
         v-model:features="features"
         v-model:mode="mode"
         position="top-left"
-        :options="{
-          displayControlsDefault: false,
-          controls: { polygon: true, line_string: true, point: true, trash: true }
-        }"
+        :controls="['point', 'linestring', 'polygon']"
       />
     </DemoMap>
   </MapShowcase>

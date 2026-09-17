@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { GeoJSONSourceSpecification } from 'mapbox-gl'
+import type { GeoJSONSourceSpecification } from '@maplibre/maplibre-gl-style-spec'
 import type { FeatureCollection } from 'geojson'
 
 const route: FeatureCollection = {
@@ -23,12 +23,12 @@ const route: FeatureCollection = {
 
 const source: GeoJSONSourceSpecification = { type: 'geojson', data: route }
 
-const { flyTo, fitBounds } = useMapboxCamera({ mapId: 'camera-demo' })
+const { flyTo, fitBounds } = useMaplibreCamera({ mapId: 'camera-demo' })
 </script>
 
 <template>
   <MapShowcase
-    title="useMapboxCamera 相机助手"
+    title="useMaplibreCamera 相机助手"
     description="flyTo/easeTo/jumpTo/fitBounds 封装；fitBounds 直接接受 GeoJSON，自动求包围盒。"
   >
     <template #toolbar>
@@ -41,15 +41,15 @@ const { flyTo, fitBounds } = useMapboxCamera({ mapId: 'camera-demo' })
     </template>
 
     <DemoMap map-id="camera-demo" :center="[117.5, 39.6]" :zoom="6">
-      <MapboxSource source-id="trip" :source="source">
-        <MapboxLayer
+      <MaplibreSource source-id="trip" :source="source">
+        <MaplibreLayer
           layer-id="trip-line"
           type="line"
           source="trip"
           :layout="{ 'line-cap': 'round', 'line-join': 'round' }"
           :paint="{ 'line-color': '#8b5cf6', 'line-width': 4 }"
         />
-      </MapboxSource>
+      </MaplibreSource>
     </DemoMap>
   </MapShowcase>
 </template>

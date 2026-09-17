@@ -53,7 +53,7 @@ const data: FeatureCollection<Point> = {
     </template>
 
     <DemoMap :center="[113.29, 23.145]" :zoom="13">
-      <MapboxSpriteImage
+      <MaplibreSpriteImage
         v-if="spriteUrl"
         :data="data"
         :image="spriteUrl"

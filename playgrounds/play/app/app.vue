@@ -14,7 +14,7 @@ onMounted(() => {
 })
 
 useHead({
-  title: 'Movk Mapbox · Playground'
+  title: 'Movk MapLibre · Playground'
 })
 </script>
 
@@ -32,7 +32,7 @@ useHead({
         <template #header="{ collapsed }">
           <NuxtLink to="/" class="text-highlighted inline-flex items-center gap-2" aria-label="Home">
             <UIcon name="i-lucide-map" class="size-5" />
-            <span v-if="!collapsed" class="font-semibold">Movk Mapbox</span>
+            <span v-if="!collapsed" class="font-semibold">Movk MapLibre</span>
           </NuxtLink>
 
           <div v-if="!collapsed" class="flex items-center ms-auto">

@@ -26,7 +26,7 @@ const data: FeatureCollection<Point> = {
 <template>
   <MapShowcase
     title="Temperature 温度热力"
-    description="GeoJSON 点按 temperature 属性映射为 mapbox 原生 heatmap;滑块实时调整半径与强度。"
+    description="GeoJSON 点按 temperature 属性映射为 maplibre 原生 heatmap;滑块实时调整半径与强度。"
   >
     <template #toolbar>
       <span class="text-xs text-muted">半径</span>
@@ -35,8 +35,8 @@ const data: FeatureCollection<Point> = {
       <USlider v-model="intensity" :min="0.2" :max="3" :step="0.1" class="w-24" />
     </template>
 
-    <DemoMap map-style="mapbox://styles/mapbox/dark-v11" :center="center" :zoom="9">
-      <MapboxTemperature :data="data" :weight-range="[0, 40]" :radius="radius" :intensity="intensity" />
+    <DemoMap map-style="https://tiles.openfreemap.org/styles/dark" :center="center" :zoom="9">
+      <MaplibreTemperature :data="data" :weight-range="[0, 40]" :radius="radius" :intensity="intensity" />
     </DemoMap>
   </MapShowcase>
 </template>

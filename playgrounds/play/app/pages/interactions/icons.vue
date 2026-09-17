@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { GeoJSONSourceSpecification } from 'mapbox-gl'
+import type { GeoJSONSourceSpecification } from '@maplibre/maplibre-gl-style-spec'
 
 const source: GeoJSONSourceSpecification = {
   type: 'geojson',
@@ -13,29 +13,29 @@ const source: GeoJSONSourceSpecification = {
 }
 
 // 注册命名图片；setStyle 切换底图后自动补回
-const { loaded } = useMapboxImage(
+const { loaded } = useMaplibreImage(
   'demo-cat',
-  'https://docs.mapbox.com/mapbox-gl-js/assets/cat.png',
+  'https://upload.wikimedia.org/wikipedia/commons/7/7c/201408_cat.png',
   { mapId: 'icons-demo' }
 )
 </script>
 
 <template>
   <MapShowcase
-    title="useMapboxImage 图标注册"
+    title="useMaplibreImage 图标注册"
     description="加载远程图片注册为样式图片，symbol 图层经 icon-image 引用；切换底图后自动重注册。"
     :state="{ loaded }"
   >
     <DemoMap map-id="icons-demo" :center="[116.42, 39.93]" :zoom="11">
-      <MapboxSource source-id="cats" :source="source">
-        <MapboxLayer
+      <MaplibreSource source-id="cats" :source="source">
+        <MaplibreLayer
           v-if="loaded"
           layer-id="cat-symbols"
           type="symbol"
           source="cats"
           :layout="{ 'icon-image': 'demo-cat', 'icon-size': 0.15, 'icon-allow-overlap': true }"
         />
-      </MapboxSource>
+      </MaplibreSource>
     </DemoMap>
   </MapShowcase>
 </template>

@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import type { FeatureCollection } from 'geojson'
-import type { AdministrativeDivision } from '#mapbox/types'
+import type { AdministrativeDivision } from '#maplibre/types'
 
 const keyword = ref('上海')
 const division = ref<AdministrativeDivision>()
 const loading = ref(false)
 const error = ref<string>()
 
-const { fitBounds } = useMapboxCamera({ mapId: 'administrative-demo' })
+const { fitBounds } = useMaplibreCamera({ mapId: 'administrative-demo' })
 
 const boundarySource = computed<FeatureCollection | undefined>(() => {
   if (!division.value?.boundary) return undefined
@@ -57,7 +57,7 @@ const state = computed(() => ({
     </template>
 
     <DemoMap map-id="administrative-demo" :center="[121.47, 31.23]" :zoom="7">
-      <MapboxLayer
+      <MaplibreLayer
         v-if="boundarySource"
         layer-id="admin-boundary"
         type="fill"

@@ -2,7 +2,7 @@
 withDefaults(defineProps<{
   title?: string
   description?: string
-  /** 地图容器高度（MapboxMap 绝对定位铺满，须显式给定） */
+  /** 地图容器高度（MaplibreMap 绝对定位铺满，须显式给定） */
   height?: string
   /** 右侧状态查看器内容；为 undefined 时不显示侧栏 */
   state?: unknown

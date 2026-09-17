@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { LngLatLike } from 'mapbox-gl'
+import type { LngLatLike } from 'maplibre-gl'
 
 const props = defineProps<{
   center?: LngLatLike
@@ -18,9 +18,9 @@ const { style: basemapStyle, isTianditu, tiandituLayer } = useBasemap()
 const overridden = computed(() => props.mapStyle !== undefined)
 const showTianditu = computed(() => !overridden.value && isTianditu.value)
 
-// 默认 globe 投影；示例 zoom≥9 已处于 mercator 区间，天地图栅格渲染正确
+// MapLibre 默认 maxPitch 为 60，放宽以展示天空与地形
 const options = computed(() => ({
-  projection: 'globe',
+  maxPitch: 85,
   style: props.mapStyle ?? basemapStyle.value,
   center: props.center,
   zoom: props.zoom,
@@ -30,8 +30,8 @@ const options = computed(() => ({
 </script>
 
 <template>
-  <MapboxMap :options="options" :persistent="persistent" :map-id="mapId">
-    <MapboxTiandituLayer v-if="showTianditu && tiandituLayer" :layer="tiandituLayer" annotation />
+  <MaplibreMap :options="options" :persistent="persistent" :map-id="mapId">
+    <MaplibreTiandituLayer v-if="showTianditu && tiandituLayer" :layer="tiandituLayer" annotation />
     <slot />
-  </MapboxMap>
+  </MaplibreMap>
 </template>

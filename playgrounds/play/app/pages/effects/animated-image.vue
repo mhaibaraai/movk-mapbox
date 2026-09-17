@@ -18,8 +18,8 @@ const data: FeatureCollection<Point> = {
     title="AnimatedImage 动图图标"
     description="浏览器原生 ImageDecoder 逐帧解码 GIF/APNG/WebP/AVIF,按各帧时长循环驱动 symbol;零解码依赖,不支持的浏览器优雅降级。"
   >
-    <DemoMap map-style="mapbox://styles/mapbox/dark-v11" :center="[113.285, 23.145]" :zoom="12">
-      <MapboxAnimatedImage :data="data" :image="image" :size="80" />
+    <DemoMap map-style="https://tiles.openfreemap.org/styles/dark" :center="[113.285, 23.145]" :zoom="12">
+      <MaplibreAnimatedImage :data="data" :image="image" :size="80" />
     </DemoMap>
   </MapShowcase>
 </template>

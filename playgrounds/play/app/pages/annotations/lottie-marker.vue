@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { LngLatLike } from 'mapbox-gl'
+import type { LngLatLike } from 'maplibre-gl'
 
 const speed = ref(1)
 const lnglat = ref<LngLatLike>([113.26, 23.13])
@@ -20,7 +20,7 @@ const path = 'https://assets10.lottiefiles.com/packages/lf20_jcikwtux.json'
     </template>
 
     <DemoMap :center="[113.26, 23.13]" :zoom="13">
-      <MapboxLottieMarker v-model:lnglat="lnglat" :path="path" :speed="speed" :width="96" :height="96" />
+      <MaplibreLottieMarker v-model:lnglat="lnglat" :path="path" :speed="speed" :width="96" :height="96" />
     </DemoMap>
   </MapShowcase>
 </template>

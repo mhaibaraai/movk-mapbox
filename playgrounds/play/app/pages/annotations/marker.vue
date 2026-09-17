@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { LngLatLike } from 'mapbox-gl'
+import type { LngLatLike } from 'maplibre-gl'
 
 // draggable marker：拖拽结束回写 lnglat（v-model）
 const draggable = ref<[number, number]>([116.39, 39.91])
@@ -21,17 +21,17 @@ const group: { id: string, lnglat: [number, number], name: string }[] = [
   >
     <DemoMap :center="[116.42, 39.92]" :zoom="11">
       <!-- 原生默认 marker（无插槽） -->
-      <MapboxMarker :lnglat="defaultPos" />
+      <MaplibreMarker :lnglat="defaultPos" />
 
       <!-- 自定义 DOM + 可拖拽 -->
-      <MapboxMarker v-model:lnglat="draggable" :options="{ draggable: true }">
+      <MaplibreMarker v-model:lnglat="draggable" :options="{ draggable: true }">
         <div class="rounded-full bg-primary px-3 py-1 text-xs font-medium text-inverted shadow-lg cursor-move">
           拖我
         </div>
-      </MapboxMarker>
+      </MaplibreMarker>
 
       <!-- #popup 插槽：默认 click 触发，插槽暴露 close -->
-      <MapboxMarker :lnglat="popupPos" :popup-options="{ offset: 16 }">
+      <MaplibreMarker :lnglat="popupPos" :popup-options="{ offset: 16 }">
         <div class="rounded-full bg-info px-3 py-1 text-xs font-medium text-inverted shadow-lg cursor-pointer">
           点我
         </div>
@@ -48,10 +48,10 @@ const group: { id: string, lnglat: [number, number], name: string }[] = [
             </UButton>
           </div>
         </template>
-      </MapboxMarker>
+      </MaplibreMarker>
 
       <!-- 一组 marker 默认全部展开，互不互斥 -->
-      <MapboxMarker
+      <MaplibreMarker
         v-for="point in group"
         :key="point.id"
         :lnglat="point.lnglat"
@@ -64,7 +64,7 @@ const group: { id: string, lnglat: [number, number], name: string }[] = [
             {{ point.name }}
           </div>
         </template>
-      </MapboxMarker>
+      </MaplibreMarker>
     </DemoMap>
   </MapShowcase>
 </template>

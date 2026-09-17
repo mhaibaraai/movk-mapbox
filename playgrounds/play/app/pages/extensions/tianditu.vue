@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { TiandituLayerType } from '#mapbox/utils/tianditu'
+import type { TiandituLayerType } from '#maplibre/utils/tianditu'
 
 const layer = ref<TiandituLayerType>('vec')
 const annotation = ref(true)
@@ -13,7 +13,7 @@ const options = [
 <template>
   <MapShowcase
     title="天地图底图"
-    description="MapboxTiandituLayer 便捷组件：web-mercator 栅格预设。annotation 可叠加对应注记（vec→cva / img→cia / ter→cta），切换类型时旧图层正确移除（需配置 tiandituToken）。"
+    description="MaplibreTiandituLayer 便捷组件：web-mercator 栅格预设。annotation 可叠加对应注记（vec→cva / img→cia / ter→cta），切换类型时旧图层正确移除（需配置 tiandituToken）。"
     :state="{ layer, annotation }"
   >
     <template #toolbar>
@@ -21,8 +21,8 @@ const options = [
       <USwitch v-model="annotation" label="显示注记" />
     </template>
 
-    <MapboxMap :options="{ style: 'mapbox://styles/mapbox/empty-v9', center: [116.39, 39.91], zoom: 9 }">
-      <MapboxTiandituLayer :layer="layer" :annotation="annotation" />
-    </MapboxMap>
+    <MaplibreMap :options="{ center: [116.39, 39.91], zoom: 9 }">
+      <MaplibreTiandituLayer :layer="layer" :annotation="annotation" />
+    </MaplibreMap>
   </MapShowcase>
 </template>

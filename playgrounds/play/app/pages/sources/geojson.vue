@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { GeoJSONSourceSpecification } from 'mapbox-gl'
+import type { GeoJSONSourceSpecification } from '@maplibre/maplibre-gl-style-spec'
 
 // setData 增量更新：改动 data 时 Source 内部走 setData，不整源重建
 const points = ref<[number, number][]>([
@@ -28,7 +28,7 @@ function addPoint() {
 <template>
   <MapShowcase
     title="GeoJSON 数据源"
-    description="分离式 MapboxSource + MapboxLayer。响应式 data 变化经 setData 增量更新。"
+    description="分离式 MaplibreSource + MaplibreLayer。响应式 data 变化经 setData 增量更新。"
     :state="{ count: points.length }"
   >
     <template #toolbar>
@@ -38,14 +38,14 @@ function addPoint() {
     </template>
 
     <DemoMap :center="[116.39, 39.91]" :zoom="11">
-      <MapboxSource source-id="cities" :source="source">
-        <MapboxLayer
+      <MaplibreSource source-id="cities" :source="source">
+        <MaplibreLayer
           layer-id="cities-circle"
           type="circle"
           source="cities"
           :paint="{ 'circle-radius': 8, 'circle-color': '#10b981', 'circle-stroke-width': 2, 'circle-stroke-color': '#fff' }"
         />
-      </MapboxSource>
+      </MaplibreSource>
     </DemoMap>
   </MapShowcase>
 </template>
