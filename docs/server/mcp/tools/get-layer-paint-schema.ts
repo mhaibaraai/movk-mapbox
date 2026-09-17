@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-const SPEC_BASE = 'https://docs.mapbox.com/style-spec/reference/layers/'
+const SPEC_BASE = 'https://maplibre.org/maplibre-style-spec/layers/'
 
 interface LayerSchema {
   commonPaint: string[]
@@ -9,13 +9,13 @@ interface LayerSchema {
   glSpecRef: string
 }
 
-// MapboxLayer passes paint/layout straight to GL. These list only the common keys
-// with a minimal scaffold; for the exhaustive set query mapbox-docs-mcp or the style spec (glSpecRef).
+// MaplibreLayer passes paint/layout straight to GL. These list only the common keys
+// with a minimal scaffold; for the exhaustive set query maplibre-docs-mcp or the style spec (glSpecRef).
 const SCHEMAS: Record<string, LayerSchema> = {
   'circle': {
     commonPaint: ['circle-radius', 'circle-color', 'circle-opacity', 'circle-stroke-width', 'circle-stroke-color'],
     commonLayout: ['circle-sort-key'],
-    snippet: `<MapboxLayer
+    snippet: `<MaplibreLayer
   layer-id="points"
   type="circle"
   :source="{ type: 'geojson', data: '/points.geojson' }"
@@ -26,7 +26,7 @@ const SCHEMAS: Record<string, LayerSchema> = {
   'line': {
     commonPaint: ['line-color', 'line-width', 'line-opacity', 'line-dasharray', 'line-gradient'],
     commonLayout: ['line-cap', 'line-join'],
-    snippet: `<MapboxLayer
+    snippet: `<MaplibreLayer
   layer-id="route"
   type="line"
   :source="{ type: 'geojson', data: '/route.geojson' }"
@@ -38,7 +38,7 @@ const SCHEMAS: Record<string, LayerSchema> = {
   'fill': {
     commonPaint: ['fill-color', 'fill-opacity', 'fill-outline-color', 'fill-pattern'],
     commonLayout: ['fill-sort-key'],
-    snippet: `<MapboxLayer
+    snippet: `<MaplibreLayer
   layer-id="area"
   type="fill"
   :source="{ type: 'geojson', data: '/area.geojson' }"
@@ -49,7 +49,7 @@ const SCHEMAS: Record<string, LayerSchema> = {
   'symbol': {
     commonPaint: ['text-color', 'text-halo-color', 'text-halo-width', 'icon-opacity'],
     commonLayout: ['icon-image', 'icon-size', 'text-field', 'text-size', 'text-anchor', 'symbol-placement'],
-    snippet: `<MapboxLayer
+    snippet: `<MaplibreLayer
   layer-id="labels"
   type="symbol"
   :source="{ type: 'geojson', data: '/points.geojson' }"
@@ -61,7 +61,7 @@ const SCHEMAS: Record<string, LayerSchema> = {
   'heatmap': {
     commonPaint: ['heatmap-weight', 'heatmap-intensity', 'heatmap-color', 'heatmap-radius', 'heatmap-opacity'],
     commonLayout: [],
-    snippet: `<MapboxLayer
+    snippet: `<MaplibreLayer
   layer-id="heat"
   type="heatmap"
   :source="{ type: 'geojson', data: '/points.geojson' }"
@@ -72,7 +72,7 @@ const SCHEMAS: Record<string, LayerSchema> = {
   'fill-extrusion': {
     commonPaint: ['fill-extrusion-color', 'fill-extrusion-height', 'fill-extrusion-base', 'fill-extrusion-opacity'],
     commonLayout: ['fill-extrusion-edge-radius'],
-    snippet: `<MapboxLayer
+    snippet: `<MaplibreLayer
   layer-id="buildings"
   type="fill-extrusion"
   :source="{ type: 'geojson', data: '/buildings.geojson' }"
@@ -83,7 +83,7 @@ const SCHEMAS: Record<string, LayerSchema> = {
   'raster': {
     commonPaint: ['raster-opacity', 'raster-brightness-min', 'raster-brightness-max', 'raster-contrast', 'raster-saturation'],
     commonLayout: [],
-    snippet: `<MapboxLayer
+    snippet: `<MaplibreLayer
   layer-id="overlay"
   type="raster"
   :source="{ type: 'raster', tiles: ['https://example.com/{z}/{x}/{y}.png'], tileSize: 256 }"
@@ -96,7 +96,7 @@ const SCHEMAS: Record<string, LayerSchema> = {
 const typeEnum = z.enum(['circle', 'line', 'fill', 'symbol', 'heatmap', 'fill-extrusion', 'raster'])
 
 export default defineMcpTool({
-  description: 'Get the recommended paint/layout property keys and a minimal MapboxLayer scaffold for a given layer type. MapboxLayer passes paint/layout straight to Mapbox GL, so use this to avoid guessing property names. Omit `type` to list all types.',
+  description: 'Get the recommended paint/layout property keys and a minimal MaplibreLayer scaffold for a given layer type. MaplibreLayer passes paint/layout straight to MapLibre GL, so use this to avoid guessing property names. Omit `type` to list all types.',
   annotations: {
     readOnlyHint: true,
     destructiveHint: false,
@@ -104,7 +104,7 @@ export default defineMcpTool({
     openWorldHint: false
   },
   inputSchema: {
-    type: typeEnum.optional().describe('Mapbox layer type: circle, line, fill, symbol, heatmap, fill-extrusion, raster')
+    type: typeEnum.optional().describe('MapLibre layer type: circle, line, fill, symbol, heatmap, fill-extrusion, raster')
   },
   inputExamples: [
     {},

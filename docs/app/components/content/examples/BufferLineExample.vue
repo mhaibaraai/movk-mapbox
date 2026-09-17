@@ -9,9 +9,9 @@ const line: [number, number][] = [
 
 <template>
   <div class="h-115 w-full overflow-hidden rounded-(--ui-radius) border border-default">
-    <MapboxMap :options="{ style: 'mapbox://styles/mapbox/light-v11', center: [116.42, 39.91], zoom: 11 }">
+    <MaplibreMap :options="{ style: 'https://tiles.openfreemap.org/styles/positron', center: [116.42, 39.91], zoom: 11 }">
       <!-- 沿线两侧扩展 width 米的走廊面 -->
-      <MapboxBufferLine :line="line" :width="600" color="#10b981" />
-    </MapboxMap>
+      <MaplibreBufferLine :line="line" :width="600" color="#10b981" />
+    </MaplibreMap>
   </div>
 </template>

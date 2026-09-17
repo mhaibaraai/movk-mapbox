@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { FeatureCollection } from 'geojson'
-import type { FilterSpecification } from 'mapbox-gl'
+import type { FilterSpecification } from '@maplibre/maplibre-gl-style-spec'
 
 const data: FeatureCollection = {
   type: 'FeatureCollection',
@@ -30,7 +30,7 @@ const filter = computed<FilterSpecification | undefined>(() =>
 
 <template>
   <div class="h-115 w-full overflow-hidden rounded-(--ui-radius) border border-default">
-    <MapboxMap :options="{ style: 'mapbox://styles/mapbox/light-v11', center: [116.4, 39.9], zoom: 10 }">
+    <MaplibreMap :options="{ style: 'https://tiles.openfreemap.org/styles/positron', center: [116.4, 39.9], zoom: 10 }">
       <div class="absolute left-3 top-3 z-10 flex flex-wrap gap-2">
         <UButton
           v-for="lv in levels"
@@ -43,7 +43,7 @@ const filter = computed<FilterSpecification | undefined>(() =>
           {{ lv.label }}
         </UButton>
       </div>
-      <MapboxLayer
+      <MaplibreLayer
         layer-id="points"
         type="circle"
         :source="{ type: 'geojson', data }"
@@ -55,6 +55,6 @@ const filter = computed<FilterSpecification | undefined>(() =>
           'circle-stroke-color': '#fff'
         }"
       />
-    </MapboxMap>
+    </MaplibreMap>
   </div>
 </template>

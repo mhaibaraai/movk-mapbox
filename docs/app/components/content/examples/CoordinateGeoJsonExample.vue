@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { FeatureCollection } from 'geojson'
-import { transformGeoJSON } from '@movk/mapbox/utils/coordinate'
+import { transformGeoJSON } from '@movk/maplibre/utils/coordinate'
 
 // 高德导出的一段折线（GCJ02 坐标，叠在天地图上会偏移）
 const raw: FeatureCollection = {
@@ -26,20 +26,20 @@ const fixed = transformGeoJSON(raw, 'GCJ02', 'WGS84')
 
 <template>
   <div class="h-115 w-full overflow-hidden rounded-(--ui-radius) border border-default">
-    <MapboxMap :options="{ style: 'mapbox://styles/mapbox/light-v11', center: [121.484, 31.234], zoom: 14 }">
-      <MapboxTiandituLayer layer="vec" annotation />
-      <MapboxLayer
+    <MaplibreMap :options="{ style: 'https://tiles.openfreemap.org/styles/positron', center: [121.484, 31.234], zoom: 14 }">
+      <MaplibreTiandituLayer layer="vec" annotation />
+      <MaplibreLayer
         layer-id="line-raw"
         type="line"
         :source="{ type: 'geojson', data: raw }"
         :paint="{ 'line-color': '#ef4444', 'line-width': 4 }"
       />
-      <MapboxLayer
+      <MaplibreLayer
         layer-id="line-fixed"
         type="line"
         :source="{ type: 'geojson', data: fixed }"
         :paint="{ 'line-color': '#22c55e', 'line-width': 4 }"
       />
-    </MapboxMap>
+    </MaplibreMap>
   </div>
 </template>

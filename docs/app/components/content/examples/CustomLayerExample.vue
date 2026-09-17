@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { MercatorCoordinate } from 'mapbox-gl'
-import type { CustomLayerInterface } from 'mapbox-gl'
+import { MercatorCoordinate } from 'maplibre-gl'
+import type { CustomLayerInterface } from 'maplibre-gl'
 
 // 经纬度转墨卡托裁剪坐标
 const points = [[116.0, 40.2], [116.8, 40.2], [116.4, 39.6]].map(([lng, lat]) =>
@@ -11,7 +11,7 @@ let program: WebGLProgram | null = null
 let buffer: WebGLBuffer | null = null
 let aPos = 0
 
-// CustomLayerInterface：直接用 WebGL 在地图坐标系绘制一个三角形
+// CustomLayerInterface：直接用 WebGL 在地图坐标系绘制一个三角形（墨卡托投影下 mainMatrix 即相机矩阵）
 const layer: CustomLayerInterface = {
   id: 'custom-triangle',
   type: 'custom',
@@ -44,10 +44,10 @@ const layer: CustomLayerInterface = {
       gl.STATIC_DRAW
     )
   },
-  render(gl, matrix) {
+  render(gl, { defaultProjectionData }) {
     if (!program) return
     gl.useProgram(program)
-    gl.uniformMatrix4fv(gl.getUniformLocation(program, 'u_matrix'), false, matrix)
+    gl.uniformMatrix4fv(gl.getUniformLocation(program, 'u_matrix'), false, defaultProjectionData.mainMatrix)
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
     gl.enableVertexAttribArray(aPos)
     gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0)
@@ -60,8 +60,8 @@ const layer: CustomLayerInterface = {
 
 <template>
   <div class="h-115 w-full overflow-hidden rounded-(--ui-radius) border border-default">
-    <MapboxMap :options="{ style: 'mapbox://styles/mapbox/light-v11', center: [116.4, 39.9], zoom: 8 }">
-      <MapboxCustomLayer :layer="layer" />
-    </MapboxMap>
+    <MaplibreMap :options="{ style: 'https://tiles.openfreemap.org/styles/positron', center: [116.4, 39.9], zoom: 8 }">
+      <MaplibreCustomLayer :layer="layer" />
+    </MaplibreMap>
   </div>
 </template>

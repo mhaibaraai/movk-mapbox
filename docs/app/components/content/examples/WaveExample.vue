@@ -16,8 +16,8 @@ const data: FeatureCollection = {
 
 <template>
   <div class="h-115 w-full overflow-hidden rounded-(--ui-radius) border border-default">
-    <MapboxMap :options="{ style: 'mapbox://styles/mapbox/dark-v11', center: [116.43, 39.913], zoom: 11 }">
-      <MapboxWaveCircle :data="data" :color="color" />
-    </MapboxMap>
+    <MaplibreMap :options="{ style: 'https://tiles.openfreemap.org/styles/dark', center: [116.43, 39.913], zoom: 11 }">
+      <MaplibreWaveCircle :data="data" :color="color" />
+    </MaplibreMap>
   </div>
 </template>

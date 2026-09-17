@@ -14,7 +14,7 @@ export default defineAppConfig({
         {
           category: '集成与上手',
           items: [
-            'Nuxt 4 如何安装并配置 token？',
+            'Nuxt 4 如何安装并配置天地图 token？',
             'Vue + Vite 项目怎么接入？',
             'center / zoom 怎么 v-model 绑定？'
           ]
@@ -32,7 +32,7 @@ export default defineAppConfig({
           items: [
             '如何添加 Marker / Popup 标注？',
             '怎么叠加 3D 建筑与动态效果？',
-            'fog / terrain / 雨雪怎么开启？'
+            'sky / terrain 怎么开启？'
           ]
         },
         {
@@ -48,7 +48,7 @@ export default defineAppConfig({
         {
           category: 'Getting Started',
           items: [
-            'How to install and configure a token in Nuxt 4?',
+            'How to install and configure the Tianditu token in Nuxt 4?',
             'How to integrate in a Vue + Vite project?',
             'How to v-model bind center / zoom?'
           ]
@@ -66,7 +66,7 @@ export default defineAppConfig({
           items: [
             'How to add Marker / Popup annotations?',
             'How to overlay 3D buildings and dynamic effects?',
-            'How to enable fog / terrain / rain and snow?'
+            'How to enable sky / terrain?'
           ]
         },
         {
@@ -94,7 +94,7 @@ export default defineAppConfig({
       links: [
         {
           icon: 'i-lucide-message-circle-code',
-          to: 'https://mapbox.mhaibaraai.cn/llms.txt',
+          to: 'https://maplibre.mhaibaraai.cn/llms.txt',
           target: '_blank',
           label: 'Open LLMs'
         }
@@ -106,9 +106,9 @@ export default defineAppConfig({
     socials: [
       {
         'icon': 'i-simple-icons-github',
-        'to': 'https://github.com/mhaibaraai/movk-mapbox',
+        'to': 'https://github.com/mhaibaraai/movk-maplibre',
         'target': '_blank',
-        'aria-label': 'movk-mapbox on GitHub'
+        'aria-label': 'movk-maplibre on GitHub'
       },
       {
         'icon': 'i-lucide-mail',

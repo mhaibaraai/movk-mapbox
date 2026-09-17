@@ -22,8 +22,8 @@ const data: FeatureCollection = {
 
 <template>
   <div class="h-115 w-full overflow-hidden rounded-(--ui-radius) border border-default">
-    <MapboxMap :options="{ style: 'mapbox://styles/mapbox/light-v11', center: [105, 35], zoom: 3.4 }">
-      <MapboxTemperature :data="data" :weight-range="[0, 40]" :radius="radius" />
-    </MapboxMap>
+    <MaplibreMap :options="{ style: 'https://tiles.openfreemap.org/styles/positron', center: [105, 35], zoom: 3.4 }">
+      <MaplibreTemperature :data="data" :weight-range="[0, 40]" :radius="radius" />
+    </MaplibreMap>
   </div>
 </template>

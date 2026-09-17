@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ControlPosition } from 'mapbox-gl'
+import type { ControlPosition } from 'maplibre-gl'
 
 withDefaults(defineProps<{ position?: ControlPosition }>(), {
   position: 'top-right'
@@ -8,8 +8,8 @@ withDefaults(defineProps<{ position?: ControlPosition }>(), {
 
 <template>
   <div class="h-115 w-full overflow-hidden rounded-(--ui-radius) border border-default">
-    <MapboxMap :options="{ style: 'mapbox://styles/mapbox/light-v11', center: [116.39, 39.91], zoom: 10 }">
-      <MapboxNavigationControl :position="position" />
-    </MapboxMap>
+    <MaplibreMap :options="{ style: 'https://tiles.openfreemap.org/styles/positron', center: [116.39, 39.91], zoom: 10 }">
+      <MaplibreNavigationControl :position="position" />
+    </MaplibreMap>
   </div>
 </template>

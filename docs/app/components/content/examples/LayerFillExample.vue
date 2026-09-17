@@ -12,14 +12,14 @@ const data: FeatureCollection = {
 
 <template>
   <div class="h-115 w-full overflow-hidden rounded-(--ui-radius) border border-default">
-    <MapboxMap :options="{ style: 'mapbox://styles/mapbox/light-v11', center: [116.4, 39.92], zoom: 11 }">
+    <MaplibreMap :options="{ style: 'https://tiles.openfreemap.org/styles/positron', center: [116.4, 39.92], zoom: 11 }">
       <!-- fill-color 用 ['get'] 读取要素属性，逐要素着色 -->
-      <MapboxLayer
+      <MaplibreLayer
         layer-id="zones"
         type="fill"
         :source="{ type: 'geojson', data }"
         :paint="{ 'fill-color': ['get', 'c'], 'fill-opacity': 0.4 }"
       />
-    </MapboxMap>
+    </MaplibreMap>
   </div>
 </template>

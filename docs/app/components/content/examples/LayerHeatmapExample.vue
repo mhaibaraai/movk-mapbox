@@ -16,8 +16,8 @@ const data: FeatureCollection = {
 
 <template>
   <div class="h-115 w-full overflow-hidden rounded-(--ui-radius) border border-default">
-    <MapboxMap :options="{ style: 'mapbox://styles/mapbox/dark-v11', center: [116.4, 39.93], zoom: 11 }">
-      <MapboxLayer
+    <MaplibreMap :options="{ style: 'https://tiles.openfreemap.org/styles/dark', center: [116.4, 39.93], zoom: 11 }">
+      <MaplibreLayer
         layer-id="heat"
         type="heatmap"
         :source="{ type: 'geojson', data }"
@@ -27,6 +27,6 @@ const data: FeatureCollection = {
           'heatmap-opacity': 0.85
         }"
       />
-    </MapboxMap>
+    </MaplibreMap>
   </div>
 </template>

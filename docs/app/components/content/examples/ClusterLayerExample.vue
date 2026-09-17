@@ -16,9 +16,9 @@ const data: FeatureCollection = {
 
 <template>
   <div class="h-115 w-full overflow-hidden rounded-(--ui-radius) border border-default">
-    <MapboxMap :options="{ style: 'mapbox://styles/mapbox/light-v11', center: [116.4, 39.9], zoom: 9 }">
+    <MaplibreMap :options="{ style: 'https://tiles.openfreemap.org/styles/positron', center: [116.4, 39.9], zoom: 9 }">
       <!-- 自动聚合：点击聚合圆放大展开，散点单独渲染 -->
-      <MapboxClusterLayer :data="data" />
-    </MapboxMap>
+      <MaplibreClusterLayer :data="data" />
+    </MaplibreMap>
   </div>
 </template>

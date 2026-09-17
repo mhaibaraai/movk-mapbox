@@ -1,11 +1,11 @@
 <template>
   <div class="h-115 w-full overflow-hidden rounded-(--ui-radius) border border-default">
-    <MapboxMap :options="{ style: 'mapbox://styles/mapbox/light-v11', center: [116.39, 39.91], zoom: 10 }">
+    <MaplibreMap :options="{ style: 'https://tiles.openfreemap.org/styles/positron', center: [116.39, 39.91], zoom: 10 }">
       <!-- compact 折叠为图标按钮，customAttribution 追加自定义版权 -->
-      <MapboxAttributionControl
+      <MaplibreAttributionControl
         position="bottom-right"
-        :options="{ compact: true, customAttribution: '© MOVK Mapbox' }"
+        :options="{ compact: true, customAttribution: '© MOVK MapLibre' }"
       />
-    </MapboxMap>
+    </MaplibreMap>
   </div>
 </template>

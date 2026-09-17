@@ -18,7 +18,7 @@ export default defineNuxtConfig({
 
   $production: {
     site: {
-      url: 'https://mapbox.mhaibaraai.cn'
+      url: 'https://maplibre.mhaibaraai.cn'
     }
   },
 
@@ -27,7 +27,7 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css'],
 
   site: {
-    name: 'Movk Mapbox'
+    name: 'Movk MapLibre'
   },
 
   runtimeConfig: {
@@ -42,7 +42,7 @@ export default defineNuxtConfig({
     '/docs/layers': { redirect: '/docs/layers/circle', prerender: false },
     '/docs/controls': { redirect: '/docs/controls/navigation', prerender: false },
     '/docs/effects': { redirect: '/docs/effects/window-building', prerender: false },
-    '/docs/environment': { redirect: '/docs/environment/fog', prerender: false },
+    '/docs/environment': { redirect: '/docs/environment/sky', prerender: false },
     '/docs/extensions': { redirect: '/docs/extensions/draw', prerender: false },
     '/docs/composables': { redirect: '/docs/composables/use-map', prerender: false },
     '/docs/utils': { redirect: '/docs/utils/buffer', prerender: false },
@@ -51,7 +51,7 @@ export default defineNuxtConfig({
     '/en/docs/layers': { redirect: '/en/docs/layers/circle', prerender: false },
     '/en/docs/controls': { redirect: '/en/docs/controls/navigation', prerender: false },
     '/en/docs/effects': { redirect: '/en/docs/effects/window-building', prerender: false },
-    '/en/docs/environment': { redirect: '/en/docs/environment/fog', prerender: false },
+    '/en/docs/environment': { redirect: '/en/docs/environment/sky', prerender: false },
     '/en/docs/extensions': { redirect: '/en/docs/extensions/draw', prerender: false },
     '/en/docs/composables': { redirect: '/en/docs/composables/use-map', prerender: false },
     '/en/docs/utils': { redirect: '/en/docs/utils/buffer', prerender: false }
@@ -63,7 +63,8 @@ export default defineNuxtConfig({
     optimizeDeps: {
       include: [
         '@unhead/schema-org/vue',
-        '@mapbox/mapbox-gl-draw',
+        'terra-draw',
+        'terra-draw-maplibre-gl-adapter',
         '@movk/core',
         '@turf/area',
         '@turf/bearing',
@@ -96,18 +97,24 @@ export default defineNuxtConfig({
   },
 
   llms: {
-    domain: 'https://mapbox.mhaibaraai.cn',
-    title: 'Movk Mapbox',
-    description: '声明式 Mapbox GL v3 封装库：提供 MapboxMap / MapboxSource / MapboxLayer 等组件与 composables，原生支持 Nuxt 4 模块，并经 Vite 插件在纯 Vue + Vite 项目中通用；内置 3D 建筑、雷达 / 扩散 / 辉光等动态效果，fog / terrain / 天气环境，绘制、天地图、WMS / WMTS 与多坐标系本土化。',
+    domain: 'https://maplibre.mhaibaraai.cn',
+    title: 'Movk MapLibre',
+    description: '声明式 MapLibre GL 封装库：提供 MaplibreMap / MaplibreSource / MaplibreLayer 等组件与 composables，原生支持 Nuxt 4 模块，并经 Vite 插件在纯 Vue + Vite 项目中通用；内置 3D 建筑、雷达 / 扩散 / 辉光等动态效果，sky / terrain 环境，terra-draw 绘制、天地图、WMS / WMTS 与多坐标系本土化。',
     full: {
-      title: 'Movk Mapbox — 声明式 Mapbox GL v3 封装库',
-      description: '声明式 Mapbox GL v3 封装库的完整文档：同一套 src/runtime 既作为 Nuxt 4 模块发布，也经 Vite / unplugin 插件在纯 Vue + Vite 项目通用。涵盖快速开始与双分发接入、核心组件（MapboxMap / MapboxSource / MapboxLayer 等）、图层与控件、3D 建筑及雷达 / 扩散 / 辉光等动态效果、fog / terrain / 天气环境、绘制扩展、天地图与 WMS / WMTS、多坐标系（WGS84 / GCJ02 / BD09）本土化、composables 与工具函数的全部 API 与示例。'
+      title: 'Movk MapLibre — 声明式 MapLibre GL 封装库',
+      description: '声明式 MapLibre GL 封装库的完整文档：同一套 src/runtime 既作为 Nuxt 4 模块发布，也经 Vite / unplugin 插件在纯 Vue + Vite 项目通用。涵盖快速开始与双分发接入、核心组件（MaplibreMap / MaplibreSource / MaplibreLayer 等）、图层与控件、3D 建筑及雷达 / 扩散 / 辉光等动态效果、sky / terrain 环境、terra-draw 绘制扩展、天地图与 WMS / WMTS、多坐标系（WGS84 / GCJ02 / BD09）本土化、composables 与工具函数的全部 API 与示例。'
     },
-    notes: ['mapbox', 'mapbox-gl', 'mapbox-gl-v3', 'declarative', 'nuxt', 'nuxt4', 'vue', 'vite', 'vue-plugin', 'unplugin', 'auto-import', 'map', 'source', 'layer', 'marker', 'popup', 'controls', 'navigation', '3d-buildings', 'effects', 'radar', 'glow', 'fog', 'terrain', 'weather', 'draw', 'tianditu', 'wms', 'wmts', 'coordinate', 'wgs84', 'gcj02', 'bd09', 'turf', 'composables', 'use-map', '纯 Vue + Vite 场景经 @movk/mapbox/vite 自动导入组件与 composables，并经 @movk/mapbox/vue-plugin 注入 token；token 在 Nuxt 模式由模块配置注入，地图实例仅客户端创建，无需 ClientOnly 包裹']
+    notes: ['maplibre', 'maplibre-gl', 'maplibre-gl-v6', 'declarative', 'nuxt', 'nuxt4', 'vue', 'vite', 'vue-plugin', 'unplugin', 'auto-import', 'map', 'source', 'layer', 'marker', 'popup', 'controls', 'navigation', '3d-buildings', 'effects', 'radar', 'glow', 'sky', 'terrain', 'draw', 'terra-draw', 'no-access-token', 'tianditu', 'wms', 'wmts', 'coordinate', 'wgs84', 'gcj02', 'bd09', 'turf', 'composables', 'use-map', '纯 Vue + Vite 场景经 @movk/maplibre/vite 自动导入组件与 composables，并经 @movk/maplibre/vue-plugin 注入运行时配置；MapLibre 无需 access token，天地图 token 与字体配置在 Nuxt 模式由模块配置注入，地图实例仅客户端创建，无需 ClientOnly 包裹']
+  },
+
+  maplibre: {
+    // OpenFreeMap 公开字体服务：空白样式与内置文字图层共用
+    glyphs: 'https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf',
+    textFont: ['Noto Sans Regular']
   },
 
   mcp: {
-    name: 'Movk Mapbox',
+    name: 'Movk MapLibre',
     browserRedirect: '/docs/getting-started/ai/mcp'
   }
 })

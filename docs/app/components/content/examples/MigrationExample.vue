@@ -14,8 +14,8 @@ const routes: { from: [number, number], to: [number, number] }[] = [
 
 <template>
   <div class="h-115 w-full overflow-hidden rounded-(--ui-radius) border border-default">
-    <MapboxMap :options="{ style: 'mapbox://styles/mapbox/dark-v11', center: [104, 36], zoom: 3.2 }">
-      <MapboxMigration :data="routes" :color="color" />
-    </MapboxMap>
+    <MaplibreMap :options="{ style: 'https://tiles.openfreemap.org/styles/dark', center: [104, 36], zoom: 3.2 }">
+      <MaplibreMigration :data="routes" :color="color" />
+    </MaplibreMap>
   </div>
 </template>

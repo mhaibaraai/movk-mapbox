@@ -1,7 +1,7 @@
 ---
 seo:
-  title: Movk Mapbox — 声明式 Mapbox GL v3 封装库
-  description: Compose maps, sources, layers, markers and controls declaratively with MapboxMap / MapboxLayer components and composables. Native Nuxt 4 module plus a Vite plugin for plain Vue. Ships 3D buildings, radar / diffusion / glow effects, fog / terrain / weather, Tianditu and WMS / WMTS basemaps, and multi-CRS localization.
+  title: Movk MapLibre — 声明式 MapLibre GL 封装库
+  description: Compose maps, sources, layers, markers and controls declaratively with MaplibreMap / MaplibreLayer components and composables. Native Nuxt 4 module plus a Vite plugin for plain Vue. Ships 3D buildings, radar / diffusion / glow effects, fog / terrain / weather, Tianditu and WMS / WMTS basemaps, and multi-CRS localization.
 ---
 
 ::u-page-hero{class="dark:bg-gradient-to-b from-neutral-900 to-neutral-950"}
@@ -13,7 +13,7 @@ orientation: horizontal
 
 #title
 :::motion
-声明式 [Mapbox GL]{.text-primary} 组件库
+声明式 [MapLibre GL]{.text-primary} 组件库
 :::
 
 #description
@@ -21,7 +21,7 @@ orientation: horizontal
 ---
 transition: { duration: 0.6, delay: 0.3 }
 ---
-声明式组合地图、图层、标记与控件，相机参数 `v-model` 双向绑定。一套组件通用于 Nuxt 4 与纯 Vue + Vite，内置 3D 建筑、动态效果、天气环境与本土化底图。
+声明式组合地图、图层、标记与控件，相机参数 `v-model` 双向绑定。一套组件通用于 Nuxt 4 与纯 Vue + Vite，内置 3D 建筑、动态效果、三维环境与本土化底图，无需 access token。
 :::
 
 #links
@@ -44,7 +44,7 @@ transition: { duration: 0.6, delay: 0.5 }
   color: neutral
   variant: outline
   size: xl
-  to: https://github.com/mhaibaraai/movk-mapbox
+  to: https://github.com/mhaibaraai/movk-maplibre
   target: _blank
   ---
   查看源码
@@ -78,7 +78,7 @@ transition: { duration: 0.6, delay: 0.1 }
 
   :::u-page-feature{icon="i-lucide-share-2"}
   #title
-  MapboxContext 注入
+  MaplibreContext 注入
 
   #description
   根组件下发上下文，子组件经 useMap() 直接取实例与 isLoaded / whenLoaded()，无需 id 查表。
@@ -102,10 +102,10 @@ transition: { duration: 0.6, delay: 0.1 }
 
   :::u-page-feature{icon="i-lucide-cloud-sun"}
   #title
-  环境与天气
+  三维环境
 
   #description
-  fog 大气、3D lights、terrain 地形与 temperature / rain / snow 天气，配合相机倾斜还原沉浸式三维场景。
+  sky 天空与大气、terrain 地形与 temperature 温度热力，配合相机倾斜还原沉浸式三维场景。
   :::
 
   :::u-page-feature{icon="i-lucide-map"}
@@ -113,7 +113,7 @@ transition: { duration: 0.6, delay: 0.1 }
   本土化扩展
 
   #description
-  天地图底图、WMS / WMTS 服务、mapbox-gl-draw 绘制，以及基于 gcoord 的 WGS84 / GCJ02 / BD09 坐标转换，开箱即用。
+  天地图底图、WMS / WMTS 服务、terra-draw 绘制，以及基于 gcoord 的 WGS84 / GCJ02 / BD09 坐标转换，开箱即用。
   :::
 
   :::u-page-feature{icon="i-lucide-package"}
@@ -121,7 +121,7 @@ transition: { duration: 0.6, delay: 0.1 }
   Nuxt / Vue 双模式
 
   #description
-  既是 Nuxt 4 模块，也提供 @movk/mapbox/vite + vue-plugin，让同一套组件在纯 Vue + Vite 项目中通用。
+  既是 Nuxt 4 模块，也提供 @movk/maplibre/vite + vue-plugin，让同一套组件在纯 Vue + Vite 项目中通用。
   :::
 
   :::u-page-feature{icon="i-lucide-toy-brick"}
@@ -129,7 +129,7 @@ transition: { duration: 0.6, delay: 0.1 }
   Composables 与工具
 
   #description
-  useMap、useMapboxCamera、useMeasure、useMapExport 等 composables，搭配坐标、缓冲、几何与量算工具，按需渐进式采用。
+  useMap、useMaplibreCamera、useMeasure、useMapExport 等 composables，搭配坐标、缓冲、几何与量算工具，按需渐进式采用。
   :::
 ::
 
@@ -138,7 +138,7 @@ transition: { duration: 0.6, delay: 0.1 }
 class: dark:bg-neutral-950
 links:
   - label: Star on GitHub
-    to: https://github.com/mhaibaraai/movk-mapbox
+    to: https://github.com/mhaibaraai/movk-maplibre
     target: _blank
     icon: i-lucide-star
     color: neutral
@@ -152,5 +152,5 @@ links:
 开始构建你的下一张地图
 
 #description
-从一张底图到三维建筑、动态效果与本土化底图服务，Movk Mapbox 用声明式组件把 Mapbox GL 的复杂度收敛为可组合的能力。
+从一张底图到三维建筑、动态效果与本土化底图服务，Movk MapLibre 用声明式组件把 MapLibre GL 的复杂度收敛为可组合的能力。
 ::

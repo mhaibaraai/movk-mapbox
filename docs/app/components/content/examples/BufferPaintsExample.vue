@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { bufferPaints } from '@movk/mapbox/utils/buffer'
+import { bufferPaints } from '@movk/maplibre/utils/buffer'
 import type { FeatureCollection } from 'geojson'
 
 const center: [number, number] = [116.397, 39.908]
@@ -22,11 +22,11 @@ const paints = bufferPaints({ color: '#3b82f6' })
 
 <template>
   <div class="h-115 w-full overflow-hidden rounded-(--ui-radius) border border-default">
-    <MapboxMap :options="{ style: 'mapbox://styles/mapbox/light-v11', center, zoom: 11 }">
-      <MapboxSource source-id="buffer" :source="{ type: 'geojson', data }">
-        <MapboxLayer layer-id="buffer-fill" type="fill" source="buffer" :paint="paints.fill" />
-        <MapboxLayer layer-id="buffer-line" type="line" source="buffer" :paint="paints.line" />
-      </MapboxSource>
-    </MapboxMap>
+    <MaplibreMap :options="{ style: 'https://tiles.openfreemap.org/styles/positron', center, zoom: 11 }">
+      <MaplibreSource source-id="buffer" :source="{ type: 'geojson', data }">
+        <MaplibreLayer layer-id="buffer-fill" type="fill" source="buffer" :paint="paints.fill" />
+        <MaplibreLayer layer-id="buffer-line" type="line" source="buffer" :paint="paints.line" />
+      </MaplibreSource>
+    </MaplibreMap>
   </div>
 </template>

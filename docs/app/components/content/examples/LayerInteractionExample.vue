@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { FeatureCollection } from 'geojson'
-import type { MapEventOf } from 'mapbox-gl'
+import type { MapLayerMouseEvent } from 'maplibre-gl'
 
 const data: FeatureCollection = {
   type: 'FeatureCollection',
@@ -14,15 +14,15 @@ const data: FeatureCollection = {
 const selected = ref<string | null>(null)
 
 // 图层 click 事件携带命中要素，从 properties 读取业务字段
-function onClick(event: MapEventOf<'click'>) {
+function onClick(event: MapLayerMouseEvent) {
   selected.value = (event.features?.[0]?.properties?.name as string) ?? null
 }
 </script>
 
 <template>
   <div class="h-115 w-full overflow-hidden rounded-(--ui-radius) border border-default">
-    <MapboxMap :options="{ style: 'mapbox://styles/mapbox/light-v11', center: [116.39, 39.93], zoom: 11 }">
-      <MapboxLayer
+    <MaplibreMap :options="{ style: 'https://tiles.openfreemap.org/styles/positron', center: [116.39, 39.93], zoom: 11 }">
+      <MaplibreLayer
         layer-id="poi"
         type="circle"
         :source="{ type: 'geojson', data }"
@@ -32,6 +32,6 @@ function onClick(event: MapEventOf<'click'>) {
       <div class="absolute right-3 top-3 z-10 rounded-(--ui-radius) border border-default bg-default/80 px-3 py-1.5 text-sm backdrop-blur">
         {{ selected ? `已选中：${selected}` : '点击任意圆点' }}
       </div>
-    </MapboxMap>
+    </MaplibreMap>
   </div>
 </template>

@@ -1,34 +1,34 @@
-[![Movk Mapbox](https://mapbox.mhaibaraai.cn/og-image.png)](https://mapbox.mhaibaraai.cn/)
+[![Movk MapLibre](https://maplibre.mhaibaraai.cn/og-image.png)](https://maplibre.mhaibaraai.cn/)
 
 English | [简体中文](./README.md)
 
-> A declarative Mapbox GL v3 wrapper — compose maps with `MapboxMap` / `MapboxSource` / `MapboxLayer` components and composables. The same `src/runtime` ships as a Nuxt 4 module and works in plain Vue + Vite projects via a Vite plugin. Built-in 3D buildings, dynamic effects (radar / diffusion / glow), fog / terrain / weather environments, drawing (mapbox-gl-draw), Tianditu tiles, WMS / WMTS, and multi-CRS localization support.
+> A declarative MapLibre GL wrapper — compose maps with `MaplibreMap` / `MaplibreSource` / `MaplibreLayer` components and composables. The same `src/runtime` ships as a Nuxt 4 module and works in plain Vue + Vite projects via a Vite plugin. Built-in 3D buildings, dynamic effects (radar / diffusion / glow), sky / terrain environments, drawing (terra-draw), Tianditu tiles, WMS / WMTS, and multi-CRS localization support.
 
-[![Install MCP in Cursor](https://mapbox.mhaibaraai.cn/mcp/badge.svg)](https://mapbox.mhaibaraai.cn/mcp/deeplink)
-[![Install MCP in VS Code](https://mapbox.mhaibaraai.cn/mcp/badge.svg?ide=vscode)](https://mapbox.mhaibaraai.cn/mcp/deeplink?ide=vscode)
+[![Install MCP in Cursor](https://maplibre.mhaibaraai.cn/mcp/badge.svg)](https://maplibre.mhaibaraai.cn/mcp/deeplink)
+[![Install MCP in VS Code](https://maplibre.mhaibaraai.cn/mcp/badge.svg?ide=vscode)](https://maplibre.mhaibaraai.cn/mcp/deeplink?ide=vscode)
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
 [![Nuxt](https://img.shields.io/badge/Nuxt-4-00DC82.svg)](https://nuxt.com/)
-[![Mapbox GL](https://img.shields.io/badge/Mapbox%20GL-v3-4264fb.svg)](https://docs.mapbox.com/mapbox-gl-js/)
+[![MapLibre GL](https://img.shields.io/badge/MapLibre%20GL-v6-396cb2.svg)](https://maplibre.org/maplibre-gl-js/docs/)
 [![npm version][npm-version-src]][npm-version-href]
 [![npm downloads][npm-downloads-src]][npm-downloads-href]
 [![License][license-src]][license-href]
 
-- 📖 [Documentation](https://mapbox.mhaibaraai.cn)
+- 📖 [Documentation](https://maplibre.mhaibaraai.cn)
 - 🇨🇳 [中文 README](./README.md)
 
 ## ✨ Features
 
 - **Declarative composition** — Build maps, sources, layers, markers, popups, and controls with components. No imperative instance lifecycle management required.
-- **Context injection architecture** — `MapboxContext` is propagated via provide/inject. Child components access the instance with `useMap()` directly, no id lookup needed.
+- **Context injection architecture** — `MaplibreContext` is propagated via provide/inject. Child components access the instance with `useMap()` directly, no id lookup needed.
 - **Two-way camera binding** — `v-model:center` / `zoom` / `bearing` / `pitch`, with cross-route persistence (`persistent` + keepalive).
 - **Rich layers and effects** — circle / fill / line / symbol / fill-extrusion / heatmap, clustering, buildings, raster, video, plus dynamic effects: radar / diffusion / glow / wave / migration / trail.
-- **Environment and weather** — Fog atmosphere, 3D lights, terrain, temperature / rain / snow.
-- **Localization extensions** — Tianditu base tiles, WMS / WMTS services, `MapboxDrawControl` drawing, and gcoord multi-CRS conversion (WGS84 / GCJ02 / BD09).
+- **3D environment** — Sky and atmosphere, terrain, and temperature heatmaps.
+- **Localization extensions** — Tianditu base tiles, WMS / WMTS services, `MaplibreDrawControl` drawing, and gcoord multi-CRS conversion (WGS84 / GCJ02 / BD09).
 - **SSR safe** — Map instances are created client-side in `onMounted` inside the component. No `<ClientOnly>` wrapper needed.
 - **AI friendly** — Built-in MCP Server and `llms.txt`. Components, composables, and docs are indexable by AI agents.
 
-The same components work in both Nuxt 4 and plain Vue + Vite. Drawing capabilities require the optional `@mapbox/mapbox-gl-draw` package.
+The same components work in both Nuxt 4 and plain Vue + Vite. Drawing capabilities require the optional `terra-draw` and `terra-draw-maplibre-gl-adapter` packages.
 
 ## 🚀 Quick Start
 
@@ -36,18 +36,18 @@ The same components work in both Nuxt 4 and plain Vue + Vite. Drawing capabiliti
 
 ```bash
 # pnpm
-pnpm add @movk/mapbox mapbox-gl
+pnpm add @movk/maplibre maplibre-gl
 
 # yarn
-yarn add @movk/mapbox mapbox-gl
+yarn add @movk/maplibre maplibre-gl
 
 # npm
-npm install @movk/mapbox mapbox-gl
+npm install @movk/maplibre maplibre-gl
 ```
 
 ```bash
 # Optional: drawing support
-pnpm add @mapbox/mapbox-gl-draw
+pnpm add terra-draw terra-draw-maplibre-gl-adapter
 ```
 
 ### Nuxt
@@ -56,15 +56,14 @@ Register the module in `nuxt.config.ts`:
 
 ```ts
 export default defineNuxtConfig({
-  modules: ['@movk/mapbox']
+  modules: ['@movk/maplibre']
 })
 ```
 
-Tokens are read from environment variables:
+MapLibre needs no access token; when using Tianditu basemaps, the Tianditu token is read from an environment variable:
 
 ```bash
-NUXT_PUBLIC_MAPBOX_ACCESS_TOKEN=pk.your_mapbox_access_token
-NUXT_PUBLIC_MAPBOX_TIANDITU_TOKEN=your_tianditu_tk
+NUXT_PUBLIC_MAPLIBRE_TIANDITU_TOKEN=your_tianditu_tk
 ```
 
 Components and composables are auto-imported — ready to use out of the box.
@@ -76,22 +75,24 @@ Use the Vite plugin and Vue plugin in plain Vue + Vite projects. The API is iden
 ```ts
 // vite.config.ts
 import vue from '@vitejs/plugin-vue'
-import Mapbox from '@movk/mapbox/vite'
+import Maplibre from '@movk/maplibre/vite'
 
 export default defineConfig({
-  plugins: [vue(), Mapbox()]
+  plugins: [vue(), Maplibre()]
 })
 ```
 
 ```ts
 // main.ts
 import { createApp } from 'vue'
-import MapboxPlugin from '@movk/mapbox/vue-plugin'
-import '@movk/mapbox/index.css'
+import MaplibrePlugin from '@movk/maplibre/vue-plugin'
+import '@movk/maplibre/index.css'
+// maplibre-gl v6 needs an explicit worker URL when bundled by Vite
+import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url'
 import App from './App.vue'
 
 createApp(App)
-  .use(MapboxPlugin, { accessToken: import.meta.env.VITE_MAPBOX_TOKEN })
+  .use(MaplibrePlugin, { workerUrl, tiandituToken: import.meta.env.VITE_TIANDITU_TOKEN })
   .mount('#app')
 ```
 
@@ -106,15 +107,15 @@ const zoom = ref(9)
 </script>
 
 <template>
-  <MapboxMap v-model:center="center" v-model:zoom="zoom" :options="{ style: 'mapbox://styles/mapbox/streets-v12' }">
-    <MapboxLayer
+  <MaplibreMap v-model:center="center" v-model:zoom="zoom" :options="{ style: 'https://tiles.openfreemap.org/styles/liberty' }">
+    <MaplibreLayer
       layer-id="points"
       type="circle"
       :source="{ type: 'geojson', data: '/points.geojson' }"
       :paint="{ 'circle-radius': 8, 'circle-color': '#e11d48' }"
     />
-    <MapboxNavigationControl position="top-right" />
-  </MapboxMap>
+    <MaplibreNavigationControl position="top-right" />
+  </MaplibreMap>
 </template>
 ```
 
@@ -122,36 +123,36 @@ const zoom = ref(9)
 
 ### Declarative Components
 
-All components are prefixed with `Mapbox` by default (configurable). Grouped by domain:
+All components are prefixed with `Maplibre` by default (configurable). Grouped by domain:
 
 | Category | Components |
 | --- | --- |
-| Core | `MapboxMap` `MapboxSource` `MapboxLayer` `MapboxLayerGroup` `MapboxCustomLayer` `MapboxMarker` `MapboxLottieMarker` `MapboxPopup` `MapboxTooltip` |
-| Layers | `MapboxBuildingLayer` `MapboxClusterLayer` `MapboxImageLayer` `MapboxRasterLayer` `MapboxVideoLayer` |
-| Effects | `MapboxRadar` `MapboxDiffusionCircle` `MapboxGlowCircle` `MapboxWaveCircle` `MapboxGradientBuilding` `MapboxTextureBuilding` `MapboxWindowBuilding` `MapboxFlowBuilding` `MapboxMigration` `MapboxTrail` `MapboxAnimatedImage` `MapboxSpriteImage` |
-| Environment & Weather | `MapboxFog` `MapboxLights` `MapboxTerrain` `MapboxTemperature` `MapboxRain` `MapboxSnow` |
-| Controls | `MapboxNavigationControl` `MapboxGeolocateControl` `MapboxFullscreenControl` `MapboxScaleControl` `MapboxAttributionControl` |
-| Extensions | `MapboxDrawControl` `MapboxTiandituLayer` `MapboxWmsLayer` `MapboxWmtsLayer` |
-| Buffers | `MapboxBufferCircle` `MapboxBufferEllipse` `MapboxBufferLine` `MapboxBufferPolygon` `MapboxBufferSector` |
+| Core | `MaplibreMap` `MaplibreSource` `MaplibreLayer` `MaplibreLayerGroup` `MaplibreCustomLayer` `MaplibreMarker` `MaplibreLottieMarker` `MaplibrePopup` `MaplibreTooltip` |
+| Layers | `MaplibreBuildingLayer` `MaplibreClusterLayer` `MaplibreImageLayer` `MaplibreRasterLayer` `MaplibreVideoLayer` |
+| Effects | `MaplibreRadar` `MaplibreDiffusionCircle` `MaplibreGlowCircle` `MaplibreWaveCircle` `MaplibreGradientBuilding` `MaplibreTextureBuilding` `MaplibreWindowBuilding` `MaplibreFlowBuilding` `MaplibreMigration` `MaplibreTrail` `MaplibreAnimatedImage` `MaplibreSpriteImage` |
+| Environment | `MaplibreSky` `MaplibreTerrain` `MaplibreTemperature` |
+| Controls | `MaplibreNavigationControl` `MaplibreGeolocateControl` `MaplibreFullscreenControl` `MaplibreScaleControl` `MaplibreAttributionControl` |
+| Extensions | `MaplibreDrawControl` `MaplibreTiandituLayer` `MaplibreWmsLayer` `MaplibreWmtsLayer` |
+| Buffers | `MaplibreBufferCircle` `MaplibreBufferEllipse` `MaplibreBufferLine` `MaplibreBufferPolygon` `MaplibreBufferSector` |
 
 ### Composables
 
 - `useMap()` — Inject the current map context (`map` / `isLoaded` / `whenLoaded()` / `onReady()`).
-- `useMapbox(id)` — Retrieve context by id from the registry (cross-tree / cross-route escape hatch).
-- `useMapboxCamera()` — Read and control the camera (center / zoom / bearing / pitch).
-- `useMapboxImage()` — Load and manage map images (icons / patterns).
+- `useMaplibre(id)` — Retrieve context by id from the registry (cross-tree / cross-route escape hatch).
+- `useMaplibreCamera()` — Read and control the camera (center / zoom / bearing / pitch).
+- `useMaplibreImage()` — Load and manage map images (icons / patterns).
 - `useFrameIcon()` — Animated icon management based on frame sequences.
 - `useFeatureState()` — Feature state (hover / active) management.
 - `useMapAnimation()` — Frame-by-frame animation driver with lifecycle control.
 - `useMapExport()` — Export map canvas as an image.
 - `useMeasure()` — Distance and area measurement.
-- `useMapboxDraw(options?)` — Access the draw context; pass `mapId` to drive drawing from outside the component tree.
-- `defineMapboxControl(onAdd, onRemove)` — Define a custom map control.
+- `useMaplibreDraw(options?)` — Access the draw context; pass `mapId` to drive drawing from outside the component tree.
+- `defineMaplibreControl(onAdd, onRemove)` — Define a custom map control.
 
 ### Coordinate Conversion
 
 ```ts
-import { transformPoint, transformGeoJSON } from '@movk/mapbox/utils/coordinate'
+import { transformPoint, transformGeoJSON } from '@movk/maplibre/utils/coordinate'
 
 transformPoint([116.397, 39.908], 'WGS84', 'GCJ02')
 transformGeoJSON(featureCollection, 'GCJ02', 'WGS84')
@@ -161,14 +162,14 @@ transformGeoJSON(featureCollection, 'GCJ02', 'WGS84')
 
 All runtime code lives in `src/runtime`, shared by both distribution paths:
 
-- **Nuxt module** — `src/module.ts` registers components and composables, writes tokens to `runtimeConfig.public.mapbox`, and sets up the `#mapbox` alias pointing to the runtime.
-- **Vite + unplugin** — `src/vite.ts` / `src/vue-plugin.ts` / `src/unplugin.ts` expose plugin entry points for component resolution and auto-imports. Runtime config is shared as a `globalThis` singleton so both build targets read the same token.
+- **Nuxt module** — `src/module.ts` registers components and composables, writes config such as the Tianditu token to `runtimeConfig.public.maplibre`, and sets up the `#maplibre` alias pointing to the runtime.
+- **Vite + unplugin** — `src/vite.ts` / `src/vue-plugin.ts` / `src/unplugin.ts` expose plugin entry points for component resolution and auto-imports. Runtime config is shared as a `globalThis` singleton so both build targets read the same config.
 - **Runtime** — Map instances are distributed via provide/inject context. `onReady()` is the unified entry point for child components to register sources and layers, and automatically rebuilds them after `setStyle`.
-- **Foundation** — Built on [Mapbox GL JS v3](https://docs.mapbox.com/mapbox-gl-js/), [@movk/core](https://github.com/mhaibaraai), [Turf.js](https://turfjs.org/), [gcoord](https://github.com/hujiulong/gcoord), and [VueUse](https://vueuse.org/).
+- **Foundation** — Built on [MapLibre GL JS v6](https://maplibre.org/maplibre-gl-js/docs/), [@movk/core](https://github.com/mhaibaraai), [Turf.js](https://turfjs.org/), [gcoord](https://github.com/hujiulong/gcoord), and [VueUse](https://vueuse.org/).
 
 ## ⚡ Tech Stack
 
-- [Mapbox GL JS v3](https://docs.mapbox.com/mapbox-gl-js/) — Interactive vector map rendering engine
+- [MapLibre GL JS v6](https://maplibre.org/maplibre-gl-js/docs/) — Interactive vector map rendering engine
 - [Nuxt 4](https://nuxt.com/) — The Intuitive Vue Framework
 - [Vue 3.5](https://vuejs.org/) — The Progressive JavaScript Framework
 - [TypeScript](https://www.typescriptlang.org/) — JavaScript with syntax for types
@@ -181,11 +182,11 @@ All runtime code lives in `src/runtime`, shared by both distribution paths:
 
 <!-- Badges -->
 
-[npm-version-src]: https://img.shields.io/npm/v/@movk/mapbox?style=flat&colorA=080f12&colorB=1fa669
-[npm-version-href]: https://npmjs.com/package/@movk/mapbox
+[npm-version-src]: https://img.shields.io/npm/v/@movk/maplibre?style=flat&colorA=080f12&colorB=1fa669
+[npm-version-href]: https://npmjs.com/package/@movk/maplibre
 
-[npm-downloads-src]: https://img.shields.io/npm/dm/@movk/mapbox?style=flat&colorA=080f12&colorB=1fa669
-[npm-downloads-href]: https://npmjs.com/package/@movk/mapbox
+[npm-downloads-src]: https://img.shields.io/npm/dm/@movk/maplibre?style=flat&colorA=080f12&colorB=1fa669
+[npm-downloads-href]: https://npmjs.com/package/@movk/maplibre
 
-[license-src]: https://img.shields.io/github/license/mhaibaraai/movk-mapbox.svg?style=flat&colorA=080f12&colorB=1fa669
-[license-href]: https://github.com/mhaibaraai/movk-mapbox/blob/main/LICENSE
+[license-src]: https://img.shields.io/github/license/mhaibaraai/movk-maplibre.svg?style=flat&colorA=080f12&colorB=1fa669
+[license-href]: https://github.com/mhaibaraai/movk-maplibre/blob/main/LICENSE

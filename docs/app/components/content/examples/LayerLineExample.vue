@@ -16,14 +16,14 @@ const data: FeatureCollection = {
 
 <template>
   <div class="h-115 w-full overflow-hidden rounded-(--ui-radius) border border-default">
-    <MapboxMap :options="{ style: 'mapbox://styles/mapbox/light-v11', center: [116.41, 39.91], zoom: 11 }">
-      <MapboxLayer
+    <MaplibreMap :options="{ style: 'https://tiles.openfreemap.org/styles/positron', center: [116.41, 39.91], zoom: 11 }">
+      <MaplibreLayer
         layer-id="route"
         type="line"
         :source="{ type: 'geojson', data }"
         :layout="{ 'line-cap': 'round', 'line-join': 'round' }"
         :paint="{ 'line-color': '#f43f5e', 'line-width': 4 }"
       />
-    </MapboxMap>
+    </MaplibreMap>
   </div>
 </template>

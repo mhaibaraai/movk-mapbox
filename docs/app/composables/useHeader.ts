@@ -40,7 +40,7 @@ export function useHeader() {
     },
     {
       label: t('nav.github'),
-      to: 'https://github.com/mhaibaraai/movk-mapbox',
+      to: 'https://github.com/mhaibaraai/movk-maplibre',
       icon: 'i-simple-icons-github',
       target: '_blank'
     }

@@ -16,18 +16,15 @@ const features = ref<Feature[]>([{
   }
 }])
 
-const options = computed(() => ({
-  displayControlsDefault: false,
-  userProperties: true,
-  styles: drawThemeStyles({ color: props.color })
-}))
+// terra-draw 主题色需为十六进制色值
+const theme = computed(() => ({ color: props.color as `#${string}` }))
 </script>
 
 <template>
   <div class="h-115 w-full overflow-hidden rounded-(--ui-radius) border border-default">
-    <MapboxMap :options="{ style: 'mapbox://styles/mapbox/light-v11', center: [116.395, 39.91], zoom: 12 }">
+    <MaplibreMap :options="{ style: 'https://tiles.openfreemap.org/styles/positron', center: [116.395, 39.91], zoom: 12 }">
       <!-- color 变化经 :key 重建控件按新主题重绘 -->
-      <MapboxDrawControl :key="color" v-model:features="features" :options="options" />
-    </MapboxMap>
+      <MaplibreDrawControl :key="color" v-model:features="features" :controls="false" :theme="theme" />
+    </MaplibreMap>
   </div>
 </template>

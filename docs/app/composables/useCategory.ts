@@ -76,7 +76,7 @@ export function useCategory() {
       {
         id: 'weather',
         title: t('category.environment.weather'),
-        icon: 'i-lucide-cloud-rain'
+        icon: 'i-lucide-thermometer'
       }
     ],
     'extensions': [

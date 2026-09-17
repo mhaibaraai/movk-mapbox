@@ -11,9 +11,9 @@ const data: FeatureCollection = {
 
 <template>
   <div class="h-115 w-full overflow-hidden rounded-(--ui-radius) border border-default">
-    <MapboxMap :options="{ style: 'mapbox://styles/mapbox/light-v11', center: [116.397, 39.908], zoom: 13 }">
+    <MaplibreMap :options="{ style: 'https://tiles.openfreemap.org/styles/positron', center: [116.397, 39.908], zoom: 13 }">
       <!-- Phaser 公开雪碧图：18 帧 37×45 单行 -->
-      <MapboxSpriteImage
+      <MaplibreSpriteImage
         :data="data"
         image="https://labs.phaser.io/assets/sprites/metalslug_mummy37x45.png"
         :frames="18"
@@ -23,6 +23,6 @@ const data: FeatureCollection = {
         :fps="12"
         :size="90"
       />
-    </MapboxMap>
+    </MaplibreMap>
   </div>
 </template>

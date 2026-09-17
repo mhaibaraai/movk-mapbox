@@ -12,9 +12,9 @@ const data: FeatureCollection = {
 
 <template>
   <div class="h-115 w-full overflow-hidden rounded-(--ui-radius) border border-default">
-    <MapboxMap :options="{ style: 'mapbox://styles/mapbox/light-v11', center: [116.41, 39.91], zoom: 13, pitch: 55 }">
+    <MaplibreMap :options="{ style: 'https://tiles.openfreemap.org/styles/positron', center: [116.41, 39.91], zoom: 13, pitch: 55 }">
       <!-- fill-extrusion-height 读取属性挤出 3D 体块 -->
-      <MapboxLayer
+      <MaplibreLayer
         layer-id="prisms"
         type="fill-extrusion"
         :source="{ type: 'geojson', data }"
@@ -24,6 +24,6 @@ const data: FeatureCollection = {
           'fill-extrusion-opacity': 0.8
         }"
       />
-    </MapboxMap>
+    </MaplibreMap>
   </div>
 </template>

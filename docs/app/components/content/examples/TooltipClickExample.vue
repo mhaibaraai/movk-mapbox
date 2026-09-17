@@ -13,14 +13,14 @@ const data: FeatureCollection = {
 
 <template>
   <div class="h-115 w-full overflow-hidden rounded-(--ui-radius) border border-default">
-    <MapboxMap :options="{ style: 'mapbox://styles/mapbox/light-v11', center: [116.39, 39.93], zoom: 11 }">
-      <MapboxLayer
+    <MaplibreMap :options="{ style: 'https://tiles.openfreemap.org/styles/positron', center: [116.39, 39.93], zoom: 11 }">
+      <MaplibreLayer
         layer-id="poi"
         type="circle"
         :source="{ type: 'geojson', data }"
         :paint="{ 'circle-radius': 9, 'circle-color': '#f43f5e', 'circle-stroke-width': 2, 'circle-stroke-color': '#fff' }"
       />
-      <MapboxTooltip layer-id="poi" trigger="click">
+      <MaplibreTooltip layer-id="poi" trigger="click">
         <template #default="{ feature, close }">
           <div v-if="feature" class="w-44 px-1 py-0.5">
             <p class="font-semibold">
@@ -34,7 +34,7 @@ const data: FeatureCollection = {
             </UButton>
           </div>
         </template>
-      </MapboxTooltip>
-    </MapboxMap>
+      </MaplibreTooltip>
+    </MaplibreMap>
   </div>
 </template>

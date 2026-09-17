@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { defineComponent, h, ref } from 'vue'
 
-// 子组件位于 <MapboxMap> 子树内，经 useMap() 注入上下文读取实时相机状态
+// 子组件位于 <MaplibreMap> 子树内，经 useMap() 注入上下文读取实时相机状态
 const MapStatus = defineComponent({
   name: 'MapStatus',
   setup() {
@@ -30,8 +30,8 @@ const MapStatus = defineComponent({
 
 <template>
   <div class="h-115 w-full overflow-hidden rounded-(--ui-radius) border border-default">
-    <MapboxMap :options="{ style: 'mapbox://styles/mapbox/light-v11', center: [116.397, 39.908], zoom: 10 }">
+    <MaplibreMap :options="{ style: 'https://tiles.openfreemap.org/styles/positron', center: [116.397, 39.908], zoom: 10 }">
       <MapStatus />
-    </MapboxMap>
+    </MaplibreMap>
   </div>
 </template>

@@ -6,20 +6,20 @@ const items = [
 
 const source = `\`\`\`vue
 <template>
-  <MapboxMap
+  <MaplibreMap
     :options="{
-      style: 'mapbox://styles/mapbox/light-v11',
+      style: 'https://tiles.openfreemap.org/styles/positron',
       center: [116.461, 39.909],
       zoom: 15.5,
       pitch: 60,
       bearing: -20
     }"
   >
-    <MapboxGradientBuilding
+    <MaplibreGradientBuilding source="openmaptiles" source-layer="building"
       :stops="[[0, '#1e3a8a'], [80, '#0ea5e9'], [200, '#f59e0b'], [400, '#f43f5e']]"
       :opacity="0.9"
     />
-  </MapboxMap>
+  </MaplibreMap>
 </template>
 \`\`\``
 
@@ -39,15 +39,17 @@ const { data: ast } = await useAsyncData('home-hero-demo-source', () => cachedPa
     }"
   >
     <template #preview>
-      <MapboxMap
+      <MaplibreMap
         class="h-full w-full"
-        :options="{ style: 'mapbox://styles/mapbox/light-v11', center: [116.461, 39.909], zoom: 15.5, pitch: 60, bearing: -20, interactive: false }"
+        :options="{ style: 'https://tiles.openfreemap.org/styles/positron', center: [116.461, 39.909], zoom: 15.5, pitch: 60, bearing: -20, interactive: false }"
       >
-        <MapboxGradientBuilding
+        <MaplibreGradientBuilding
+          source="openmaptiles"
+          source-layer="building"
           :stops="[[0, '#1e3a8a'], [80, '#0ea5e9'], [200, '#f59e0b'], [400, '#f43f5e']]"
           :opacity="0.9"
         />
-      </MapboxMap>
+      </MaplibreMap>
     </template>
 
     <template #code>
