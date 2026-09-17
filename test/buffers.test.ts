@@ -2,9 +2,9 @@ import { describe, expect, it, vi } from 'vitest'
 import { defineComponent, h, nextTick, ref } from 'vue'
 import { mount } from '@vue/test-utils'
 import type { Feature, Polygon } from 'geojson'
-import MapboxMap from '../src/runtime/components/Map.vue'
-import MapboxBufferCircle from '../src/runtime/components/buffers/BufferCircle.vue'
-import MapboxBufferSector from '../src/runtime/components/buffers/BufferSector.vue'
+import MaplibreMap from '../src/runtime/components/Map.vue'
+import MaplibreBufferCircle from '../src/runtime/components/buffers/BufferCircle.vue'
+import MaplibreBufferSector from '../src/runtime/components/buffers/BufferSector.vue'
 import { bufferPaints } from '../src/runtime/utils/buffer'
 
 const { maps, makeFakeMap } = vi.hoisted(() => {
@@ -51,13 +51,13 @@ const { maps, makeFakeMap } = vi.hoisted(() => {
   return { maps, makeFakeMap }
 })
 
-vi.mock('mapbox-gl', () => {
+vi.mock('maplibre-gl', () => {
   function FakeGlMap(this: unknown) {
     return makeFakeMap()
   }
   function Noop() {}
   return {
-    default: { Map: FakeGlMap, accessToken: '', prewarm() {}, setRTLTextPlugin() {} },
+    Map: FakeGlMap,
     LngLat: { convert: (v: unknown) => v },
     Marker: Noop,
     Popup: Noop
@@ -81,8 +81,8 @@ describe('BufferCircle', () => {
     const radius = ref(500)
     const Parent = defineComponent({
       setup() {
-        return () => h(MapboxMap, { options: {} }, {
-          default: () => h(MapboxBufferCircle, {
+        return () => h(MaplibreMap, { options: {} }, {
+          default: () => h(MaplibreBufferCircle, {
             layerId: 'buf',
             center: [116.39, 39.91],
             radius: radius.value
@@ -113,8 +113,8 @@ describe('BufferSector', () => {
   it('扇形几何含圆心顶点', () => {
     const Parent = defineComponent({
       setup() {
-        return () => h(MapboxMap, { options: {} }, {
-          default: () => h(MapboxBufferSector, {
+        return () => h(MaplibreMap, { options: {} }, {
+          default: () => h(MaplibreBufferSector, {
             layerId: 'sec',
             center: [116.39, 39.91],
             radius: 800,

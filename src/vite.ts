@@ -1,4 +1,4 @@
-import { MapboxUnplugin } from './unplugin'
+import { MaplibreUnplugin } from './unplugin'
 
-export type { MapboxResolverOptions, MapboxUnpluginOptions } from './unplugin'
-export default MapboxUnplugin.vite
+export type { MaplibreResolverOptions, MaplibreUnpluginOptions } from './unplugin'
+export default MaplibreUnplugin.vite

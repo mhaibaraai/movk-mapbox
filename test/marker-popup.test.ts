@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { defineComponent, h, nextTick, ref } from 'vue'
 import { mount } from '@vue/test-utils'
-import MapboxMap from '../src/runtime/components/Map.vue'
-import MapboxMarker from '../src/runtime/components/Marker.vue'
+import MaplibreMap from '../src/runtime/components/Map.vue'
+import MaplibreMarker from '../src/runtime/components/Marker.vue'
 
 const { maps, markers, popups, makeFakeMap } = vi.hoisted(() => {
   interface FakeMarkerLike { element: HTMLElement }
@@ -13,7 +13,7 @@ const { maps, markers, popups, makeFakeMap } = vi.hoisted(() => {
   function makeFakeMap() {
     const handlers: Record<string, Set<(e?: unknown) => void>> = {}
     // 还原真实结构：marker 元素挂在 canvasContainer 内，其 DOM click 冒泡后
-    // mapbox 依次 fire('preclick') / fire('click')，preclick 会关闭 closeOnClick 的 popup
+    // maplibre 依次 fire('preclick') / fire('click')，preclick 会关闭 closeOnClick 的 popup
     const canvasContainer = document.createElement('div')
     document.body.appendChild(canvasContainer)
     const fired: string[] = []
@@ -50,7 +50,7 @@ const { maps, markers, popups, makeFakeMap } = vi.hoisted(() => {
   return { maps, markers, popups, makeFakeMap }
 })
 
-vi.mock('mapbox-gl', () => {
+vi.mock('maplibre-gl', () => {
   function FakeGlMap(this: unknown) {
     return makeFakeMap()
   }
@@ -92,7 +92,7 @@ vi.mock('mapbox-gl', () => {
     addTo(map: FakeMapLike) {
       this.opened = true
       this.map = map
-      // mapbox 默认 closeOnClick: true，绑定在 map 的 preclick 上
+      // maplibre 默认 closeOnClick: true，绑定在 map 的 preclick 上
       if (this.options.closeOnClick !== false) map.on('preclick', this.onClose)
       return this
     }
@@ -110,18 +110,18 @@ vi.mock('mapbox-gl', () => {
     isOpen() { return this.opened }
   }
   return {
-    default: { Map: FakeGlMap, accessToken: '', prewarm() {}, setRTLTextPlugin() {} },
+    Map: FakeGlMap,
     LngLat: { convert: (v: unknown) => v },
     Marker: FakeMarker,
     Popup: FakePopup
   }
 })
 
-/** 挂载一个 MapboxMap，其内渲染 children，并把地图置为 loaded */
+/** 挂载一个 MaplibreMap，其内渲染 children，并把地图置为 loaded */
 async function mountMap(children: () => unknown) {
   const Parent = defineComponent({
     setup() {
-      return () => h(MapboxMap, { options: {} }, { default: children })
+      return () => h(MaplibreMap, { options: {} }, { default: children })
     }
   })
   const wrapper = mount(Parent, { attachTo: document.body })
@@ -141,7 +141,7 @@ function hasCard(wrapper: { find: (s: string) => { exists: () => boolean } }) {
   return wrapper.find('[data-test="card"]').exists()
 }
 
-describe('MapboxMarker 弹窗', () => {
+describe('MaplibreMarker 弹窗', () => {
   beforeEach(() => {
     maps.length = 0
     markers.length = 0
@@ -149,7 +149,7 @@ describe('MapboxMarker 弹窗', () => {
   })
 
   it('无 #popup 插槽时不创建 popup，点击照常冒泡到地图', async () => {
-    const wrapper = await mountMap(() => h(MapboxMarker, { lnglat: [0, 0] }, { default: () => h('div', 'pin') }))
+    const wrapper = await mountMap(() => h(MaplibreMarker, { lnglat: [0, 0] }, { default: () => h('div', 'pin') }))
 
     expect(popups).toHaveLength(0)
     clickMarker()
@@ -160,11 +160,11 @@ describe('MapboxMarker 弹窗', () => {
     wrapper.unmount()
   })
 
-  // 回归：点击若冒泡到地图，mapbox 的 preclick 会立刻触发 closeOnClick，
+  // 回归：点击若冒泡到地图，maplibre 的 preclick 会立刻触发 closeOnClick，
   // 把刚在微任务检查点里挂载好的 popup 当场关闭，表现为“点了没反应”
   it('trigger=click 时点击 marker 不冒泡到地图，避免 preclick 自关闭', async () => {
     const wrapper = await mountMap(() =>
-      h(MapboxMarker, { lnglat: [0, 0] }, { default: () => h('div', 'pin'), popup: card })
+      h(MaplibreMarker, { lnglat: [0, 0] }, { default: () => h('div', 'pin'), popup: card })
     )
 
     clickMarker()
@@ -178,7 +178,7 @@ describe('MapboxMarker 弹窗', () => {
 
   it('地图上的 preclick 关闭 popup 时，open 同步复位', async () => {
     const wrapper = await mountMap(() =>
-      h(MapboxMarker, { lnglat: [0, 0], open: true }, { default: () => h('div', 'pin'), popup: card })
+      h(MaplibreMarker, { lnglat: [0, 0], open: true }, { default: () => h('div', 'pin'), popup: card })
     )
     expect(hasCard(wrapper)).toBe(true)
 
@@ -191,7 +191,7 @@ describe('MapboxMarker 弹窗', () => {
 
   it('trigger=click 时点击 marker 开合弹窗（toggle）', async () => {
     const wrapper = await mountMap(() =>
-      h(MapboxMarker, { lnglat: [0, 0] }, { default: () => h('div', 'pin'), popup: card })
+      h(MaplibreMarker, { lnglat: [0, 0] }, { default: () => h('div', 'pin'), popup: card })
     )
 
     expect(hasCard(wrapper)).toBe(false)
@@ -208,7 +208,7 @@ describe('MapboxMarker 弹窗', () => {
 
   it('trigger=hover 时 mouseenter 开、mouseleave 关', async () => {
     const wrapper = await mountMap(() =>
-      h(MapboxMarker, { lnglat: [0, 0], trigger: 'hover' }, { default: () => h('div', 'pin'), popup: card })
+      h(MaplibreMarker, { lnglat: [0, 0], trigger: 'hover' }, { default: () => h('div', 'pin'), popup: card })
     )
     const el = markers[0]!.element
 
@@ -226,7 +226,7 @@ describe('MapboxMarker 弹窗', () => {
     const open = ref(false)
     const wrapper = await mountMap(() =>
       h(
-        MapboxMarker,
+        MaplibreMarker,
         { 'lnglat': [0, 0], 'trigger': 'none', 'open': open.value, 'onUpdate:open': (v: boolean) => (open.value = v) },
         { default: () => h('div', 'pin'), popup: card }
       )
@@ -244,7 +244,7 @@ describe('MapboxMarker 弹窗', () => {
 
   it('静态 :open="true" 初始即展开，且仍可 click 关闭', async () => {
     const wrapper = await mountMap(() =>
-      h(MapboxMarker, { lnglat: [0, 0], open: true }, { default: () => h('div', 'pin'), popup: card })
+      h(MaplibreMarker, { lnglat: [0, 0], open: true }, { default: () => h('div', 'pin'), popup: card })
     )
 
     expect(hasCard(wrapper)).toBe(true)
@@ -259,7 +259,7 @@ describe('MapboxMarker 弹窗', () => {
     const points = [[0, 0], [1, 1], [2, 2]]
     const wrapper = await mountMap(() =>
       points.map((lnglat, i) =>
-        h(MapboxMarker, { key: i, lnglat, open: true }, {
+        h(MaplibreMarker, { key: i, lnglat, open: true }, {
           default: () => h('div', 'pin'),
           popup: () => h('div', { 'data-test': 'card' }, `card-${i}`)
         })

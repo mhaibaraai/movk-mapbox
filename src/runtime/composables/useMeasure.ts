@@ -3,7 +3,7 @@ import type { Ref } from 'vue'
 import { length } from '@turf/length'
 import { area } from '@turf/area'
 import type { Feature, FeatureCollection, LineString, Polygon } from 'geojson'
-import type { GeoJSONSource, Map as MapboxMap, MapMouseEvent } from 'mapbox-gl'
+import type { GeoJSONSource, Map as MaplibreMap, MapMouseEvent } from 'maplibre-gl'
 import { useContextResolver } from '../domains/map/resolve'
 import { formatArea, formatDistance } from '../utils/measure'
 import { logger } from '../utils/logger'
@@ -11,7 +11,7 @@ import { logger } from '../utils/logger'
 export type MeasureMode = 'distance' | 'area'
 
 export interface UseMeasureOptions {
-  /** 目标地图 id；在 MapboxMap 子树外使用时必填 */
+  /** 目标地图 id；在 MaplibreMap 子树外使用时必填 */
   mapId?: string
   /**
    * 主色
@@ -50,21 +50,21 @@ export function useMeasure(options: UseMeasureOptions = {}): UseMeasureReturn {
   let finished: Feature[] = []
   let vertices: Position2D[] = []
   let cursor: Position2D | undefined
-  let boundMap: MapboxMap | undefined
+  let boundMap: MaplibreMap | undefined
   let stopReady: (() => void) | undefined
 
   // remove() 后 getCanvas() 返回 undefined：地图已销毁，getSource/getLayer 都会抛
-  function isAlive(map: MapboxMap): boolean {
+  function isAlive(map: MaplibreMap): boolean {
     return Boolean(map.getCanvas())
   }
 
-  function setCursor(map: MapboxMap, value: string): void {
+  function setCursor(map: MaplibreMap, value: string): void {
     // 地图移除后 getCanvas() 返回 undefined，卸载期游标重置可安全跳过
     const canvas = map.getCanvas()
     if (canvas) canvas.style.cursor = value
   }
 
-  function ensureLayers(map: MapboxMap): void {
+  function ensureLayers(map: MaplibreMap): void {
     if (!map.getSource(SOURCE_ID)) {
       map.addSource(SOURCE_ID, { type: 'geojson', data: collection() })
     }
@@ -158,7 +158,7 @@ export function useMeasure(options: UseMeasureOptions = {}): UseMeasureReturn {
   function start(nextMode: MeasureMode): void {
     const ctx = resolve()
     if (!ctx) {
-      logger.warn('useMeasure: no map context found; pass options.mapId or call inside <MapboxMap>.')
+      logger.warn('useMeasure: no map context found; pass options.mapId or call inside <MaplibreMap>.')
       return
     }
     if (active.value) stop()
@@ -212,7 +212,7 @@ export function useMeasure(options: UseMeasureOptions = {}): UseMeasureReturn {
   function teardown(): void {
     stop()
     const map = boundMap
-    // 地图已被销毁（如子组件先卸载）：source/layer 已由 mapbox 清理，再访问必抛
+    // 地图已被销毁（如子组件先卸载）：source/layer 已由 maplibre 清理，再访问必抛
     if (!map || !isAlive(map)) {
       boundMap = undefined
       return

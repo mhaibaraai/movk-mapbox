@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { defineComponent, h } from 'vue'
 import { mount } from '@vue/test-utils'
 import type { FeatureCollection } from 'geojson'
-import MapboxMap from '../src/runtime/components/Map.vue'
+import MaplibreMap from '../src/runtime/components/Map.vue'
 import { useMeasure } from '../src/runtime/composables/useMeasure'
 import { formatArea, formatDistance } from '../src/runtime/utils/measure'
 
@@ -30,7 +30,7 @@ const { maps, makeFakeMap } = vi.hoisted(() => {
         handlers[type]?.forEach(fn => fn(e))
       },
       isStyleLoaded: () => true,
-      // 复刻 mapbox：remove() 后 style 为 undefined，getLayer/getSource 解引用即抛
+      // 复刻 maplibre：remove() 后 style 为 undefined，getLayer/getSource 解引用即抛
       getLayer: (id: string) => {
         if (removed) throw new TypeError('Cannot read properties of undefined (reading \'getOwnLayer\')')
         return layers.has(id) ? { id } : undefined
@@ -66,13 +66,13 @@ const { maps, makeFakeMap } = vi.hoisted(() => {
   return { maps, makeFakeMap }
 })
 
-vi.mock('mapbox-gl', () => {
+vi.mock('maplibre-gl', () => {
   function FakeGlMap(this: unknown) {
     return makeFakeMap()
   }
   function Noop() {}
   return {
-    default: { Map: FakeGlMap, accessToken: '', prewarm() {}, setRTLTextPlugin() {} },
+    Map: FakeGlMap,
     LngLat: { convert: (v: unknown) => v },
     Marker: Noop,
     Popup: Noop
@@ -96,7 +96,7 @@ async function mountMeasure() {
       return () => h('div')
     }
   })
-  const wrapper = mount(MapboxMap, {
+  const wrapper = mount(MaplibreMap, {
     props: { options: {} },
     slots: { default: () => h(Child) }
   })

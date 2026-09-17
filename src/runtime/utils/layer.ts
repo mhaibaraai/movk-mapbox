@@ -1,5 +1,5 @@
 import { equalsBy } from '@movk/core'
-import type { Map as MapboxMap } from 'mapbox-gl'
+import type { Map as MaplibreMap } from 'maplibre-gl'
 
 type PropBag = Record<string, unknown>
 
@@ -20,7 +20,7 @@ function applyChangedProps(next: PropBag, prev: PropBag, apply: (key: string, va
 }
 
 /** 把图层的响应式变更（缩放范围、paint、layout、filter）增量应用到地图。 */
-export function applyLayerProps(map: MapboxMap, next: LayerUpdate, prev?: LayerUpdate): void {
+export function applyLayerProps(map: MaplibreMap, next: LayerUpdate, prev?: LayerUpdate): void {
   const id = next.id
 
   if (next.minzoom !== prev?.minzoom || next.maxzoom !== prev?.maxzoom) {

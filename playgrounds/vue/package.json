@@ -8,11 +8,13 @@
     "typecheck": "vue-tsc --noEmit"
   },
   "dependencies": {
-    "@mapbox/mapbox-gl-draw": "^1.5.1",
-    "@movk/mapbox": "workspace:*",
+    "@maplibre/maplibre-gl-style-spec": "^26.4.4",
+    "@movk/maplibre": "workspace:*",
     "@nuxt/ui": "^4.11.1",
-    "mapbox-gl": "^3.30.0",
+    "maplibre-gl": "^6.10.0",
     "ofetch": "^1.5.1",
+    "terra-draw": "^1.33.0",
+    "terra-draw-maplibre-gl-adapter": "^1.4.1",
     "vue": "^3.5.42",
     "vue-router": "^5.3.1"
   },

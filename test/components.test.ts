@@ -1,9 +1,9 @@
 import { describe, expect, it, vi } from 'vitest'
 import { defineComponent, h, nextTick, ref } from 'vue'
 import { mount } from '@vue/test-utils'
-import MapboxMap from '../src/runtime/components/Map.vue'
-import MapboxLayer from '../src/runtime/components/Layer.vue'
-import MapboxTiandituLayer from '../src/runtime/components/extensions/TiandituLayer.vue'
+import MaplibreMap from '../src/runtime/components/Map.vue'
+import MaplibreLayer from '../src/runtime/components/Layer.vue'
+import MaplibreTiandituLayer from '../src/runtime/components/extensions/TiandituLayer.vue'
 import { useMap } from '../src/runtime/composables/useMap'
 
 // 富功能 fake gl Map：记录 addLayer 次数、图层级 on 绑定次数，并可手动 fire 事件
@@ -70,7 +70,7 @@ const { maps, makeFakeMap } = vi.hoisted(() => {
   return { maps, makeFakeMap }
 })
 
-vi.mock('mapbox-gl', () => {
+vi.mock('maplibre-gl', () => {
   // 函数构造器：new FakeGlMap() 返回 makeFakeMap() 生成的桩对象
   function FakeGlMap(this: unknown) {
     return makeFakeMap()
@@ -82,7 +82,7 @@ vi.mock('mapbox-gl', () => {
       : v as { lng: number, lat: number })
   }
   return {
-    default: { Map: FakeGlMap, accessToken: '', prewarm() {}, setRTLTextPlugin() {} },
+    Map: FakeGlMap,
     LngLat,
     Marker: Noop,
     Popup: Noop
@@ -103,8 +103,8 @@ describe('F1 Map id 唯一性', () => {
     const Parent = defineComponent({
       setup() {
         return () => h('div', [
-          h(MapboxMap, { options: {} }, { default: () => h(Child) }),
-          h(MapboxMap, { options: {} }, { default: () => h(Child) })
+          h(MaplibreMap, { options: {} }, { default: () => h(Child) }),
+          h(MaplibreMap, { options: {} }, { default: () => h(Child) })
         ])
       }
     })
@@ -119,9 +119,9 @@ describe('F2 Layer 卸载后不再响应 style.load', () => {
     const show = ref(true)
     const Parent = defineComponent({
       setup() {
-        return () => h(MapboxMap, { options: {} }, {
+        return () => h(MaplibreMap, { options: {} }, {
           default: () => (show.value
-            ? h(MapboxLayer, { layerId: 'l', type: 'circle', source: inlineSource })
+            ? h(MaplibreLayer, { layerId: 'l', type: 'circle', source: inlineSource })
             : null)
         })
       }
@@ -147,8 +147,8 @@ describe('F3 TiandituLayer 切换类型', () => {
     const layer = ref<'vec' | 'img'>('vec')
     const Parent = defineComponent({
       setup() {
-        return () => h(MapboxMap, { options: {} }, {
-          default: () => h(MapboxTiandituLayer, { layer: layer.value, tk: 'test' })
+        return () => h(MaplibreMap, { options: {} }, {
+          default: () => h(MaplibreTiandituLayer, { layer: layer.value, tk: 'test' })
         })
       }
     })
@@ -171,8 +171,8 @@ describe('F3 TiandituLayer 切换类型', () => {
   it('annotation 时叠加注记图层', async () => {
     const Parent = defineComponent({
       setup() {
-        return () => h(MapboxMap, { options: {} }, {
-          default: () => h(MapboxTiandituLayer, { layer: 'img', annotation: true, tk: 'test' })
+        return () => h(MaplibreMap, { options: {} }, {
+          default: () => h(MaplibreTiandituLayer, { layer: 'img', annotation: true, tk: 'test' })
         })
       }
     })
@@ -190,9 +190,9 @@ describe('F4 onReady：load 后样式瞬时未就绪时经 styledata 补建', ()
     const show = ref(false)
     const Parent = defineComponent({
       setup() {
-        return () => h(MapboxMap, { options: {} }, {
+        return () => h(MaplibreMap, { options: {} }, {
           default: () => (show.value
-            ? h(MapboxLayer, { layerId: 'late', type: 'circle', source: inlineSource })
+            ? h(MaplibreLayer, { layerId: 'late', type: 'circle', source: inlineSource })
             : null)
         })
       }
@@ -220,7 +220,7 @@ describe('F4 onReady：load 后样式瞬时未就绪时经 styledata 补建', ()
 
 describe('相机回环', () => {
   it('moveend 回写后 watcher 比对相等，不再递归调用 setCenter', async () => {
-    const wrapper = mount(MapboxMap, { props: { center: [0, 0] } as never })
+    const wrapper = mount(MaplibreMap, { props: { center: [0, 0] } as never })
     const map = maps[maps.length - 1]!
 
     // 模拟一次地图移动结束：回写模型 → watcher 触发
@@ -234,14 +234,10 @@ describe('相机回环', () => {
   })
 })
 
-describe('hideLogo', () => {
-  it('随 prop 增删根节点状态类', async () => {
-    const wrapper = mount(MapboxMap, { props: { hideLogo: true } as never, attrs: { class: 'h-115' } })
-    // 状态类与 $attrs 透传的 class 合并共存
-    expect(wrapper.classes()).toEqual(expect.arrayContaining(['movk-mapbox', 'movk-mapbox--hide-logo', 'h-115']))
-
-    await wrapper.setProps({ hideLogo: false } as never)
-    expect(wrapper.classes()).not.toContain('movk-mapbox--hide-logo')
+describe('attrs', () => {
+  it('$attrs 透传的 class 与根节点类合并', () => {
+    const wrapper = mount(MaplibreMap, { attrs: { class: 'h-115' } })
+    expect(wrapper.classes()).toEqual(expect.arrayContaining(['movk-maplibre', 'h-115']))
     wrapper.unmount()
   })
 })

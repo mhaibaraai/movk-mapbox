@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { computed, useId } from 'vue'
-import type { GeoJSONSourceSpecification } from 'mapbox-gl'
+import type { GeoJSONSourceSpecification } from '@maplibre/maplibre-gl-style-spec'
 import { ringFade, ringProgress } from '../../utils/effects'
 import { useMapAnimation } from '../../composables/useMapAnimation'
-import MapboxSource from '../Source.vue'
-import MapboxLayer from '../Layer.vue'
+import MaplibreSource from '../Source.vue'
+import MaplibreLayer from '../Layer.vue'
 
 /** 扩散圆：多圈同心圆周期性扩张并渐隐。 */
 const props = withDefaults(defineProps<{
@@ -68,8 +68,8 @@ useMapAnimation((map, elapsed) => {
 </script>
 
 <template>
-  <MapboxSource :source-id="id" :source="source">
-    <MapboxLayer
+  <MaplibreSource :source-id="id" :source="source">
+    <MaplibreLayer
       v-for="ring in rings"
       :key="ring"
       :layer-id="`${id}-ring-${ring - 1}`"
@@ -78,5 +78,5 @@ useMapAnimation((map, elapsed) => {
       :paint="initialPaint"
       :before-id="beforeId"
     />
-  </MapboxSource>
+  </MaplibreSource>
 </template>

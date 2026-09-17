@@ -2,8 +2,8 @@
 import { onMounted, onUnmounted, useTemplateRef, watch } from 'vue'
 import lottie from 'lottie-web'
 import type { AnimationItem } from 'lottie-web'
-import type { LngLatLike } from 'mapbox-gl'
-import MapboxMarker from './Marker.vue'
+import type { LngLatLike } from 'maplibre-gl'
+import MaplibreMarker from './Marker.vue'
 
 /** Lottie 标记：在地图标记位用 lottie-web 渲染矢量动画（走 Marker DOM，非 icon 帧驱动）。 */
 const props = withDefaults(defineProps<{
@@ -63,7 +63,7 @@ onUnmounted(() => anim?.destroy())
 </script>
 
 <template>
-  <MapboxMarker v-model:lnglat="lnglat">
+  <MaplibreMarker v-model:lnglat="lnglat">
     <div ref="container" :style="{ width: `${width}px`, height: `${height}px` }" />
-  </MapboxMarker>
+  </MaplibreMarker>
 </template>

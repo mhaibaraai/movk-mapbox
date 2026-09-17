@@ -1,5 +1,5 @@
 import { onUnmounted } from 'vue'
-import type { Map as MapboxMap, MapEventOf } from 'mapbox-gl'
+import type { Map as MaplibreMap, MapEventType } from 'maplibre-gl'
 import { useMap } from './useMap'
 import { createFrameStyleImage } from '../utils/frame-icon'
 
@@ -32,13 +32,13 @@ export function useFrameIcon(options: UseFrameIconOptions): void {
     getMap: () => ctx.map.value
   })
 
-  function ensureImage(map: MapboxMap): void {
+  function ensureImage(map: MaplibreMap): void {
     if (!map.isStyleLoaded() || map.hasImage(imageName)) return
     map.addImage(imageName, image)
   }
 
   // 兜底:边角时序(setStyle 重载竞态等)致图片名缺失时按需重新注册
-  function onMissing(e: MapEventOf<'styleimagemissing'>): void {
+  function onMissing(e: MapEventType['styleimagemissing']): void {
     const map = ctx.map.value
     if (e.id === imageName && map && !map.hasImage(imageName)) {
       map.addImage(imageName, image)

@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { defineComponent, h, nextTick, ref } from 'vue'
 import { mount } from '@vue/test-utils'
-import MapboxMap from '../src/runtime/components/Map.vue'
-import MapboxPopup from '../src/runtime/components/Popup.vue'
+import MaplibreMap from '../src/runtime/components/Map.vue'
+import MaplibrePopup from '../src/runtime/components/Popup.vue'
 
 const { maps, popups, makeFakeMap } = vi.hoisted(() => {
   interface FakePopupLike {
@@ -38,7 +38,7 @@ const { maps, popups, makeFakeMap } = vi.hoisted(() => {
   return { maps, popups, makeFakeMap }
 })
 
-vi.mock('mapbox-gl', () => {
+vi.mock('maplibre-gl', () => {
   function FakeGlMap(this: unknown) {
     return makeFakeMap()
   }
@@ -56,7 +56,7 @@ vi.mock('mapbox-gl', () => {
       return this
     }
 
-    // 记录被交给 mapbox 的节点：真实实现会把它搬进 .mapboxgl-popup-content
+    // 记录被交给 maplibre 的节点：真实实现会把它搬进 .maplibregl-popup-content
     setDOMContent(node: HTMLElement) {
       this.content = node
       return this
@@ -77,19 +77,19 @@ vi.mock('mapbox-gl', () => {
     isOpen() { return this.opened }
   }
   return {
-    default: { Map: FakeGlMap, accessToken: '', prewarm() {}, setRTLTextPlugin() {} },
+    Map: FakeGlMap,
     LngLat: { convert: (v: unknown) => v },
     Marker: function () {},
     Popup: FakePopup
   }
 })
 
-/** 挂载 MapboxMap + MapboxPopup；load 由调用方决定何时触发 */
+/** 挂载 MaplibreMap + MaplibrePopup；load 由调用方决定何时触发 */
 function mountPopup(props: Record<string, unknown> = {}) {
   const Parent = defineComponent({
     setup() {
-      return () => h(MapboxMap, { options: {} }, {
-        default: () => h(MapboxPopup, { lnglat: [0, 0], ...props }, {
+      return () => h(MaplibreMap, { options: {} }, {
+        default: () => h(MaplibrePopup, { lnglat: [0, 0], ...props }, {
           default: () => h('span', { 'data-test': 'card' }, 'content')
         })
       })
@@ -103,7 +103,7 @@ function mountPopup(props: Record<string, unknown> = {}) {
 const cardEl = (wrapper: ReturnType<typeof mountPopup>['wrapper']) =>
   wrapper.get('[data-test="card"]').element as HTMLElement
 
-describe('MapboxPopup 挂载前的内容隔离', () => {
+describe('MaplibrePopup 挂载前的内容隔离', () => {
   beforeEach(() => {
     maps.length = 0
     popups.length = 0
@@ -114,7 +114,7 @@ describe('MapboxPopup 挂载前的内容隔离', () => {
     const { wrapper } = mountPopup()
     await nextTick()
 
-    // 尚未创建 mapbox Popup（还在 await whenLoaded）
+    // 尚未创建 maplibre Popup（还在 await whenLoaded）
     expect(popups).toHaveLength(0)
 
     const el = cardEl(wrapper).parentElement!
@@ -123,7 +123,7 @@ describe('MapboxPopup 挂载前的内容隔离', () => {
     wrapper.unmount()
   })
 
-  it('地图 load 后把内层节点交给 mapbox，内容脱离隐藏宿主', async () => {
+  it('地图 load 后把内层节点交给 maplibre，内容脱离隐藏宿主', async () => {
     const { wrapper, map } = mountPopup()
     await nextTick()
     const el = cardEl(wrapper).parentElement!
@@ -153,8 +153,8 @@ describe('MapboxPopup 挂载前的内容隔离', () => {
     const lnglat = ref<[number, number]>([1, 2])
     const Parent = defineComponent({
       setup() {
-        return () => h(MapboxMap, { options: {} }, {
-          default: () => h(MapboxPopup, { lnglat: lnglat.value }, { default: () => h('span', 'x') })
+        return () => h(MaplibreMap, { options: {} }, {
+          default: () => h(MaplibrePopup, { lnglat: lnglat.value }, { default: () => h('span', 'x') })
         })
       }
     })

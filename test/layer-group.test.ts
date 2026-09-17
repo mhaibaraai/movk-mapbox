@@ -1,9 +1,9 @@
 import { describe, expect, it, vi } from 'vitest'
 import { defineComponent, h, nextTick, ref } from 'vue'
 import { mount } from '@vue/test-utils'
-import MapboxMap from '../src/runtime/components/Map.vue'
-import MapboxLayer from '../src/runtime/components/Layer.vue'
-import MapboxLayerGroup from '../src/runtime/components/LayerGroup.vue'
+import MaplibreMap from '../src/runtime/components/Map.vue'
+import MaplibreLayer from '../src/runtime/components/Layer.vue'
+import MaplibreLayerGroup from '../src/runtime/components/LayerGroup.vue'
 
 // 记录 addLayer 锚点与 setLayoutProperty 调用的 fake gl Map
 const { maps, makeFakeMap } = vi.hoisted(() => {
@@ -54,13 +54,13 @@ const { maps, makeFakeMap } = vi.hoisted(() => {
   return { maps, makeFakeMap }
 })
 
-vi.mock('mapbox-gl', () => {
+vi.mock('maplibre-gl', () => {
   function FakeGlMap(this: unknown) {
     return makeFakeMap()
   }
   function Noop() {}
   return {
-    default: { Map: FakeGlMap, accessToken: '', prewarm() {}, setRTLTextPlugin() {} },
+    Map: FakeGlMap,
     LngLat: { convert: (v: unknown) => v },
     Marker: Noop,
     Popup: Noop
@@ -74,11 +74,11 @@ describe('LayerGroup', () => {
     const visible = ref(true)
     const Parent = defineComponent({
       setup() {
-        return () => h(MapboxMap, { options: {} }, {
-          default: () => h(MapboxLayerGroup, { visible: visible.value }, {
+        return () => h(MaplibreMap, { options: {} }, {
+          default: () => h(MaplibreLayerGroup, { visible: visible.value }, {
             default: () => [
-              h(MapboxLayer, { layerId: 'a', type: 'circle', source: inlineSource }),
-              h(MapboxLayer, { layerId: 'b', type: 'line', source: inlineSource })
+              h(MaplibreLayer, { layerId: 'a', type: 'circle', source: inlineSource }),
+              h(MaplibreLayer, { layerId: 'b', type: 'line', source: inlineSource })
             ]
           })
         })
@@ -106,14 +106,14 @@ describe('LayerGroup', () => {
   it('子图层无自身 beforeId 时回退组锚点，自身优先', () => {
     const Parent = defineComponent({
       setup() {
-        return () => h(MapboxMap, { options: {} }, {
+        return () => h(MaplibreMap, { options: {} }, {
           default: () => [
             // 先建锚点图层
-            h(MapboxLayer, { layerId: 'anchor', type: 'circle', source: inlineSource }),
-            h(MapboxLayerGroup, { beforeId: 'anchor' }, {
+            h(MaplibreLayer, { layerId: 'anchor', type: 'circle', source: inlineSource }),
+            h(MaplibreLayerGroup, { beforeId: 'anchor' }, {
               default: () => [
-                h(MapboxLayer, { layerId: 'inherits', type: 'circle', source: inlineSource }),
-                h(MapboxLayer, { layerId: 'overrides', type: 'circle', source: inlineSource, beforeId: 'missing' })
+                h(MaplibreLayer, { layerId: 'inherits', type: 'circle', source: inlineSource }),
+                h(MaplibreLayer, { layerId: 'overrides', type: 'circle', source: inlineSource, beforeId: 'missing' })
               ]
             })
           ]

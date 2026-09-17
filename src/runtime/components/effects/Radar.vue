@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { computed, onUnmounted, useId } from 'vue'
-import type { GeoJSONSourceSpecification } from 'mapbox-gl'
+import type { GeoJSONSourceSpecification } from '@maplibre/maplibre-gl-style-spec'
 import { radarSweepImage } from '../../utils/effects'
 import { useMap } from '../../composables/useMap'
 import { useMapAnimation } from '../../composables/useMapAnimation'
-import MapboxSource from '../Source.vue'
-import MapboxLayer from '../Layer.vue'
+import MaplibreSource from '../Source.vue'
+import MaplibreLayer from '../Layer.vue'
 
 /** 雷达：canvas 生成扇形扫描贴图，symbol 图层按帧旋转。 */
 const props = withDefaults(defineProps<{
@@ -74,7 +74,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <MapboxSource :source-id="id" :source="source">
-    <MapboxLayer :layer-id="id" type="symbol" :source="id" :layout="layout" :before-id="beforeId" />
-  </MapboxSource>
+  <MaplibreSource :source-id="id" :source="source">
+    <MaplibreLayer :layer-id="id" type="symbol" :source="id" :layout="layout" :before-id="beforeId" />
+  </MaplibreSource>
 </template>

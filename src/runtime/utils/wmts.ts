@@ -1,4 +1,4 @@
-import type { RasterSourceSpecification } from 'mapbox-gl'
+import type { RasterSourceSpecification } from '@maplibre/maplibre-gl-style-spec'
 
 export interface WmtsSourceOptions {
   /** WMTS 服务基础地址（GetTile 端点）；含 {s} 时配合 subdomains 展开多 host */
@@ -54,7 +54,7 @@ function buildTileUrl(base: string, options: WmtsSourceOptions): string {
   return `${base}${base.includes('?') ? '&' : '?'}${qs}`
 }
 
-/** 构造 WMTS GetTile（KVP）栅格数据源规格，可直接用于 MapboxSource。 */
+/** 构造 WMTS GetTile（KVP）栅格数据源规格，可直接用于 MaplibreSource。 */
 export function wmtsRasterSource(options: WmtsSourceOptions): RasterSourceSpecification {
   const { subdomains } = options
   const tiles = subdomains?.length && options.url.includes('{s}')

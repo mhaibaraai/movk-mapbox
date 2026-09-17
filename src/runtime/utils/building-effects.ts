@@ -1,3 +1,5 @@
+import { buildingExtrusionPaint, DEFAULT_HEIGHT_PROPERTY } from './building'
+
 type PropBag = Record<string, unknown>
 
 export interface BuildingGradientOptions {
@@ -13,6 +15,16 @@ export interface BuildingGradientOptions {
    * @defaultValue 15
    */
   minzoom?: number
+  /**
+   * 建筑高度属性名
+   * @defaultValue 'render_height'
+   */
+  heightProperty?: string
+  /**
+   * 建筑底面高度属性名
+   * @defaultValue 'render_min_height'
+   */
+  baseProperty?: string
 }
 
 const DEFAULT_STOPS: [number, string][] = [
@@ -28,23 +40,14 @@ const DEFAULT_STOPS: [number, string][] = [
  */
 export function buildingGradientPaint(options: BuildingGradientOptions = {}): PropBag {
   const stops = options.stops ?? DEFAULT_STOPS
-  const minzoom = options.minzoom ?? 15
+  const heightProperty = options.heightProperty ?? DEFAULT_HEIGHT_PROPERTY
 
-  const colorExpr: unknown[] = ['interpolate', ['linear'], ['get', 'height']]
+  const colorExpr: unknown[] = ['interpolate', ['linear'], ['get', heightProperty]]
   for (const [height, color] of stops) colorExpr.push(height, color)
 
   return {
     'fill-extrusion-color': colorExpr,
-    'fill-extrusion-height': [
-      'interpolate', ['linear'], ['zoom'],
-      minzoom, 0,
-      minzoom + 0.05, ['get', 'height']
-    ],
-    'fill-extrusion-base': [
-      'interpolate', ['linear'], ['zoom'],
-      minzoom, 0,
-      minzoom + 0.05, ['get', 'min_height']
-    ],
+    ...buildingExtrusionPaint({ minzoom: options.minzoom, heightProperty, baseProperty: options.baseProperty }),
     'fill-extrusion-opacity': options.opacity ?? 0.85
   }
 }

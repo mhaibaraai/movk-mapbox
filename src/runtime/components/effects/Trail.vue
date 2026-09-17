@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { computed, useId } from 'vue'
-import type { GeoJSONSourceSpecification } from 'mapbox-gl'
+import type { GeoJSONSourceSpecification } from '@maplibre/maplibre-gl-style-spec'
 import { trailGradient } from '../../utils/effects'
 import { useMapAnimation } from '../../composables/useMapAnimation'
-import MapboxSource from '../Source.vue'
-import MapboxLayer from '../Layer.vue'
+import MaplibreSource from '../Source.vue'
+import MaplibreLayer from '../Layer.vue'
 
 /** 动态轨迹：line-gradient 彗尾窗口沿线循环平移（source 需 lineMetrics）。 */
 const props = withDefaults(defineProps<{
@@ -77,8 +77,8 @@ useMapAnimation((map, elapsed) => {
 </script>
 
 <template>
-  <MapboxSource :source-id="id" :source="source">
-    <MapboxLayer
+  <MaplibreSource :source-id="id" :source="source">
+    <MaplibreLayer
       v-if="baseLine"
       :layer-id="`${id}-base`"
       type="line"
@@ -87,7 +87,7 @@ useMapAnimation((map, elapsed) => {
       :paint="basePaint"
       :before-id="beforeId"
     />
-    <MapboxLayer
+    <MaplibreLayer
       :layer-id="id"
       type="line"
       :source="id"
@@ -95,5 +95,5 @@ useMapAnimation((map, elapsed) => {
       :paint="trailPaint"
       :before-id="beforeId"
     />
-  </MapboxSource>
+  </MaplibreSource>
 </template>

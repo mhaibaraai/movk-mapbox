@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { wmsRasterSource } from '../../utils/wms'
-import MapboxSource from '../Source.vue'
-import MapboxLayer from '../Layer.vue'
+import MaplibreSource from '../Source.vue'
+import MaplibreLayer from '../Layer.vue'
 
 const props = withDefaults(defineProps<{
   /** WMS 服务基础地址 */
@@ -68,7 +68,7 @@ const source = computed(() => wmsRasterSource({
 </script>
 
 <template>
-  <MapboxSource :key="id" :source-id="id" :source="source">
-    <MapboxLayer :layer-id="id" type="raster" :source="id" :before-id="beforeId" />
-  </MapboxSource>
+  <MaplibreSource :key="id" :source-id="id" :source="source">
+    <MaplibreLayer :layer-id="id" type="raster" :source="id" :before-id="beforeId" />
+  </MaplibreSource>
 </template>

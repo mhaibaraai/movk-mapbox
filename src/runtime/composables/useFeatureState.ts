@@ -1,11 +1,11 @@
 import { onMounted, onUnmounted, shallowRef } from 'vue'
 import type { ShallowRef } from 'vue'
-import type { GeoJSONFeature, Map as MapboxMap, MapMouseEvent } from 'mapbox-gl'
+import type { MapGeoJSONFeature, Map as MaplibreMap, MapMouseEvent } from 'maplibre-gl'
 import { useContextResolver } from '../domains/map/resolve'
 import { logger } from '../utils/logger'
 
 export interface UseFeatureStateOptions {
-  /** 目标地图 id；在 MapboxMap 子树外使用时必填 */
+  /** 目标地图 id；在 MaplibreMap 子树外使用时必填 */
   mapId?: string
   /**
    * 维护 hover 状态
@@ -26,14 +26,14 @@ export interface UseFeatureStateOptions {
 
 export interface UseFeatureStateReturn {
   /** 当前悬浮要素 */
-  hovered: ShallowRef<GeoJSONFeature | undefined>
+  hovered: ShallowRef<MapGeoJSONFeature | undefined>
   /** 当前选中要素 */
-  selected: ShallowRef<GeoJSONFeature | undefined>
+  selected: ShallowRef<MapGeoJSONFeature | undefined>
   /** 清除选中 */
   clearSelection: () => void
 }
 
-type LayerMouseEvent = MapMouseEvent & { features?: GeoJSONFeature[] }
+type LayerMouseEvent = MapMouseEvent & { features?: MapGeoJSONFeature[] }
 
 /**
  * 在目标图层上维护 feature-state 的 hover/selected 状态，
@@ -44,11 +44,11 @@ export function useFeatureState(layerId: string, options: UseFeatureStateOptions
   const { hover = true, select = true, cursor = true } = options
   const resolve = useContextResolver(options.mapId)
 
-  const hovered = shallowRef<GeoJSONFeature>()
-  const selected = shallowRef<GeoJSONFeature>()
-  let boundMap: MapboxMap | undefined
+  const hovered = shallowRef<MapGeoJSONFeature>()
+  const selected = shallowRef<MapGeoJSONFeature>()
+  let boundMap: MaplibreMap | undefined
 
-  function clearState(map: MapboxMap, feature: GeoJSONFeature, key: string): void {
+  function clearState(map: MaplibreMap, feature: MapGeoJSONFeature, key: string): void {
     // 样式切换后旧 source 可能已不存在，残留清理失败可安全忽略
     try {
       map.removeFeatureState(feature, key)
@@ -57,7 +57,7 @@ export function useFeatureState(layerId: string, options: UseFeatureStateOptions
     }
   }
 
-  function setCursor(map: MapboxMap, value: string): void {
+  function setCursor(map: MaplibreMap, value: string): void {
     // 地图移除后 getCanvas() 返回 undefined，卸载期游标重置可安全跳过
     const canvas = map.getCanvas()
     if (canvas) canvas.style.cursor = value
@@ -99,7 +99,7 @@ export function useFeatureState(layerId: string, options: UseFeatureStateOptions
   onMounted(async () => {
     const ctx = resolve()
     if (!ctx) {
-      logger.warn('useFeatureState: no map context found; pass options.mapId or call inside <MapboxMap>.')
+      logger.warn('useFeatureState: no map context found; pass options.mapId or call inside <MaplibreMap>.')
       return
     }
     const map = await ctx.whenLoaded()

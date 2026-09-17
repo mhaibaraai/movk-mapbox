@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, useTemplateRef, watch } from 'vue'
-import { Popup } from 'mapbox-gl'
-import type { LngLatLike, PopupOptions } from 'mapbox-gl'
+import { Popup } from 'maplibre-gl'
+import type { LngLatLike, PopupOptions } from 'maplibre-gl'
 import { useMap } from '../composables/useMap'
 
 const props = defineProps<{
@@ -9,7 +9,7 @@ const props = defineProps<{
   lnglat: LngLatLike
   /**
    * Popup 选项
-   * @see https://docs.mapbox.com/mapbox-gl-js/api/markers/#popup
+   * @see https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/PopupOptions/
    */
   options?: PopupOptions
 }>()

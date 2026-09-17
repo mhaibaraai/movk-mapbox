@@ -1,10 +1,10 @@
 import { describe, expect, it, vi } from 'vitest'
 import { defineComponent, h, nextTick, ref } from 'vue'
 import { mount } from '@vue/test-utils'
-import MapboxMap from '../src/runtime/components/Map.vue'
-import MapboxTemperature from '../src/runtime/components/environment/Temperature.vue'
-import MapboxSpriteImage from '../src/runtime/components/effects/SpriteImage.vue'
-import MapboxAnimatedImage from '../src/runtime/components/effects/AnimatedImage.vue'
+import MaplibreMap from '../src/runtime/components/Map.vue'
+import MaplibreTemperature from '../src/runtime/components/environment/Temperature.vue'
+import MaplibreSpriteImage from '../src/runtime/components/effects/SpriteImage.vue'
+import MaplibreAnimatedImage from '../src/runtime/components/effects/AnimatedImage.vue'
 
 // fake gl Map:含图层/源/图片三类资源跟踪,供热力与帧动画图标组件验证建/拆
 const { maps, makeFakeMap } = vi.hoisted(() => {
@@ -64,13 +64,13 @@ const { maps, makeFakeMap } = vi.hoisted(() => {
   return { maps, makeFakeMap }
 })
 
-vi.mock('mapbox-gl', () => {
+vi.mock('maplibre-gl', () => {
   function FakeGlMap(this: unknown) {
     return makeFakeMap()
   }
   function Noop() {}
   return {
-    default: { Map: FakeGlMap, accessToken: '', prewarm() {}, setRTLTextPlugin() {} },
+    Map: FakeGlMap,
     LngLat: { convert: (v: unknown) => v },
     Marker: Noop,
     Popup: Noop
@@ -87,8 +87,8 @@ describe('Temperature 温度热力', () => {
     const show = ref(true)
     const Parent = defineComponent({
       setup() {
-        return () => h(MapboxMap, { options: {} }, {
-          default: () => (show.value ? h(MapboxTemperature, { data: POINTS, layerId: 'temp' }) : null)
+        return () => h(MaplibreMap, { options: {} }, {
+          default: () => (show.value ? h(MaplibreTemperature, { data: POINTS, layerId: 'temp' }) : null)
         })
       }
     })
@@ -111,9 +111,9 @@ describe('SpriteImage 帧动画图标', () => {
     const show = ref(true)
     const Parent = defineComponent({
       setup() {
-        return () => h(MapboxMap, { options: {} }, {
+        return () => h(MaplibreMap, { options: {} }, {
           default: () => (show.value
-            ? h(MapboxSpriteImage, { data: POINTS, image: 'data:image/png;base64,', frames: 8, layerId: 'sp' })
+            ? h(MaplibreSpriteImage, { data: POINTS, image: 'data:image/png;base64,', frames: 8, layerId: 'sp' })
             : null)
         })
       }
@@ -137,8 +137,8 @@ describe('SpriteImage 帧动画图标', () => {
   it('styleimagemissing 兜底:缺图时按需重新注册', async () => {
     const Parent = defineComponent({
       setup() {
-        return () => h(MapboxMap, { options: {} }, {
-          default: () => h(MapboxSpriteImage, { data: POINTS, image: 'data:image/png;base64,', frames: 8, layerId: 'sp' })
+        return () => h(MaplibreMap, { options: {} }, {
+          default: () => h(MaplibreSpriteImage, { data: POINTS, image: 'data:image/png;base64,', frames: 8, layerId: 'sp' })
         })
       }
     })
@@ -163,9 +163,9 @@ describe('AnimatedImage 动图图标', () => {
     const show = ref(true)
     const Parent = defineComponent({
       setup() {
-        return () => h(MapboxMap, { options: {} }, {
+        return () => h(MaplibreMap, { options: {} }, {
           default: () => (show.value
-            ? h(MapboxAnimatedImage, { data: POINTS, image: 'https://example.com/a.gif', layerId: 'ani' })
+            ? h(MaplibreAnimatedImage, { data: POINTS, image: 'https://example.com/a.gif', layerId: 'ani' })
             : null)
         })
       }

@@ -1,6 +1,6 @@
 import { onMounted, onUnmounted, toValue, watch } from 'vue'
 import type { MaybeRefOrGetter } from 'vue'
-import type { ControlPosition, IControl } from 'mapbox-gl'
+import type { ControlPosition, IControl } from 'maplibre-gl'
 import { useMap } from '../../composables/useMap'
 
 /** 控件组件共享逻辑：地图就绪后 addControl；position/options 变化时移除并按新配置重建；卸载时 removeControl。 */

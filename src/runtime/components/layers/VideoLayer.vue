@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { computed, useId } from 'vue'
-import type { VideoSource, VideoSourceSpecification } from 'mapbox-gl'
+import type { VideoSource } from 'maplibre-gl'
+import type { VideoSourceSpecification } from '@maplibre/maplibre-gl-style-spec'
 import { useMap } from '../../composables/useMap'
-import MapboxSource from '../Source.vue'
-import MapboxLayer from '../Layer.vue'
+import MaplibreSource from '../Source.vue'
+import MaplibreLayer from '../Layer.vue'
 
 const props = withDefaults(defineProps<{
   /** 图层 id；省略时自动生成 */
@@ -48,7 +49,7 @@ defineExpose({
 </script>
 
 <template>
-  <MapboxSource :source-id="id" :source="source">
-    <MapboxLayer :layer-id="id" type="raster" :source="id" :paint="paint" :before-id="beforeId" />
-  </MapboxSource>
+  <MaplibreSource :source-id="id" :source="source">
+    <MaplibreLayer :layer-id="id" type="raster" :source="id" :paint="paint" :before-id="beforeId" />
+  </MaplibreSource>
 </template>

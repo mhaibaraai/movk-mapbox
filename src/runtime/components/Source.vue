@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onUnmounted, watch } from 'vue'
-import type { GeoJSONSource, ImageSource, RasterTileSource, SourceSpecification, VectorTileSource, VideoSource } from 'mapbox-gl'
+import type { GeoJSONSource, ImageSource, RasterTileSource, VectorTileSource, VideoSource } from 'maplibre-gl'
+import type { SourceSpecification } from '@maplibre/maplibre-gl-style-spec'
 import { useMap } from '../composables/useMap'
 
 const props = defineProps<{
@@ -8,7 +9,7 @@ const props = defineProps<{
   sourceId: string
   /**
    * 数据源定义
-   * @see https://docs.mapbox.com/style-spec/reference/sources
+   * @see https://maplibre.org/maplibre-style-spec/sources/
    */
   source: SourceSpecification
 }>()

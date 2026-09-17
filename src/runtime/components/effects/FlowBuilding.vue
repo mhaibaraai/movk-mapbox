@@ -2,10 +2,12 @@
 import { computed, useId } from 'vue'
 import { buildingGradientPaint } from '../../utils/building-effects'
 import { useMapAnimation } from '../../composables/useMapAnimation'
-import MapboxBuildingLayer from '../layers/BuildingLayer.vue'
+import { DEFAULT_HEIGHT_PROPERTY } from '../../utils/building'
+import type { BuildingSourceOptions } from '../../utils/building'
+import MaplibreBuildingLayer from '../layers/BuildingLayer.vue'
 
 /** 流动建筑：渐变着色 + 高亮带沿建筑高度循环流动。 */
-const props = withDefaults(defineProps<{
+const props = withDefaults(defineProps<BuildingSourceOptions & {
   /** 图层 id；省略时自动生成 */
   layerId?: string
   /**
@@ -59,7 +61,9 @@ const id = props.layerId ?? `movk-flow-building-${useId()}`
 const initialPaint = computed(() => buildingGradientPaint({
   stops: [[0, props.color], [props.maxHeight, props.color]],
   opacity: props.opacity,
-  minzoom: props.minzoom
+  minzoom: props.minzoom,
+  heightProperty: props.heightProperty,
+  baseProperty: props.baseProperty
 }))
 
 // 高亮带中心沿 0→maxHeight 循环平移,band 内插值到 flowColor
@@ -69,7 +73,7 @@ useMapAnimation((map, elapsed) => {
   const lo = Math.max(center - props.bandHeight / 2, 0)
   const hi = center + props.bandHeight / 2
   map.setPaintProperty(id, 'fill-extrusion-color', [
-    'interpolate', ['linear'], ['get', 'height'],
+    'interpolate', ['linear'], ['get', props.heightProperty ?? DEFAULT_HEIGHT_PROPERTY],
     Math.max(lo - 1, 0), props.color,
     lo, props.color,
     center, props.flowColor,
@@ -80,5 +84,14 @@ useMapAnimation((map, elapsed) => {
 </script>
 
 <template>
-  <MapboxBuildingLayer :layer-id="id" :minzoom="minzoom" :paint="initialPaint" :before-id="beforeId" />
+  <MaplibreBuildingLayer
+    :layer-id="id"
+    :source="source"
+    :source-layer="sourceLayer"
+    :height-property="heightProperty"
+    :base-property="baseProperty"
+    :minzoom="minzoom"
+    :paint="initialPaint"
+    :before-id="beforeId"
+  />
 </template>

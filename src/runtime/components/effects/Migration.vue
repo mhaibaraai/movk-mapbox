@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { computed, useId } from 'vue'
 import type { Feature, FeatureCollection, LineString, Point } from 'geojson'
-import type { GeoJSONSource, GeoJSONSourceSpecification } from 'mapbox-gl'
+import type { GeoJSONSource } from 'maplibre-gl'
+import type { GeoJSONSourceSpecification } from '@maplibre/maplibre-gl-style-spec'
 import { arcLine, createLineSampler, type Position2D } from '../../utils/effects'
 import { useMapAnimation } from '../../composables/useMapAnimation'
-import MapboxSource from '../Source.vue'
-import MapboxLayer from '../Layer.vue'
+import MaplibreSource from '../Source.vue'
+import MaplibreLayer from '../Layer.vue'
 
 export interface MigrationRoute {
   from: Position2D
@@ -120,8 +121,8 @@ useMapAnimation((map, elapsed) => {
 </script>
 
 <template>
-  <MapboxSource :source-id="linesId" :source="linesSource">
-    <MapboxLayer
+  <MaplibreSource :source-id="linesId" :source="linesSource">
+    <MaplibreLayer
       :layer-id="linesId"
       type="line"
       :source="linesId"
@@ -129,8 +130,8 @@ useMapAnimation((map, elapsed) => {
       :paint="linePaint"
       :before-id="beforeId"
     />
-  </MapboxSource>
-  <MapboxSource :source-id="particlesId" :source="particlesSource">
-    <MapboxLayer :layer-id="particlesId" type="circle" :source="particlesId" :paint="particlePaint" :before-id="beforeId" />
-  </MapboxSource>
+  </MaplibreSource>
+  <MaplibreSource :source-id="particlesId" :source="particlesSource">
+    <MaplibreLayer :layer-id="particlesId" type="circle" :source="particlesId" :paint="particlePaint" :before-id="beforeId" />
+  </MaplibreSource>
 </template>

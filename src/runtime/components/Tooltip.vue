@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, shallowRef, useTemplateRef, watch } from 'vue'
-import { Popup } from 'mapbox-gl'
-import type { GeoJSONFeature, Map as MapboxMap, MapMouseEvent, PopupOptions } from 'mapbox-gl'
+import { Popup } from 'maplibre-gl'
+import type { GeoJSONFeature, Map as MaplibreMap, MapMouseEvent, PopupOptions } from 'maplibre-gl'
 import { useMap } from '../composables/useMap'
 import type { PopupTrigger } from '../types'
 
@@ -11,7 +11,7 @@ const props = withDefaults(defineProps<{
   layerId: string
   /**
    * Popup 选项（hover 模式下 closeButton/closeOnClick 由组件接管）
-   * @see https://docs.mapbox.com/mapbox-gl-js/api/markers/#popup
+   * @see https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/PopupOptions/
    */
   options?: PopupOptions
   /**
@@ -86,7 +86,7 @@ function popupOptions(): PopupOptions {
 }
 
 // 按 layerId 委托到地图级监听，目标图层晚于本组件挂载也能命中
-function bind(map: MapboxMap): void {
+function bind(map: MaplibreMap): void {
   if (props.trigger === 'none') return
 
   if (props.trigger === 'hover') {
@@ -117,7 +117,7 @@ function teardown(): void {
   popup = undefined
 }
 
-function setup(map: MapboxMap): void {
+function setup(map: MaplibreMap): void {
   popup = new Popup(popupOptions())
   popup.on('close', () => (hovered.value = undefined))
   bind(map)

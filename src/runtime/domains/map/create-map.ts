@@ -1,30 +1,28 @@
-import mapboxgl from 'mapbox-gl'
-import type { Map as MapboxMap, MapOptions } from 'mapbox-gl'
-import { getMapboxConfig } from './config'
+import { Map as MaplibreGlMap, prewarm, setRTLTextPlugin, setWorkerCount } from 'maplibre-gl'
+import type { Map as MaplibreMap, MapOptions } from 'maplibre-gl'
+import { logger } from '../../utils/logger'
+import { getMaplibreConfig } from './config'
+
+const DEFAULT_RTL_PLUGIN = 'https://cdn.jsdelivr.net/npm/@mapbox/mapbox-gl-rtl-text@0.3.0/dist/mapbox-gl-rtl-text.js'
 
 let globalConfigApplied = false
 
-// 首次创建地图前，把模块级配置应用到 mapboxgl 全局（token、worker、RTL 等）
+// 首次创建地图前，把模块级配置应用到 maplibre-gl 全局（worker、预热、RTL 插件）
 function applyGlobalConfig(): void {
   if (globalConfigApplied) return
   globalConfigApplied = true
 
-  const config = getMapboxConfig()
-  if (config.accessToken) mapboxgl.accessToken = config.accessToken
-  if (config.baseApiUrl) mapboxgl.baseApiUrl = config.baseApiUrl
-  if (config.workerCount) mapboxgl.workerCount = config.workerCount
-  if (config.prewarm) mapboxgl.prewarm()
+  const config = getMaplibreConfig()
+  if (config.workerCount) setWorkerCount(config.workerCount)
+  if (config.prewarm) prewarm()
   if (config.RTLTextPlugin) {
-    const defaultPlugin = 'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.2.3/mapbox-gl-rtl-text.js'
-    const plugin = typeof config.RTLTextPlugin === 'boolean'
-      ? { pluginURL: defaultPlugin, lazy: false }
-      : config.RTLTextPlugin
-    mapboxgl.setRTLTextPlugin(plugin.pluginURL || defaultPlugin, () => {}, plugin.lazy ?? false)
+    const plugin = typeof config.RTLTextPlugin === 'boolean' ? {} : config.RTLTextPlugin
+    setRTLTextPlugin(plugin.pluginURL || DEFAULT_RTL_PLUGIN, plugin.lazy ?? false).catch(error => logger.warn('Failed to load RTL text plugin', error))
   }
 }
 
-/** 应用全局配置并创建 mapbox-gl 实例。仅在客户端调用。 */
-export function createMapboxGl(options: MapOptions): MapboxMap {
+/** 应用全局配置并创建 maplibre-gl 实例。仅在客户端调用。 */
+export function createMaplibreGl(options: MapOptions): MaplibreMap {
   applyGlobalConfig()
-  return new mapboxgl.Map(options)
+  return new MaplibreGlMap(options)
 }

@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { computed, useId } from 'vue'
-import type { GeoJSONSourceSpecification } from 'mapbox-gl'
+import type { GeoJSONSourceSpecification } from '@maplibre/maplibre-gl-style-spec'
 import { heatmapPaint } from '../../utils/heatmap'
-import MapboxSource from '../Source.vue'
-import MapboxLayer from '../Layer.vue'
+import MaplibreSource from '../Source.vue'
+import MaplibreLayer from '../Layer.vue'
 
-/** 温度热力层：GeoJSON 点按温度属性渲染 mapbox 原生 heatmap。 */
+/** 温度热力层：GeoJSON 点按温度属性渲染 maplibre 原生 heatmap。 */
 const props = withDefaults(defineProps<{
   /** 点要素数据（GeoJSON 或其 URL） */
   data: GeoJSONSourceSpecification['data']
@@ -64,8 +64,8 @@ const paint = computed(() => heatmapPaint({
 </script>
 
 <template>
-  <MapboxSource :source-id="id" :source="source">
-    <MapboxLayer
+  <MaplibreSource :source-id="id" :source="source">
+    <MaplibreLayer
       :layer-id="id"
       type="heatmap"
       :source="id"
@@ -73,5 +73,5 @@ const paint = computed(() => heatmapPaint({
       :maxzoom="maxzoom"
       :before-id="beforeId"
     />
-  </MapboxSource>
+  </MaplibreSource>
 </template>

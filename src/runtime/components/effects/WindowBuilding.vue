@@ -2,10 +2,12 @@
 import { computed, onUnmounted, useId } from 'vue'
 import { windowTextureImage } from '../../utils/building-effects'
 import { useMap } from '../../composables/useMap'
-import MapboxBuildingLayer from '../layers/BuildingLayer.vue'
+import { buildingExtrusionPaint } from '../../utils/building'
+import type { BuildingSourceOptions } from '../../utils/building'
+import MaplibreBuildingLayer from '../layers/BuildingLayer.vue'
 
-/** 窗户建筑：程序生成窗户点阵贴图 fill-extrusion-pattern。依赖 Mapbox composite/building。 */
-const props = withDefaults(defineProps<{
+/** 窗户建筑：程序生成窗户点阵贴图 fill-extrusion-pattern。 */
+const props = withDefaults(defineProps<BuildingSourceOptions & {
   /** 图层 id；省略时自动生成 */
   layerId?: string
   /**
@@ -60,16 +62,7 @@ const imageName = `${id}-pattern`
 
 const paint = computed(() => ({
   'fill-extrusion-pattern': imageName,
-  'fill-extrusion-height': [
-    'interpolate', ['linear'], ['zoom'],
-    props.minzoom, 0,
-    props.minzoom + 0.05, ['get', 'height']
-  ],
-  'fill-extrusion-base': [
-    'interpolate', ['linear'], ['zoom'],
-    props.minzoom, 0,
-    props.minzoom + 0.05, ['get', 'min_height']
-  ],
+  ...buildingExtrusionPaint({ minzoom: props.minzoom, heightProperty: props.heightProperty, baseProperty: props.baseProperty }),
   'fill-extrusion-opacity': props.opacity ?? 1
 }))
 
@@ -95,5 +88,14 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <MapboxBuildingLayer :layer-id="id" :minzoom="minzoom" :paint="paint" :before-id="beforeId" />
+  <MaplibreBuildingLayer
+    :layer-id="id"
+    :source="source"
+    :source-layer="sourceLayer"
+    :height-property="heightProperty"
+    :base-property="baseProperty"
+    :minzoom="minzoom"
+    :paint="paint"
+    :before-id="beforeId"
+  />
 </template>

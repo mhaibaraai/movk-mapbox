@@ -1,4 +1,4 @@
-import type { CircleLayerSpecification, SymbolLayerSpecification } from 'mapbox-gl'
+import type { CircleLayerSpecification, SymbolLayerSpecification } from '@maplibre/maplibre-gl-style-spec'
 
 type PropBag = Record<string, unknown>
 

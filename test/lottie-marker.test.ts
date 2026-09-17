@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from 'vitest'
 import { defineComponent, h, nextTick, ref } from 'vue'
 import { mount } from '@vue/test-utils'
-import MapboxMap from '../src/runtime/components/Map.vue'
-import MapboxLottieMarker from '../src/runtime/components/LottieMarker.vue'
+import MaplibreMap from '../src/runtime/components/Map.vue'
+import MaplibreLottieMarker from '../src/runtime/components/LottieMarker.vue'
 
 // mock lottie-web(optional peer):记录 loadAnimation 与返回实例的 setSpeed/destroy
 const { loadAnimation, anim } = vi.hoisted(() => {
@@ -39,7 +39,7 @@ const { maps, makeFakeMap } = vi.hoisted(() => {
   return { maps, makeFakeMap }
 })
 
-vi.mock('mapbox-gl', () => {
+vi.mock('maplibre-gl', () => {
   function FakeGlMap(this: unknown) {
     return makeFakeMap()
   }
@@ -51,7 +51,7 @@ vi.mock('mapbox-gl', () => {
     getLngLat() { return { lng: 0, lat: 0 } }
   }
   return {
-    default: { Map: FakeGlMap, accessToken: '', prewarm() {}, setRTLTextPlugin() {} },
+    Map: FakeGlMap,
     LngLat: { convert: (v: unknown) => v },
     Marker: FakeMarker,
     Popup: function () {}
@@ -63,9 +63,9 @@ describe('LottieMarker 动画标记', () => {
     const show = ref(true)
     const Parent = defineComponent({
       setup() {
-        return () => h(MapboxMap, { options: {} }, {
+        return () => h(MaplibreMap, { options: {} }, {
           default: () => (show.value
-            ? h(MapboxLottieMarker, { lnglat: [0, 0], path: 'https://example.com/a.json', speed: 2 })
+            ? h(MaplibreLottieMarker, { lnglat: [0, 0], path: 'https://example.com/a.json', speed: 2 })
             : null)
         })
       }
