@@ -1,4 +1,4 @@
-import { Map as MaplibreGlMap, prewarm, setRTLTextPlugin, setWorkerCount } from 'maplibre-gl'
+import { Map as MaplibreGlMap, prewarm, setRTLTextPlugin, setWorkerCount, setWorkerUrl } from 'maplibre-gl'
 import type { Map as MaplibreMap, MapOptions } from 'maplibre-gl'
 import { logger } from '../../utils/logger'
 import { getMaplibreConfig } from './config'
@@ -7,12 +7,13 @@ const DEFAULT_RTL_PLUGIN = 'https://cdn.jsdelivr.net/npm/@mapbox/mapbox-gl-rtl-t
 
 let globalConfigApplied = false
 
-// 首次创建地图前，把模块级配置应用到 maplibre-gl 全局（worker、预热、RTL 插件）
+// 首次创建地图前，把模块级配置应用到 maplibre-gl 全局（worker、预热、RTL 插件）；worker 地址须先于预热设置
 function applyGlobalConfig(): void {
   if (globalConfigApplied) return
   globalConfigApplied = true
 
   const config = getMaplibreConfig()
+  if (config.workerUrl) setWorkerUrl(config.workerUrl)
   if (config.workerCount) setWorkerCount(config.workerCount)
   if (config.prewarm) prewarm()
   if (config.RTLTextPlugin) {

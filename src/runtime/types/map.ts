@@ -9,6 +9,8 @@ export interface MaplibreRuntimeConfig {
   glyphs?: string
   /** 库内置文字图层（聚合计数、量算标签）使用的字体栈，需存在于当前样式的 glyphs 服务；未配置时使用 MapLibre 默认字体 */
   textFont?: string[]
+  /** maplibre-gl worker 脚本地址；经打包工具（Vite 等）使用时必需，Nuxt 模块已自动注入 */
+  workerUrl?: string
   /** Web Worker 数量 */
   workerCount?: number
   /** 是否预热 GL 资源 */

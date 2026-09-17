@@ -5,6 +5,7 @@ const gl = vi.hoisted(() => ({
     this.options = options
   }),
   setWorkerCount: vi.fn(),
+  setWorkerUrl: vi.fn(),
   prewarm: vi.fn(),
   setRTLTextPlugin: vi.fn(() => Promise.resolve())
 }))
@@ -30,6 +31,7 @@ describe('createMaplibreGl', () => {
 
     expect(map.options).toEqual({ container: 'el' })
     expect(gl.setWorkerCount).not.toHaveBeenCalled()
+    expect(gl.setWorkerUrl).not.toHaveBeenCalled()
     expect(gl.prewarm).not.toHaveBeenCalled()
     expect(gl.setRTLTextPlugin).not.toHaveBeenCalled()
   })
@@ -45,6 +47,16 @@ describe('createMaplibreGl', () => {
     expect(gl.prewarm).toHaveBeenCalledOnce()
     expect(gl.setRTLTextPlugin).toHaveBeenCalledExactlyOnceWith('https://cdn/rtl.js', true)
     expect(gl.Map).toHaveBeenCalledTimes(2)
+  })
+
+  it('配置 workerUrl 时在预热前设置 worker 地址（打包工具下必需）', async () => {
+    const { setMaplibreConfig, createMaplibreGl } = await load()
+    setMaplibreConfig({ workerUrl: '/assets/maplibre-gl-worker.js', prewarm: true })
+
+    createMaplibreGl({ container: 'a' } as never)
+
+    expect(gl.setWorkerUrl).toHaveBeenCalledExactlyOnceWith('/assets/maplibre-gl-worker.js')
+    expect(gl.setWorkerUrl.mock.invocationCallOrder[0]).toBeLessThan(gl.prewarm.mock.invocationCallOrder[0]!)
   })
 
   it('RTLTextPlugin 为 true 时使用默认插件地址', async () => {
