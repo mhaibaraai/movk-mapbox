@@ -1,20 +1,54 @@
-import { drawRectangleMode } from './rectangle'
-import { drawCircleMode } from './circle'
-import { drawEllipseMode } from './ellipse'
-import { drawSectorMode } from './sector'
+import {
+  TerraDrawCircleMode,
+  TerraDrawEllipseMode,
+  TerraDrawLineStringMode,
+  TerraDrawPointMode,
+  TerraDrawPolygonMode,
+  TerraDrawRectangleMode,
+  TerraDrawSectorMode,
+  TerraDrawSelectMode
+} from 'terra-draw'
+import type { TerraDrawExtend } from 'terra-draw'
+import { drawThemeStyles } from '../utils/draw-theme'
+import type { DrawThemeOptions } from '../utils/draw-theme'
 
-export { drawRectangleMode } from './rectangle'
-export { drawCircleMode } from './circle'
-export { drawEllipseMode } from './ellipse'
-export { drawSectorMode } from './sector'
+/** 内置绘制模式名（不含选择模式 'select'） */
+export const DRAW_MODE_NAMES = ['point', 'linestring', 'polygon', 'rectangle', 'circle', 'ellipse', 'sector'] as const
+
+export type DrawModeName = (typeof DRAW_MODE_NAMES)[number]
+
+/** terra-draw 模式实例（绘制或选择模式） */
+export type DrawMode = TerraDrawExtend.TerraDrawBaseDrawMode<TerraDrawExtend.CustomStyling>
+
+export interface MovkDrawModesOptions {
+  /** 绘制主题，参见 drawThemeStyles */
+  theme?: DrawThemeOptions
+}
+
+// 点线面可编辑顶点；规则图形仅整体拖拽，编辑顶点会破坏几何约束
+const EDITABLE_COORDINATES = { draggable: true, deletable: true, midpoints: true }
 
 /**
- * movk 自定义绘制模式集合,与 MapboxDraw.modes 合并使用:
- * `:options="{ modes: { ...MapboxDraw.modes, ...movkDrawModes } }"`
+ * 预设 terra-draw 模式集合：选择模式 + 全部内置绘制模式，统一应用主题。
+ * 每次调用返回新实例，模式实例不可在多个 TerraDraw 间共享。
  */
-export const movkDrawModes = {
-  draw_rectangle: drawRectangleMode,
-  draw_circle: drawCircleMode,
-  draw_ellipse: drawEllipseMode,
-  draw_sector: drawSectorMode
+export function movkDrawModes(options: MovkDrawModesOptions = {}): DrawMode[] {
+  const styles = drawThemeStyles(options.theme)
+  const flags = Object.fromEntries(DRAW_MODE_NAMES.map(name => [name, {
+    feature: {
+      draggable: true,
+      ...(name === 'linestring' || name === 'polygon' ? { coordinates: EDITABLE_COORDINATES } : {})
+    }
+  }]))
+
+  return [
+    new TerraDrawSelectMode({ flags, styles: styles.select }),
+    new TerraDrawPointMode({ styles: styles.point }),
+    new TerraDrawLineStringMode({ styles: styles.linestring }),
+    new TerraDrawPolygonMode({ styles: styles.polygon }),
+    new TerraDrawRectangleMode({ styles: styles.rectangle }),
+    new TerraDrawCircleMode({ styles: styles.circle }),
+    new TerraDrawEllipseMode({ styles: styles.ellipse }),
+    new TerraDrawSectorMode({ styles: styles.sector })
+  ] as unknown as DrawMode[]
 }

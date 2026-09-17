@@ -2,11 +2,13 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { defineComponent, h, nextTick, ref } from 'vue'
 import { mount } from '@vue/test-utils'
 import type { Feature } from 'geojson'
-import MapboxMap from '../src/runtime/components/Map.vue'
-import MapboxDrawControl from '../src/runtime/components/extensions/DrawControl.vue'
+import MaplibreMap from '../src/runtime/components/Map.vue'
+import MaplibreDrawControl from '../src/runtime/components/extensions/DrawControl.vue'
 import { getDrawContext } from '../src/runtime/domains/map/draw-registry'
-import { useMapboxDraw } from '../src/runtime/composables/useMapboxDraw'
+import { useMaplibreDraw } from '../src/runtime/composables/useMaplibreDraw'
 import { logger } from '../src/runtime/utils/logger'
+import { draws } from './fixtures/fake-terra-draw'
+import type { FakeTerraDraw } from './fixtures/fake-terra-draw'
 
 // 可手动 fire 事件的最小 fake gl Map
 const { maps, makeFakeMap } = vi.hoisted(() => {
@@ -42,82 +44,27 @@ const { maps, makeFakeMap } = vi.hoisted(() => {
   return { maps, makeFakeMap }
 })
 
-vi.mock('mapbox-gl', () => {
+vi.mock('maplibre-gl', () => {
   function FakeGlMap(this: unknown) {
     return makeFakeMap()
   }
   function Noop() {}
   return {
-    default: { Map: FakeGlMap, accessToken: '', prewarm() {}, setRTLTextPlugin() {} },
+    Map: FakeGlMap,
     LngLat: { convert: (v: unknown) => v },
     Marker: Noop,
     Popup: Noop
   }
 })
 
-const { draws } = vi.hoisted(() => {
-  const draws: unknown[] = []
-  return { draws }
-})
+vi.mock('terra-draw', async importOriginal => ({
+  ...(await importOriginal<typeof import('terra-draw')>()),
+  TerraDraw: (await import('./fixtures/fake-terra-draw')).FakeTerraDraw
+}))
 
-vi.mock('@mapbox/mapbox-gl-draw', () => {
-  class FakeDraw {
-    store: Feature[] = []
-    mode = 'simple_select'
-    constructor() {
-      draws.push(this)
-    }
-
-    set(fc: { features: Feature[] }) {
-      this.store = [...fc.features]
-      return this.store.map(f => String(f.id))
-    }
-
-    add(geojson: Feature) {
-      this.store = [...this.store, geojson]
-      return [String(geojson.id)]
-    }
-
-    get(id: string) {
-      return this.store.find(f => String(f.id) === id)
-    }
-
-    getAll() {
-      return { type: 'FeatureCollection', features: [...this.store] }
-    }
-
-    getMode() {
-      return this.mode
-    }
-
-    changeMode(mode: string) {
-      this.mode = mode
-    }
-
-    deleteAll() {
-      this.store = []
-      return this
-    }
-
-    setFeatureProperty(featureId: string, property: string, value: unknown) {
-      this.store = this.store.map(f =>
-        String(f.id) === featureId ? { ...f, properties: { ...f.properties, [property]: value } } : f
-      )
-    }
-
-    onAdd() {
-      return document.createElement('div')
-    }
-
-    onRemove() {}
-  }
-  return { default: FakeDraw }
-})
-
-interface FakeDrawInstance {
-  store: Feature[]
-  mode: string
-}
+vi.mock('terra-draw-maplibre-gl-adapter', async () => ({
+  TerraDrawMapLibreGLAdapter: (await import('./fixtures/fake-terra-draw')).FakeMapLibreGLAdapter
+}))
 
 const pointFeature: Feature = {
   type: 'Feature',
@@ -126,18 +73,18 @@ const pointFeature: Feature = {
   geometry: { type: 'Point', coordinates: [116.39, 39.91] }
 }
 
-function lastDraw(): FakeDrawInstance {
-  return draws[draws.length - 1] as FakeDrawInstance
+function lastDraw(): FakeTerraDraw {
+  return draws[draws.length - 1]!
 }
 
-/** 挂载 MapboxMap + DrawControl；load 未触发时绘制实例尚未创建 */
+/** 挂载 MaplibreMap + DrawControl；load 未触发时绘制实例尚未创建 */
 function mountControl(mapId: string) {
   const features = ref<Feature[]>([])
   const mode = ref<string>()
   const Parent = defineComponent({
     setup() {
-      return () => h(MapboxMap, { mapId, options: {} }, {
-        default: () => h(MapboxDrawControl, {
+      return () => h(MaplibreMap, { mapId, options: {} }, {
+        default: () => h(MaplibreDrawControl, {
           'features': features.value,
           'onUpdate:features': (v: Feature[]) => {
             features.value = v
@@ -199,17 +146,17 @@ describe('draw 注册表', () => {
   })
 })
 
-describe('跨树 useMapboxDraw({ mapId })', () => {
+describe('跨树 useMaplibreDraw({ mapId })', () => {
   it('changeMode 切换实例模式并回写 v-model:mode', async () => {
     const { map, mode } = mountControl('m3')
     await load(map)
 
-    const { changeMode } = useMapboxDraw({ mapId: 'm3' })
-    await changeMode('draw_polygon')
+    const { changeMode } = useMaplibreDraw({ mapId: 'm3' })
+    await changeMode('polygon')
     await nextTick()
 
-    expect(lastDraw().mode).toBe('draw_polygon')
-    expect(mode.value).toBe('draw_polygon')
+    expect(lastDraw().mode).toBe('polygon')
+    expect(mode.value).toBe('polygon')
   })
 
   it('deleteAll 清空实例并回写 v-model:features', async () => {
@@ -220,7 +167,7 @@ describe('跨树 useMapboxDraw({ mapId })', () => {
     await nextTick()
     expect(lastDraw().store).toHaveLength(1)
 
-    const { deleteAll } = useMapboxDraw({ mapId: 'm4' })
+    const { deleteAll } = useMaplibreDraw({ mapId: 'm4' })
     await deleteAll()
     await nextTick()
 
@@ -232,29 +179,87 @@ describe('跨树 useMapboxDraw({ mapId })', () => {
     const { map, features } = mountControl('m5')
     await load(map)
 
-    const { add } = useMapboxDraw({ mapId: 'm5' })
+    const { add } = useMaplibreDraw({ mapId: 'm5' })
     const ids = await add(pointFeature)
     await nextTick()
 
     expect(ids).toEqual(['f1'])
     expect(features.value).toHaveLength(1)
+    // 缺省 mode 按几何类型推断
+    expect(features.value[0]!.properties).toMatchObject({ mode: 'point' })
+  })
+
+  it('add 接受裸几何与 FeatureCollection，缺失 id 时生成', async () => {
+    const { map } = mountControl('m5b')
+    await load(map)
+
+    const { add } = useMaplibreDraw({ mapId: 'm5b' })
+    const [polygonId] = await add({ type: 'Polygon', coordinates: [[[0, 0], [1, 0], [1, 1], [0, 0]]] })
+    const lineIds = await add({
+      type: 'FeatureCollection',
+      features: [{ type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: [[0, 0], [1, 1]] } }]
+    })
+
+    expect(polygonId).toMatch(/^generated-/)
+    expect(lineIds).toHaveLength(1)
+    expect(lastDraw().store.map(f => f.properties.mode)).toEqual(['polygon', 'linestring'])
+  })
+
+  it('add 跳过不支持的几何与校验失败的要素并告警', async () => {
+    const warn = vi.spyOn(logger, 'warn').mockImplementation(() => {})
+    const { map } = mountControl('m5c')
+    await load(map)
+
+    const { add } = useMaplibreDraw({ mapId: 'm5c' })
+    const ids = await add({ type: 'MultiPoint', coordinates: [[0, 0]] })
+
+    expect(ids).toEqual([])
+    expect(lastDraw().store).toHaveLength(0)
+    expect(warn).toHaveBeenCalled()
+  })
+
+  it('setFeatureProperty 更新要素属性并回写 v-model:features', async () => {
+    const { map, features } = mountControl('m5d')
+    await load(map)
+
+    const { add, setFeatureProperty } = useMaplibreDraw({ mapId: 'm5d' })
+    await add(pointFeature)
+    await setFeatureProperty('f1', 'color', '#ff0000')
+    await nextTick()
+
+    expect(features.value[0]!.properties).toMatchObject({ color: '#ff0000' })
+  })
+
+  it('getAll 排除绘制中的要素与辅助点', async () => {
+    const { map } = mountControl('m5e')
+    await load(map)
+    const draw = lastDraw()
+    draw.store = [
+      { ...pointFeature, id: 'done', properties: { mode: 'point' } },
+      { ...pointFeature, id: 'drawing', properties: { mode: 'polygon', currentlyDrawing: true } },
+      { ...pointFeature, id: 'closing', properties: { mode: 'polygon', closingPoint: true } },
+      { ...pointFeature, id: 'selection', properties: { mode: 'select', selectionPoint: true } }
+    ] as FakeTerraDraw['store']
+
+    const { getAll } = useMaplibreDraw({ mapId: 'm5e' })
+    expect(getAll()?.features.map(f => f.id)).toEqual(['done'])
   })
 
   it('读操作在就绪前返回 undefined，就绪后返回现值', async () => {
     const { map } = mountControl('m6')
-    const { getAll, getMode } = useMapboxDraw({ mapId: 'm6' })
+    const { getAll, getMode } = useMaplibreDraw({ mapId: 'm6' })
 
     expect(getAll()).toBeUndefined()
     expect(getMode()).toBeUndefined()
 
     await load(map)
-    expect(getMode()).toBe('simple_select')
+    expect(getMode()).toBe('select')
     expect(getAll()?.features).toEqual([])
   })
 
   it('whenReady 在地图 load 前 pending、load 后 resolve 到实例', async () => {
     const { map } = mountControl('m7')
-    const { whenReady } = useMapboxDraw({ mapId: 'm7' })
+    const { whenReady } = useMaplibreDraw({ mapId: 'm7' })
 
     let resolved: unknown
     whenReady().then((d) => {
@@ -270,41 +275,41 @@ describe('跨树 useMapboxDraw({ mapId })', () => {
 
   it('写操作在实例就绪前调用，会等到就绪后执行', async () => {
     const { map, mode } = mountControl('m8')
-    const { changeMode } = useMapboxDraw({ mapId: 'm8' })
+    const { changeMode } = useMaplibreDraw({ mapId: 'm8' })
 
-    const pending = changeMode('draw_point')
+    const pending = changeMode('point')
     await load(map)
     await pending
     await nextTick()
 
-    expect(lastDraw().mode).toBe('draw_point')
-    expect(mode.value).toBe('draw_point')
+    expect(lastDraw().mode).toBe('point')
+    expect(mode.value).toBe('point')
   })
 
   it('未注册的 mapId：写操作 warn 且不抛，whenReady reject', async () => {
     const warn = vi.spyOn(logger, 'warn').mockImplementation(() => {})
-    const { changeMode, getAll, whenReady } = useMapboxDraw({ mapId: 'absent' })
+    const { changeMode, getAll, whenReady } = useMaplibreDraw({ mapId: 'absent' })
 
-    await expect(changeMode('draw_point')).resolves.toBeUndefined()
+    await expect(changeMode('point')).resolves.toBeUndefined()
     expect(warn).toHaveBeenCalledTimes(1)
     expect(getAll()).toBeUndefined()
     await expect(whenReady()).rejects.toThrow(/absent/)
   })
 })
 
-describe('子树内 useMapboxDraw()', () => {
+describe('子树内 useMaplibreDraw()', () => {
   it('无参调用注入同一上下文', async () => {
     let injected: unknown
     const Child = defineComponent({
       setup() {
-        injected = useMapboxDraw()
+        injected = useMaplibreDraw()
         return () => null
       }
     })
     const Parent = defineComponent({
       setup() {
-        return () => h(MapboxMap, { mapId: 'm9', options: {} }, {
-          default: () => h(MapboxDrawControl, null, { default: () => h(Child) })
+        return () => h(MaplibreMap, { mapId: 'm9', options: {} }, {
+          default: () => h(MaplibreDrawControl, null, { default: () => h(Child) })
         })
       }
     })
@@ -312,13 +317,13 @@ describe('子树内 useMapboxDraw()', () => {
     expect(injected).toBe(getDrawContext('m9'))
   })
 
-  it('在 MapboxDrawControl 外无参调用抛错', () => {
+  it('在 MaplibreDrawControl 外无参调用抛错', () => {
     const Child = defineComponent({
       setup() {
-        useMapboxDraw()
+        useMaplibreDraw()
         return () => null
       }
     })
-    expect(() => mount(Child)).toThrow(/MapboxDrawControl/)
+    expect(() => mount(Child)).toThrow(/MaplibreDrawControl/)
   })
 })

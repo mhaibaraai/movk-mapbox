@@ -1,36 +1,48 @@
 import { describe, expect, it } from 'vitest'
+import type { GeoJSONStoreFeatures } from 'terra-draw'
 import { drawThemeStyles } from '../src/runtime/utils/draw-theme'
 
+type StyleFn = (feature: GeoJSONStoreFeatures) => unknown
+
+function feature(properties: Record<string, unknown> = {}): GeoJSONStoreFeatures {
+  return {
+    type: 'Feature',
+    id: 'f',
+    properties: { mode: 'polygon', ...properties },
+    geometry: { type: 'Polygon', coordinates: [[[0, 0], [1, 0], [1, 1], [0, 0]]] }
+  } as GeoJSONStoreFeatures
+}
+
 describe('drawThemeStyles', () => {
-  it('图层 id 唯一', () => {
-    const ids = drawThemeStyles().map(s => s.id as string)
-    expect(new Set(ids).size).toBe(ids.length)
-  })
-
-  it('颜色统一经 user_color coalesce 表达式驱动', () => {
+  it('覆盖选择模式与全部内置绘制模式', () => {
     const styles = drawThemeStyles()
-    const colored = styles.filter((s) => {
-      const paint = s.paint as Record<string, unknown>
-      return paint['fill-color'] || paint['line-color'] || paint['circle-color']
-    })
-    // 至少每个着色项含 user_color coalesce(白色 halo 除外)
-    const withUserColor = styles.filter(s => JSON.stringify(s).includes('user_color'))
-    expect(withUserColor.length).toBeGreaterThan(0)
-    expect(colored.length).toBeGreaterThanOrEqual(withUserColor.length)
+    expect(Object.keys(styles).sort()).toEqual(
+      ['circle', 'ellipse', 'linestring', 'point', 'polygon', 'rectangle', 'sector', 'select'].sort()
+    )
   })
 
-  it('多边形 fill/stroke 与线均有 active/inactive 成对', () => {
-    const ids = drawThemeStyles().map(s => s.id as string)
-    for (const base of ['movk-gl-draw-polygon-fill', 'movk-gl-draw-polygon-stroke', 'movk-gl-draw-line']) {
-      expect(ids).toContain(`${base}-active`)
-      expect(ids).toContain(`${base}-inactive`)
-    }
+  it('颜色由要素 color 属性覆盖，缺省回退主题色', () => {
+    const { polygon, linestring, point } = drawThemeStyles({ color: '#123456' })
+    const fill = polygon.fillColor as StyleFn
+
+    expect(fill(feature())).toBe('#123456')
+    expect(fill(feature({ color: '#ff0000' }))).toBe('#ff0000')
+    expect((linestring.lineStringColor as StyleFn)(feature({ color: '#00ff00' }))).toBe('#00ff00')
+    expect((point.pointColor as StyleFn)(feature())).toBe('#123456')
   })
 
-  it('自定义颜色注入回退色', () => {
-    const styles = drawThemeStyles({ color: '#123456', activeColor: '#abcdef' })
-    const json = JSON.stringify(styles)
-    expect(json).toContain('#123456')
-    expect(json).toContain('#abcdef')
+  it('激活色用于选中态与绘制过程中的辅助点', () => {
+    const { select, polygon } = drawThemeStyles({ activeColor: '#abcdef' })
+    expect(select.selectedPolygonColor).toBe('#abcdef')
+    expect(select.selectionPointColor).toBe('#abcdef')
+    expect(polygon.closingPointColor).toBe('#abcdef')
+  })
+
+  it('数值参数注入填充透明度、线宽与顶点半径', () => {
+    const { polygon, linestring, select } = drawThemeStyles({ fillOpacity: 0.3, lineWidth: 4, vertexRadius: 7 })
+    expect(polygon.fillOpacity).toBe(0.3)
+    expect(polygon.outlineWidth).toBe(4)
+    expect(linestring.lineStringWidth).toBe(4)
+    expect(select.selectionPointWidth).toBe(7)
   })
 })

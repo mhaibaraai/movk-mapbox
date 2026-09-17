@@ -1,16 +1,19 @@
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { defineComponent, h, nextTick, ref } from 'vue'
 import { mount } from '@vue/test-utils'
 import type { Feature } from 'geojson'
-import MapboxMap from '../src/runtime/components/Map.vue'
-import MapboxDrawControl from '../src/runtime/components/extensions/DrawControl.vue'
+import MaplibreMap from '../src/runtime/components/Map.vue'
+import MaplibreDrawControl from '../src/runtime/components/extensions/DrawControl.vue'
+import { draws } from './fixtures/fake-terra-draw'
+import type { FakeTerraDraw } from './fixtures/fake-terra-draw'
 
-// 可手动 fire 事件的最小 fake gl Map
+// 可手动 fire 事件、记录控件增删的最小 fake gl Map
 const { maps, makeFakeMap } = vi.hoisted(() => {
   const maps: ReturnType<typeof makeFakeMap>[] = []
   function makeFakeMap() {
     const handlers: Record<string, Set<(e?: unknown) => void>> = {}
     const self = {
+      controls: [] as { onAdd: (map: unknown) => HTMLElement, onRemove: () => void }[],
       on(type: string, a: unknown, b?: unknown) {
         const listener = (b ?? a) as (e?: unknown) => void
         ;(handlers[type] ??= new Set()).add(listener)
@@ -23,8 +26,12 @@ const { maps, makeFakeMap } = vi.hoisted(() => {
         handlers[type]?.forEach(fn => fn(e))
       },
       isStyleLoaded: () => true,
-      addControl() {},
-      removeControl() {},
+      addControl(control: { onAdd: (map: unknown) => HTMLElement, onRemove: () => void }) {
+        self.controls.push(control)
+      },
+      removeControl(control: unknown) {
+        self.controls = self.controls.filter(c => c !== control)
+      },
       resize() {},
       remove() {},
       getCenter: () => ({ lng: 0, lat: 0 }),
@@ -39,74 +46,27 @@ const { maps, makeFakeMap } = vi.hoisted(() => {
   return { maps, makeFakeMap }
 })
 
-vi.mock('mapbox-gl', () => {
+vi.mock('maplibre-gl', () => {
   function FakeGlMap(this: unknown) {
     return makeFakeMap()
   }
   function Noop() {}
   return {
-    default: { Map: FakeGlMap, accessToken: '', prewarm() {}, setRTLTextPlugin() {} },
+    Map: FakeGlMap,
     LngLat: { convert: (v: unknown) => v },
     Marker: Noop,
     Popup: Noop
   }
 })
 
-// fake MapboxDraw：记录 set/changeMode 调用
-const { draws } = vi.hoisted(() => {
-  const draws: unknown[] = []
-  return { draws }
-})
+vi.mock('terra-draw', async importOriginal => ({
+  ...(await importOriginal<typeof import('terra-draw')>()),
+  TerraDraw: (await import('./fixtures/fake-terra-draw')).FakeTerraDraw
+}))
 
-vi.mock('@mapbox/mapbox-gl-draw', () => {
-  class FakeDraw {
-    store: Feature[] = []
-    mode = 'simple_select'
-    setCalls = 0
-    changeModeCalls = 0
-    constructor() {
-      draws.push(this)
-    }
-
-    set(fc: { features: Feature[] }) {
-      this.setCalls++
-      this.store = [...fc.features]
-      return this.store.map(f => String(f.id))
-    }
-
-    getAll() {
-      return { type: 'FeatureCollection', features: [...this.store] }
-    }
-
-    getMode() {
-      return this.mode
-    }
-
-    changeMode(mode: string) {
-      this.changeModeCalls++
-      this.mode = mode
-    }
-
-    deleteAll() {
-      this.store = []
-      return this
-    }
-
-    onAdd() {
-      return document.createElement('div')
-    }
-
-    onRemove() {}
-  }
-  return { default: FakeDraw }
-})
-
-interface FakeDrawInstance {
-  store: Feature[]
-  mode: string
-  setCalls: number
-  changeModeCalls: number
-}
+vi.mock('terra-draw-maplibre-gl-adapter', async () => ({
+  TerraDrawMapLibreGLAdapter: (await import('./fixtures/fake-terra-draw')).FakeMapLibreGLAdapter
+}))
 
 const pointFeature: Feature = {
   type: 'Feature',
@@ -115,22 +75,33 @@ const pointFeature: Feature = {
   geometry: { type: 'Point', coordinates: [116.39, 39.91] }
 }
 
-async function mountControlled() {
+async function mountControlled(controlProps: Record<string, unknown> = {}) {
   const features = ref<Feature[]>([])
   const mode = ref<string>()
+  const emitted: Record<string, unknown[][]> = {}
+  const record = (name: string) => (...args: unknown[]) => {
+    (emitted[name] ??= []).push(args)
+  }
+  const show = ref(true)
   const Parent = defineComponent({
     setup() {
-      return () => h(MapboxMap, { options: {} }, {
-        default: () => h(MapboxDrawControl, {
-          'features': features.value,
-          'onUpdate:features': (v: Feature[]) => {
-            features.value = v
-          },
-          'mode': mode.value,
-          'onUpdate:mode': (v: string) => {
-            mode.value = v
-          }
-        })
+      return () => h(MaplibreMap, { options: {} }, {
+        default: () => show.value
+          ? h(MaplibreDrawControl, {
+              ...controlProps,
+              'features': features.value,
+              'onUpdate:features': (v: Feature[]) => {
+                features.value = v
+              },
+              'mode': mode.value,
+              'onUpdate:mode': (v: string) => {
+                mode.value = v
+              },
+              'onFinish': record('finish'),
+              'onDelete': record('delete'),
+              'onModechange': record('modechange')
+            })
+          : null
       })
     }
   })
@@ -140,52 +111,161 @@ async function mountControlled() {
   map.fire('load')
   await nextTick()
   await nextTick()
-  const draw = draws[draws.length - 1] as FakeDrawInstance
-  return { wrapper, map, draw, features, mode }
+  const draw = draws[draws.length - 1] as FakeTerraDraw
+  return { wrapper, map, draw, features, mode, emitted, show }
 }
 
-describe('DrawControl 受控 features', () => {
-  it('绘制事件回写模型且不回流 draw.set（断环）', async () => {
-    const { map, draw, features } = await mountControlled()
+function toolbar(map: ReturnType<typeof makeFakeMap>): HTMLElement {
+  return map.controls[0]!.onAdd(map)
+}
 
-    draw.store = [pointFeature]
-    map.fire('draw.create', { features: [pointFeature] })
+function button(el: HTMLElement, name: string): HTMLButtonElement {
+  return el.querySelector<HTMLButtonElement>(`[data-mode="${name}"]`)!
+}
+
+beforeEach(() => {
+  maps.length = 0
+  draws.length = 0
+})
+
+describe('DrawControl 生命周期', () => {
+  it('地图 load 后以默认模式集合创建并启动实例', async () => {
+    const { draw } = await mountControlled()
+    expect(draw.started).toBe(true)
+    expect(draw.modes.map(m => m.mode)).toEqual(['select', 'point', 'linestring', 'polygon', 'rectangle', 'circle', 'ellipse', 'sector'])
+  })
+
+  it('卸载时停止实例、解绑事件并移除工具栏', async () => {
+    const { map, draw, show } = await mountControlled()
+    expect(map.controls).toHaveLength(1)
+
+    show.value = false
+    await nextTick()
+
+    expect(draw.started).toBe(false)
+    expect(draw.listenerCount()).toBe(0)
+    expect(map.controls).toHaveLength(0)
+  })
+
+  it('切换底图（style.load）后重启实例并恢复要素与模式', async () => {
+    const { map, draw, mode } = await mountControlled()
+    draw.store = [{ ...pointFeature, id: 'f1', properties: { mode: 'point' } }] as FakeTerraDraw['store']
+    mode.value = 'polygon'
+    await nextTick()
+
+    map.fire('style.load')
+
+    expect(draw.stopCalls).toBe(1)
+    expect(draw.startCalls).toBe(2)
+    expect(draw.store.map(f => f.id)).toEqual(['f1'])
+    expect(draw.mode).toBe('polygon')
+  })
+})
+
+describe('DrawControl 受控 features', () => {
+  it('绘制完成回写模型且不回流 addFeatures（断环）', async () => {
+    const { draw, features, emitted } = await mountControlled()
+
+    draw.store = [{ ...pointFeature, properties: { mode: 'point' } }] as FakeTerraDraw['store']
+    draw.emit('change', ['f1'], 'create')
+    draw.emit('finish', 'f1', { mode: 'point', action: 'draw' })
     await nextTick()
 
     expect(features.value).toHaveLength(1)
-    // 回写签名与模型一致，watch 比对相等跳过 set
-    expect(draw.setCalls).toBe(0)
+    expect(emitted.finish?.[0]).toEqual(['f1', { mode: 'point', action: 'draw' }])
+    expect(draw.addCalls).toBe(0)
   })
 
-  it('外部赋值经 draw.set 下发', async () => {
+  it('styling 变更不触发回写', async () => {
+    const { draw, features } = await mountControlled()
+    draw.store = [{ ...pointFeature, properties: { mode: 'point' } }] as FakeTerraDraw['store']
+    draw.emit('change', ['f1'], 'styling')
+    await nextTick()
+    expect(features.value).toEqual([])
+  })
+
+  it('外部赋值清空后按几何推断 mode 下发', async () => {
     const { draw, features } = await mountControlled()
 
     features.value = [pointFeature]
     await nextTick()
 
-    expect(draw.setCalls).toBe(1)
-    expect(draw.store).toHaveLength(1)
+    expect(draw.addCalls).toBe(1)
+    expect(draw.store[0]!.properties.mode).toBe('point')
+    // 下发后以规范化要素回写一次，再次比对相等不重复下发
+    await nextTick()
+    expect(draw.addCalls).toBe(1)
+  })
+
+  it('删除事件派发 delete 并回写', async () => {
+    const { draw, features, emitted } = await mountControlled()
+    features.value = [pointFeature]
+    await nextTick()
+
+    draw.removeFeatures(['f1'])
+    await nextTick()
+
+    expect(features.value).toEqual([])
+    expect(emitted.delete?.[0]).toEqual([['f1']])
   })
 })
 
 describe('DrawControl 受控 mode', () => {
-  it('modechange 回写模型；外部赋值触发 changeMode', async () => {
+  it('挂载后默认进入选择模式并回写', async () => {
+    const { draw, mode } = await mountControlled()
+    expect(draw.mode).toBe('select')
+    expect(mode.value).toBe('select')
+  })
+
+  it('外部赋值切换模式并派发 modechange；与实例现值相同则跳过', async () => {
+    const { draw, mode, emitted } = await mountControlled()
+    const calls = draw.setModeCalls
+
+    mode.value = 'polygon'
+    await nextTick()
+    expect(draw.mode).toBe('polygon')
+    expect(emitted.modechange?.at(-1)).toEqual(['polygon'])
+
+    mode.value = 'polygon'
+    await nextTick()
+    expect(draw.setModeCalls).toBe(calls + 1)
+  })
+})
+
+describe('DrawControl 工具栏', () => {
+  it('按模式集合渲染按钮，点击切换模式，再次点击回到选择模式', async () => {
     const { map, draw, mode } = await mountControlled()
-    // 挂载后回写默认模式
-    expect(mode.value).toBe('simple_select')
+    const el = toolbar(map)
 
-    // 用户交互切换：实例已处于新模式后才派发 modechange
-    draw.mode = 'draw_polygon'
-    map.fire('draw.modechange', { mode: 'draw_polygon' })
+    button(el, 'polygon').click()
     await nextTick()
-    expect(mode.value).toBe('draw_polygon')
-    // 回写值与实例现值一致，watch 比对相等跳过程序式 changeMode
-    expect(draw.changeModeCalls).toBe(0)
+    expect(draw.mode).toBe('polygon')
+    expect(mode.value).toBe('polygon')
+    expect(button(el, 'polygon').getAttribute('aria-pressed')).toBe('true')
 
-    draw.mode = 'simple_select'
-    mode.value = 'draw_point'
+    button(el, 'polygon').click()
     await nextTick()
-    expect(draw.changeModeCalls).toBe(1)
-    expect(draw.mode).toBe('draw_point')
+    expect(draw.mode).toBe('select')
+  })
+
+  it('controls 限定按钮；删除按钮移除当前选中要素', async () => {
+    const { map, draw, features } = await mountControlled({ controls: ['polygon'] })
+    const el = toolbar(map)
+
+    expect(el.querySelectorAll('[data-mode]')).toHaveLength(1)
+
+    features.value = [pointFeature]
+    await nextTick()
+    draw.emit('select', 'f1')
+    el.querySelector<HTMLButtonElement>('[data-action="trash"]')!.click()
+    await nextTick()
+
+    expect(draw.store).toHaveLength(0)
+    expect(features.value).toEqual([])
+  })
+
+  it('controls 为 false 时不添加工具栏', async () => {
+    const { map } = await mountControlled({ controls: false })
+    expect(map.controls).toHaveLength(0)
   })
 })

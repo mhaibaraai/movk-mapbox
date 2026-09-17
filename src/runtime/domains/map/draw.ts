@@ -1,5 +1,5 @@
 import type { InjectionKey } from 'vue'
-import type { MapboxDrawContext } from '../../types'
+import type { MaplibreDrawContext } from '../../types'
 
-/** MapboxDrawControl 向子树下发绘制上下文的注入键 */
-export const DrawKey: InjectionKey<MapboxDrawContext> = Symbol('movk-mapbox:draw')
+/** MaplibreDrawControl 向子树下发绘制上下文的注入键 */
+export const DrawKey: InjectionKey<MaplibreDrawContext> = Symbol('movk-maplibre:draw')
