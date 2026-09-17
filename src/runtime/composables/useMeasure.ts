@@ -7,6 +7,7 @@ import type { GeoJSONSource, Map as MaplibreMap, MapMouseEvent } from 'maplibre-
 import { useContextResolver } from '../domains/map/resolve'
 import { formatArea, formatDistance } from '../utils/measure'
 import { logger } from '../utils/logger'
+import { textFontLayout } from '../domains/map/config'
 
 export type MeasureMode = 'distance' | 'area'
 
@@ -72,7 +73,7 @@ export function useMeasure(options: UseMeasureOptions = {}): UseMeasureReturn {
       { id: `${SOURCE_ID}-fill`, type: 'fill', filter: ['==', ['geometry-type'], 'Polygon'], paint: { 'fill-color': color, 'fill-opacity': 0.15 } },
       { id: `${SOURCE_ID}-line`, type: 'line', filter: ['!=', ['geometry-type'], 'Point'], paint: { 'line-color': color, 'line-width': 2, 'line-dasharray': [2, 1] } },
       { id: `${SOURCE_ID}-points`, type: 'circle', filter: ['==', ['geometry-type'], 'Point'], paint: { 'circle-radius': 4, 'circle-color': '#fff', 'circle-stroke-color': color, 'circle-stroke-width': 2 } },
-      { id: `${SOURCE_ID}-labels`, type: 'symbol', filter: ['has', 'label'], layout: { 'text-field': ['get', 'label'], 'text-size': 13, 'text-offset': [0, -1.2], 'text-anchor': 'bottom' }, paint: { 'text-color': color, 'text-halo-color': '#fff', 'text-halo-width': 1.5 } }
+      { id: `${SOURCE_ID}-labels`, type: 'symbol', filter: ['has', 'label'], layout: { 'text-field': ['get', 'label'], 'text-size': 13, 'text-offset': [0, -1.2], 'text-anchor': 'bottom', ...textFontLayout() }, paint: { 'text-color': color, 'text-halo-color': '#fff', 'text-halo-width': 1.5 } }
     ]
     for (const layer of layers) {
       if (!map.getLayer(layer.id)) map.addLayer({ source: SOURCE_ID, ...layer } as never)

@@ -18,3 +18,9 @@ export function setMaplibreConfig(value: Partial<MaplibreRuntimeConfig>): void {
 export function getMaplibreConfig(): MaplibreRuntimeConfig {
   return store.config
 }
+
+/** 库内置文字图层的 layout 字体片段：配置了 textFont 才输出，否则交由样式默认 */
+export function textFontLayout(): { 'text-font'?: string[] } {
+  const { textFont } = store.config
+  return textFont ? { 'text-font': textFont } : {}
+}

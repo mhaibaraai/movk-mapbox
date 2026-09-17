@@ -5,6 +5,7 @@ import MaplibreMap from '../src/runtime/components/Map.vue'
 import MaplibreLayer from '../src/runtime/components/Layer.vue'
 import MaplibreTiandituLayer from '../src/runtime/components/extensions/TiandituLayer.vue'
 import { useMap } from '../src/runtime/composables/useMap'
+import { setMaplibreConfig } from '../src/runtime/domains/map/config'
 
 // 富功能 fake gl Map：记录 addLayer 次数、图层级 on 绑定次数，并可手动 fire 事件
 const { maps, makeFakeMap } = vi.hoisted(() => {
@@ -240,6 +241,14 @@ describe('默认样式', () => {
     const { options } = maps[maps.length - 1]! as unknown as { options: { style: unknown, center: unknown } }
     expect(options.style).toEqual({ version: 8, sources: {}, layers: [] })
     expect(options.center).toEqual([116, 39])
+  })
+
+  it('空白样式使用全局 glyphs 配置', () => {
+    setMaplibreConfig({ glyphs: 'https://fonts.example.com/{fontstack}/{range}.pbf' })
+    mount(MaplibreMap, { props: { options: {} } })
+    setMaplibreConfig({ glyphs: undefined })
+    const { options } = maps[maps.length - 1]! as unknown as { options: { style: unknown } }
+    expect(options.style).toEqual({ version: 8, glyphs: 'https://fonts.example.com/{fontstack}/{range}.pbf', sources: {}, layers: [] })
   })
 
   it('传入 style 时原样透传', () => {

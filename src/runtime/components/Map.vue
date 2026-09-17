@@ -8,13 +8,17 @@ import type { StyleSpecification } from '@maplibre/maplibre-gl-style-spec'
 import type { MaplibreMapOptions } from '../types'
 import { createMaplibreContext, MaplibreContextKey } from '../domains/map/context'
 import { createMaplibreGl } from '../domains/map/create-map'
+import { getMaplibreConfig } from '../domains/map/config'
 import { getMapContext, registerMap, unregisterMap } from '../domains/map/registry'
 import { bindMapEvents } from '../utils/events'
 
 defineOptions({ inheritAttrs: false })
 
 // MapLibre 无内置底图，缺省 style 时实例没有样式，style.load 永不触发；以空白样式兜底（如仅叠加天地图）
-const BLANK_STYLE: StyleSpecification = { version: 8, sources: {}, layers: [] }
+function blankStyle(): StyleSpecification {
+  const { glyphs } = getMaplibreConfig()
+  return { version: 8, ...(glyphs ? { glyphs } : {}), sources: {}, layers: [] }
+}
 
 const props = withDefaults(defineProps<{
   /** 地图 id；省略时自动生成。提供后可经 useMaplibre(id) 外部访问 */
@@ -110,7 +114,7 @@ onMounted(() => {
   // 相机 model 初始值并入初始化选项（model 优先，回退 options，皆无则由 omitUndefined 交还 maplibre 默认）
   const map = createMaplibreGl(omitUndefined({
     ...props.options,
-    style: props.options?.style ?? BLANK_STYLE,
+    style: props.options?.style ?? blankStyle(),
     center: center.value ?? props.options?.center,
     zoom: zoom.value ?? props.options?.zoom,
     bearing: bearing.value ?? props.options?.bearing,

@@ -1,5 +1,7 @@
 import type { CircleLayerSpecification, SymbolLayerSpecification } from '@maplibre/maplibre-gl-style-spec'
 
+import { textFontLayout } from '../domains/map/config'
+
 type PropBag = Record<string, unknown>
 
 export interface ClusterLayersOptions {
@@ -46,7 +48,8 @@ export function clusterLayerSpecs(options: ClusterLayersOptions): ClusterLayerSp
     filter: ['has', 'point_count'],
     layout: (options.countLayout ?? {
       'text-field': ['get', 'point_count_abbreviated'],
-      'text-size': 12
+      'text-size': 12,
+      ...textFontLayout()
     }) as SymbolLayerSpecification['layout'],
     paint: (options.countPaint ?? {
       'text-color': '#fff'
