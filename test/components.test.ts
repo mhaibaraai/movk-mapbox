@@ -72,8 +72,8 @@ const { maps, makeFakeMap } = vi.hoisted(() => {
 
 vi.mock('maplibre-gl', () => {
   // 函数构造器：new FakeGlMap() 返回 makeFakeMap() 生成的桩对象
-  function FakeGlMap(this: unknown) {
-    return makeFakeMap()
+  function FakeGlMap(this: unknown, options: unknown) {
+    return Object.assign(makeFakeMap(), { options })
   }
   function Noop() {}
   const LngLat = {
@@ -231,6 +231,21 @@ describe('相机回环', () => {
     // 回写值与地图现值一致，watcher 比对相等跳过下发；不形成 moveend→setCenter→moveend 回环
     expect(map.setCenterCalls).toBe(0)
     wrapper.unmount()
+  })
+})
+
+describe('默认样式', () => {
+  it('未传 style 时使用空白样式，保证 onReady 可触发', () => {
+    mount(MaplibreMap, { props: { options: { center: [116, 39] } } })
+    const { options } = maps[maps.length - 1]! as unknown as { options: { style: unknown, center: unknown } }
+    expect(options.style).toEqual({ version: 8, sources: {}, layers: [] })
+    expect(options.center).toEqual([116, 39])
+  })
+
+  it('传入 style 时原样透传', () => {
+    mount(MaplibreMap, { props: { options: { style: 'https://example.com/style.json' } } })
+    const { options } = maps[maps.length - 1]! as unknown as { options: { style: unknown } }
+    expect(options.style).toBe('https://example.com/style.json')
   })
 })
 

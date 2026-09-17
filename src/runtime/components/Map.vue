@@ -4,6 +4,7 @@ import { useResizeObserver } from '@vueuse/core'
 import { omitUndefined } from '@movk/core'
 import { LngLat } from 'maplibre-gl'
 import type { LngLatLike, Map as MaplibreMap, MapEventType, MapOptions } from 'maplibre-gl'
+import type { StyleSpecification } from '@maplibre/maplibre-gl-style-spec'
 import type { MaplibreMapOptions } from '../types'
 import { createMaplibreContext, MaplibreContextKey } from '../domains/map/context'
 import { createMaplibreGl } from '../domains/map/create-map'
@@ -12,11 +13,14 @@ import { bindMapEvents } from '../utils/events'
 
 defineOptions({ inheritAttrs: false })
 
+// MapLibre 无内置底图，缺省 style 时实例没有样式，style.load 永不触发；以空白样式兜底（如仅叠加天地图）
+const BLANK_STYLE: StyleSpecification = { version: 8, sources: {}, layers: [] }
+
 const props = withDefaults(defineProps<{
   /** 地图 id；省略时自动生成。提供后可经 useMaplibre(id) 外部访问 */
   mapId?: string
   /**
-   * maplibre-gl Map 初始化选项（container 由组件接管）
+   * maplibre-gl Map 初始化选项（container 由组件接管）；缺省 style 时使用空白样式
    * @see https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/MapOptions/
    */
   options?: MaplibreMapOptions
@@ -106,6 +110,7 @@ onMounted(() => {
   // 相机 model 初始值并入初始化选项（model 优先，回退 options，皆无则由 omitUndefined 交还 maplibre 默认）
   const map = createMaplibreGl(omitUndefined({
     ...props.options,
+    style: props.options?.style ?? BLANK_STYLE,
     center: center.value ?? props.options?.center,
     zoom: zoom.value ?? props.options?.zoom,
     bearing: bearing.value ?? props.options?.bearing,
