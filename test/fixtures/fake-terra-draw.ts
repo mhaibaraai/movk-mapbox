@@ -13,6 +13,8 @@ export class FakeTerraDraw {
   started = false
   startCalls = 0
   stopCalls = 0
+  /** 模拟适配器注销时旧样式的源已不存在：先禁用实例再抛错（与 terra-draw 真实行为一致） */
+  stopThrows = false
   addCalls = 0
   setModeCalls = 0
   modes: { mode: string }[]
@@ -32,6 +34,7 @@ export class FakeTerraDraw {
   stop() {
     this.started = false
     this.stopCalls++
+    if (this.stopThrows) throw new Error('There is no source with this ID=td-point')
   }
 
   on(event: string, fn: Listener) {

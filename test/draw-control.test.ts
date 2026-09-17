@@ -149,6 +149,8 @@ describe('DrawControl 生命周期', () => {
 
   it('切换底图（style.load）后重启实例并恢复要素与模式', async () => {
     const { map, draw, mode } = await mountControlled()
+    // setStyle 已清空旧样式的源，适配器注销时 removeSource 抛错
+    draw.stopThrows = true
     draw.store = [{ ...pointFeature, id: 'f1', properties: { mode: 'point' } }] as FakeTerraDraw['store']
     mode.value = 'polygon'
     await nextTick()
@@ -157,6 +159,7 @@ describe('DrawControl 生命周期', () => {
 
     expect(draw.stopCalls).toBe(1)
     expect(draw.startCalls).toBe(2)
+    expect(draw.started).toBe(true)
     expect(draw.store.map(f => f.id)).toEqual(['f1'])
     expect(draw.mode).toBe('polygon')
   })

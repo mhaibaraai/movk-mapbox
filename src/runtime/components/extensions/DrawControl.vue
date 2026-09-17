@@ -133,7 +133,11 @@ function onStyleLoad(): void {
   if (!instance) return
   const snapshot = committedFeatures(instance)
   const current = instance.getMode()
-  instance.stop()
+  try {
+    instance.stop()
+  } catch {
+    // 适配器注销时旧源已随样式移除，removeSource 必抛；此时实例已禁用、监听已解绑，可直接重启
+  }
   instance.start()
   applying = true
   instance.clear()
