@@ -10,7 +10,7 @@ import { bindMapEvents } from '../utils/events'
 
 type PropBag = Record<string, unknown>
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   /** 图层 id，全局唯一 */
   layerId: string
   /**
@@ -49,7 +49,10 @@ const props = defineProps<{
   maxzoom?: number
   /** 插入到该 id 图层之前；省略则追加到图层栈顶部 */
   beforeId?: string
-}>()
+}>(), {
+  // FilterSpecification 含 boolean，缺省值须显式为 undefined，否则 Vue 将缺省的 Boolean 类型 prop 转为 false 并过滤掉全部要素
+  filter: undefined
+})
 
 const emit = defineEmits<{
   click: [event: MapLayerEventType['click']]

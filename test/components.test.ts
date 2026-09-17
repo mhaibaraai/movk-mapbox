@@ -18,6 +18,7 @@ const { maps, makeFakeMap } = vi.hoisted(() => {
     const self = {
       layers,
       addLayerCalls: 0,
+      layerSpecs: [] as Record<string, unknown>[],
       layerOnCalls: 0,
       setCenterCalls: 0,
       setTilesCalls: 0,
@@ -38,6 +39,7 @@ const { maps, makeFakeMap } = vi.hoisted(() => {
       getLayer: (id: string) => (layers.has(id) ? { id } : undefined),
       addLayer: (spec: { id: string }) => {
         layers.add(spec.id)
+        self.layerSpecs.push(spec)
         self.addLayerCalls++
       },
       removeLayer: (id: string) => layers.delete(id),
@@ -232,6 +234,26 @@ describe('相机回环', () => {
     // 回写值与地图现值一致，watcher 比对相等跳过下发；不形成 moveend→setCenter→moveend 回环
     expect(map.setCenterCalls).toBe(0)
     wrapper.unmount()
+  })
+})
+
+describe('Layer 规格', () => {
+  it('未传 filter 时规格不含 filter 字段（避免 Boolean 类型 prop 被转成 false 过滤掉全部要素）', async () => {
+    const Parent = defineComponent({
+      setup() {
+        return () => h(MaplibreMap, { options: {} }, {
+          default: () => h(MaplibreLayer, { layerId: 'no-filter', type: 'circle', source: inlineSource })
+        })
+      }
+    })
+    mount(Parent)
+    const map = maps[maps.length - 1]!
+    map.fire('style.load')
+    await nextTick()
+
+    const spec = map.layerSpecs.find(item => item.id === 'no-filter')
+    expect(spec).toBeDefined()
+    expect(spec).not.toHaveProperty('filter')
   })
 })
 
