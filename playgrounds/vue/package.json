@@ -8,19 +8,19 @@
     "typecheck": "vue-tsc --noEmit"
   },
   "dependencies": {
-    "@mapbox/mapbox-gl-draw": "^1.5.1",
+    "@mapbox/mapbox-gl-draw": "^1.5.2",
     "@movk/mapbox": "workspace:*",
     "@nuxt/ui": "^4.11.1",
-    "mapbox-gl": "^3.30.0",
+    "mapbox-gl": "^3.31.0",
     "ofetch": "^1.5.1",
-    "vue": "^3.5.42",
+    "vue": "^3.5.43",
     "vue-router": "^5.3.1"
   },
   "devDependencies": {
-    "@iconify-json/lucide": "^1.2.130",
-    "@vitejs/plugin-vue": "^6.0.8",
+    "@iconify-json/lucide": "^1.2.133",
+    "@vitejs/plugin-vue": "^6.0.9",
     "tailwindcss": "^4.3.3",
-    "vite": "^8.2.2",
+    "vite": "^8.3.0",
     "vue-tsc": "^3.3.11"
   }
 }
