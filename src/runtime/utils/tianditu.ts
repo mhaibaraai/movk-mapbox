@@ -19,7 +19,7 @@ export function tiandituAnnotationFor(base: TiandituLayerType): TiandituLayerTyp
 }
 
 export interface TiandituSourceOptions {
-  /** 天地图 token（tk）；缺省时回退到运行时配置的 tiandituToken */
+  /** 天地图 token（tk）；缺省时回退到运行时配置 maplibre.tk */
   tk?: string
   /**
    * 瓦片尺寸
@@ -38,7 +38,7 @@ export function tiandituRasterSource(
   layer: TiandituLayerType,
   options: TiandituSourceOptions = {}
 ): RasterSourceSpecification {
-  const tk = options.tk ?? getMaplibreConfig().tiandituToken
+  const tk = options.tk ?? getMaplibreConfig().tk
   if (!tk) logger.warn('Tianditu token (tk) is missing; tiles may fail to load.')
 
   // 用 WMTS GetTile

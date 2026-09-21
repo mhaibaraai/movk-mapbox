@@ -4,7 +4,7 @@ import type { Map as MaplibreMap, MapOptions } from 'maplibre-gl'
 /** 运行时全局配置；Nuxt 模式由插件注入，Vue 模式由 vue-plugin 注入 */
 export interface MaplibreRuntimeConfig {
   /** 天地图服务 token（tk），用于天地图底图与地理编码 */
-  tiandituToken?: string
+  tk?: string
   /** 字体 pbf 地址模板（含 {fontstack} 与 {range}），用于 MaplibreMap 缺省的空白样式；未配置时空白样式不支持文字标注 */
   glyphs?: string
   /** 库内置文字图层（聚合计数、量算标签）使用的字体栈，需存在于当前样式的 glyphs 服务；未配置时使用 MapLibre 默认字体 */

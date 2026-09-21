@@ -13,7 +13,7 @@ const options = [
 <template>
   <MapShowcase
     title="天地图底图"
-    description="MaplibreTiandituLayer 便捷组件：web-mercator 栅格预设。annotation 可叠加对应注记（vec→cva / img→cia / ter→cta），切换类型时旧图层正确移除（需配置 tiandituToken）。"
+    description="MaplibreTiandituLayer 便捷组件：web-mercator 栅格预设。annotation 可叠加对应注记（vec→cva / img→cia / ter→cta），切换类型时旧图层正确移除（需配置 tk）。"
     :state="{ layer, annotation }"
   >
     <template #toolbar>

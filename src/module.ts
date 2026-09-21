@@ -7,7 +7,7 @@ export type * from './runtime/types'
 
 export interface ModuleOptions {
   /** 天地图服务 token（tk） */
-  tiandituToken?: string
+  tk?: string
   /** 空白样式的字体 pbf 地址模板（含 {fontstack} 与 {range}） */
   glyphs?: string
   /** 库内置文字图层使用的字体栈 */
@@ -36,7 +36,7 @@ export default defineNuxtModule<ModuleOptions>({
 
     const publicConfig = nuxt.options.runtimeConfig.public as Record<string, unknown>
     publicConfig.maplibre = defu(publicConfig.maplibre as Record<string, unknown> | undefined, {
-      tiandituToken: options.tiandituToken || process.env.NUXT_PUBLIC_MAPLIBRE_TIANDITU_TOKEN,
+      tk: options.tk || process.env.NUXT_PUBLIC_MAPLIBRE_TK,
       glyphs: options.glyphs,
       textFont: options.textFont
     })

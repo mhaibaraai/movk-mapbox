@@ -49,7 +49,7 @@ createApp(App)
   .use(MaplibrePlugin, {
     // maplibre-gl v6 经 Vite 打包时无法自动解析 worker 地址，需显式传入
     workerUrl,
-    tiandituToken: import.meta.env.VITE_TIANDITU_TOKEN,
+    tk: import.meta.env.VITE_TIANDITU_TK,
     // OpenFreeMap 公开字体服务：空白样式与内置文字图层共用
     glyphs: 'https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf',
     textFont: ['Noto Sans Regular']
