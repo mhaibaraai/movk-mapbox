@@ -122,7 +122,7 @@
     "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxt prepare playgrounds/play && nuxt prepare docs && pnpm dev:vue:build",
     "docs": "nuxt dev docs",
     "docs:build": "nuxt build docs",
-    "release": "release-it && npm publish",
+    "release": "release-it",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "clean": "movk-clean",
