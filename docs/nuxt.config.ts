@@ -41,7 +41,7 @@ export default defineNuxtConfig({
     '/docs/core': { redirect: '/docs/core/map', prerender: false },
     '/docs/layers': { redirect: '/docs/layers/circle', prerender: false },
     '/docs/controls': { redirect: '/docs/controls/navigation', prerender: false },
-    '/docs/effects': { redirect: '/docs/effects/window-building', prerender: false },
+    '/docs/effects': { redirect: '/docs/effects/radar', prerender: false },
     '/docs/environment': { redirect: '/docs/environment/sky', prerender: false },
     '/docs/extensions': { redirect: '/docs/extensions/draw', prerender: false },
     '/docs/composables': { redirect: '/docs/composables/use-map', prerender: false },
@@ -50,7 +50,7 @@ export default defineNuxtConfig({
     '/en/docs/core': { redirect: '/en/docs/core/map', prerender: false },
     '/en/docs/layers': { redirect: '/en/docs/layers/circle', prerender: false },
     '/en/docs/controls': { redirect: '/en/docs/controls/navigation', prerender: false },
-    '/en/docs/effects': { redirect: '/en/docs/effects/window-building', prerender: false },
+    '/en/docs/effects': { redirect: '/en/docs/effects/radar', prerender: false },
     '/en/docs/environment': { redirect: '/en/docs/environment/sky', prerender: false },
     '/en/docs/extensions': { redirect: '/en/docs/extensions/draw', prerender: false },
     '/en/docs/composables': { redirect: '/en/docs/composables/use-map', prerender: false },
@@ -86,6 +86,22 @@ export default defineNuxtConfig({
       'alibaba/qwen3.8-27b',
       'deepseek/deepseek-v4-pro-0813'
     ]
+  },
+
+  componentMeta: {
+    checkerOptions: {
+      forceUseTs: true,
+      schema: {
+        ignore: [
+          // maplibre 表达式 / 样式规范是递归元组联合，展开 schema 会耗尽内存
+          (_name: string, type: import('typescript').Type) => {
+            const declaration = type.aliasSymbol?.declarations?.[0] ?? type.symbol?.declarations?.[0]
+            const file = declaration?.getSourceFile().fileName
+            return file && /maplibre-gl/.test(file) ? true : undefined
+          }
+        ]
+      }
+    }
   },
 
   i18n: {

@@ -1,14 +1,3 @@
 title: Releases
 description: Browse version updates, feature enhancements, and bug fixes for Movk MapLibre.
 navigation: false
-releases: https://ungh.cc/repos/mhaibaraai/movk-maplibre/releases
-hero:
-  title: Releases
-  description: Browse version updates, feature enhancements, and bug fixes for Movk MapLibre.
-  links:
-    - label: Star on GitHub
-      color: neutral
-      variant: outline
-      to: https://github.com/mhaibaraai/movk-maplibre
-      target: _blank
-      icon: i-lucide-star
