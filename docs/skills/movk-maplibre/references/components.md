@@ -62,7 +62,7 @@ Markers position by `lnglat` (`v-model:lnglat` for draggable). The default slot 
 
 ## Tianditu basemap (extension)
 
-`MaplibreTiandituLayer` overlays a 天地图 basemap. The `layer` prop is `vec` (vector) / `img` (imagery) / `ter` (terrain); `annotation` toggles label overlay. Requires `tiandituToken`.
+`MaplibreTiandituLayer` overlays a 天地图 basemap. The `layer` prop is `vec` (vector) / `img` (imagery) / `ter` (terrain); `annotation` toggles label overlay. Requires `tk`.
 
 ```vue
 <MaplibreMap :options="{ center: [116.397, 39.908], zoom: 10 }">

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // 以天地图影像为例演示通用 WMTS（KVP）接入；tk 取自运行时配置，不硬编码
-const tk = (useRuntimeConfig().public.maplibre as { tiandituToken?: string }).tiandituToken
+const tk = (useRuntimeConfig().public.maplibre as { tk?: string }).tk
 const subdomains = ['0', '1', '2', '3', '4', '5', '6', '7']
 </script>
 

@@ -35,7 +35,7 @@ Follow the `Layer.vue` pattern:
 
 ## Tokens and runtime config
 
-- MapLibre needs no access token. Inject the Tianditu token (and optional `glyphs` / `textFont`) via `runtimeConfig.public.maplibre` (Nuxt) or the Vue plugin config — never hardcode. Prefer the environment variable `NUXT_PUBLIC_MAPLIBRE_TIANDITU_TOKEN`.
+- MapLibre needs no access token. Inject the Tianditu token (and optional `glyphs` / `textFont`) via `runtimeConfig.public.maplibre` (Nuxt) or the Vue plugin config — never hardcode. Prefer the environment variable `NUXT_PUBLIC_MAPLIBRE_TK`.
 - With prerendering or `nuxt generate`, tokens are baked into the static output at build time; runtime env vars cannot override already-prerendered pages.
 - The config is held in a singleton, shared across the Nuxt and Vue + Vite builds.
 

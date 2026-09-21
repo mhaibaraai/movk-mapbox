@@ -62,7 +62,7 @@ export default defineNuxtConfig({
 MapLibre 无需 access token；使用天地图底图时，天地图 token 从环境变量读取：
 
 ```bash
-NUXT_PUBLIC_MAPLIBRE_TIANDITU_TOKEN=your_tianditu_tk
+NUXT_PUBLIC_MAPLIBRE_TK=your_tianditu_tk
 ```
 
 组件与 composables 自动导入，开箱即用。
@@ -91,7 +91,7 @@ import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url'
 import App from './App.vue'
 
 createApp(App)
-  .use(MaplibrePlugin, { workerUrl, tiandituToken: import.meta.env.VITE_TIANDITU_TOKEN })
+  .use(MaplibrePlugin, { workerUrl, tk: import.meta.env.VITE_TIANDITU_TK })
   .mount('#app')
 ```
 

@@ -63,7 +63,7 @@ export default defineNuxtConfig({
 MapLibre needs no access token; when using Tianditu basemaps, the Tianditu token is read from an environment variable:
 
 ```bash
-NUXT_PUBLIC_MAPLIBRE_TIANDITU_TOKEN=your_tianditu_tk
+NUXT_PUBLIC_MAPLIBRE_TK=your_tianditu_tk
 ```
 
 Components and composables are auto-imported — ready to use out of the box.
@@ -92,7 +92,7 @@ import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url'
 import App from './App.vue'
 
 createApp(App)
-  .use(MaplibrePlugin, { workerUrl, tiandituToken: import.meta.env.VITE_TIANDITU_TOKEN })
+  .use(MaplibrePlugin, { workerUrl, tk: import.meta.env.VITE_TIANDITU_TK })
   .mount('#app')
 ```
 

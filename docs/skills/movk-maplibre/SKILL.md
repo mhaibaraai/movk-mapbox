@@ -35,7 +35,7 @@ export default defineNuxtConfig({
 ```
 
 ```bash [.env]
-NUXT_PUBLIC_MAPLIBRE_TIANDITU_TOKEN=your_tianditu_tk
+NUXT_PUBLIC_MAPLIBRE_TK=your_tianditu_tk
 ```
 
 For Vue + Vite setup, query the docs (`/docs/getting-started/vue`).

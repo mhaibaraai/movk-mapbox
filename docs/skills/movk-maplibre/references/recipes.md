@@ -34,7 +34,7 @@ Two layers can share one inline source by repeating the same `:source`, or use `
 
 ## Tianditu (天地图) basemap
 
-Omit `options.style` to get a blank style, then overlay Tianditu. `layer` is `vec` / `img` / `ter`; `annotation` adds labels. Needs `tiandituToken`.
+Omit `options.style` to get a blank style, then overlay Tianditu. `layer` is `vec` / `img` / `ter`; `annotation` adds labels. Needs `tk`.
 
 ```vue
 <MaplibreMap :options="{ center: [116.397, 39.908], zoom: 10 }">

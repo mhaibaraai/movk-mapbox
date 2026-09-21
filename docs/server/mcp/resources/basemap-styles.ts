@@ -21,7 +21,7 @@ const tiandituLayers = [
 
 const usage = {
   maplibre: 'Pass to MaplibreMap options.style, e.g. :options="{ style: \'https://tiles.openfreemap.org/styles/liberty\' }". Omit style for a blank map (e.g. Tianditu only). Vector sources use the OpenMapTiles schema (building layer: render_height / render_min_height).',
-  tianditu: 'Overlay inside MaplibreMap with <MaplibreTiandituLayer layer="vec" annotation />; the `layer` prop accepts vec/img/ter and `annotation` toggles labels. Requires tiandituToken.'
+  tianditu: 'Overlay inside MaplibreMap with <MaplibreTiandituLayer layer="vec" annotation />; the `layer` prop accepts vec/img/ter and `annotation` toggles labels. Requires the `tk` runtime config.'
 }
 
 export default defineMcpResource({
