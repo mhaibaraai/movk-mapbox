@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, shallowRef, useTemplateRef, watch } from 'vue'
 import { Popup } from 'maplibre-gl'
-import type { GeoJSONFeature, Map as MaplibreMap, MapMouseEvent, PopupOptions } from 'maplibre-gl'
+import type { GeoJSONFeature, LngLat, Map as MaplibreMap, MapMouseEvent, PopupOptions } from 'maplibre-gl'
 import { useMap } from '../composables/useMap'
+import { onLayerDataChange } from '../utils/events'
 import type { PopupTrigger } from '../types'
 
 /** 目标图层要素的弹窗：按 trigger 以悬浮或点击触发，作用域插槽拿到当前要素。 */
@@ -33,6 +34,8 @@ const ctx = useMap()
 const el = useTemplateRef<HTMLDivElement>('el')
 const hovered = shallowRef<GeoJSONFeature>()
 let popup: Popup | undefined
+// 最近一次展示所在位置，图层数据更新后据此重新查询要素
+let anchor: LngLat | undefined
 let unbind: (() => void) | undefined
 
 type LayerMouseEvent = MapMouseEvent & { features?: GeoJSONFeature[] }
@@ -46,13 +49,23 @@ function show(event: LayerMouseEvent): void {
   const map = ctx.map.value
   if (!map || !popup || !el.value) return
   hovered.value = event.features?.[0]
+  anchor = event.lngLat
   popup.setLngLat(event.lngLat).setDOMContent(el.value)
   if (!popup.isOpen()) popup.addTo(map)
 }
 
 function close(): void {
   hovered.value = undefined
+  anchor = undefined
   popup?.remove()
+}
+
+// 数据更新后原位置仍有要素则刷新为新要素，否则关闭，避免展示已失效的旧数据
+function revalidate(map: MaplibreMap): void {
+  if (!popup?.isOpen() || !anchor) return
+  const [feature] = map.queryRenderedFeatures(map.project(anchor), { layers: [props.layerId] })
+  if (feature) hovered.value = feature
+  else close()
 }
 
 function onMove(event: LayerMouseEvent): void {
@@ -89,10 +102,13 @@ function popupOptions(): PopupOptions {
 function bind(map: MaplibreMap): void {
   if (props.trigger === 'none') return
 
+  const stopDataChange = onLayerDataChange(map, props.layerId, () => revalidate(map))
+
   if (props.trigger === 'hover') {
     map.on('mousemove', props.layerId, onMove)
     map.on('mouseleave', props.layerId, onLeave)
     unbind = () => {
+      stopDataChange()
       map.off('mousemove', props.layerId, onMove)
       map.off('mouseleave', props.layerId, onLeave)
     }
@@ -103,6 +119,7 @@ function bind(map: MaplibreMap): void {
   map.on('mouseenter', props.layerId, onEnter)
   map.on('mouseleave', props.layerId, onLeaveCursor)
   unbind = () => {
+    stopDataChange()
     map.off('click', props.layerId, onClick)
     map.off('mouseenter', props.layerId, onEnter)
     map.off('mouseleave', props.layerId, onLeaveCursor)
