@@ -12,9 +12,10 @@ export interface LayerUpdate {
   maxzoom?: number
 }
 
-// 仅对发生变化的属性调用 setter，避免无谓重绘
+// 仅对发生变化的属性调用 setter，避免无谓重绘；被移除的属性以 undefined 下发，恢复样式规范默认值
 function applyChangedProps(next: PropBag, prev: PropBag, apply: (key: string, value: unknown) => void): void {
-  for (const key of Object.keys(next)) {
+  const keys = new Set([...Object.keys(prev), ...Object.keys(next)])
+  for (const key of keys) {
     if (!equalsBy(next[key], prev[key])) apply(key, next[key])
   }
 }

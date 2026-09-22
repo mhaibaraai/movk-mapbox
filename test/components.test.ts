@@ -22,6 +22,9 @@ const { maps, makeFakeMap } = vi.hoisted(() => {
       layerOnCalls: 0,
       setCenterCalls: 0,
       setTilesCalls: 0,
+      addSourceCalls: 0,
+      setDataCalls: [] as unknown[],
+      moveLayerCalls: [] as [string, string | undefined][],
       styleLoaded: true,
       on(type: string, a: unknown, b?: unknown) {
         const listener = (b ?? a) as (e?: unknown) => void
@@ -43,9 +46,19 @@ const { maps, makeFakeMap } = vi.hoisted(() => {
         self.addLayerCalls++
       },
       removeLayer: (id: string) => layers.delete(id),
-      getSource: (id: string) =>
-        sources.has(id) ? { setData() {}, setUrl() {}, setTiles() { self.setTilesCalls++ }, updateImage() {} } : undefined,
-      addSource: (id: string) => sources.add(id),
+      getSource: (id: string) => (sources.has(id)
+        ? {
+            setData: (data: unknown) => self.setDataCalls.push(data),
+            setUrl() {},
+            setTiles: () => self.setTilesCalls++,
+            updateImage() {}
+          }
+        : undefined),
+      addSource: (id: string) => {
+        sources.add(id)
+        self.addSourceCalls++
+      },
+      moveLayer: (id: string, before?: string) => self.moveLayerCalls.push([id, before]),
       removeSource: (id: string) => sources.delete(id),
       resize() {},
       remove() {},
@@ -234,6 +247,53 @@ describe('相机回环', () => {
     // 回写值与地图现值一致，watcher 比对相等跳过下发；不形成 moveend→setCenter→moveend 回环
     expect(map.setCenterCalls).toBe(0)
     wrapper.unmount()
+  })
+})
+
+describe('Layer 响应式更新', () => {
+  it('内联 source 数据变化时经 setData 增量更新，不重建图层与源', async () => {
+    const source = ref<Record<string, unknown>>(inlineSource)
+    const Parent = defineComponent({
+      setup() {
+        return () => h(MaplibreMap, { options: {} }, {
+          default: () => h(MaplibreLayer, { layerId: 'track', type: 'line', source: source.value })
+        })
+      }
+    })
+    mount(Parent)
+    const map = maps[maps.length - 1]!
+    map.fire('style.load')
+    expect(map.addSourceCalls).toBe(1)
+
+    const data = { type: 'FeatureCollection', features: [{ type: 'Feature', geometry: { type: 'LineString', coordinates: [[0, 0], [1, 1]] }, properties: {} }] }
+    source.value = { type: 'geojson', data }
+    await nextTick()
+    expect(map.setDataCalls).toEqual([data])
+    expect(map.addSourceCalls).toBe(1)
+    expect(map.addLayerCalls).toBe(1)
+  })
+
+  it('beforeId 变化时 moveLayer，锚点不存在时移至栈顶', async () => {
+    const beforeId = ref<string | undefined>(undefined)
+    const Parent = defineComponent({
+      setup() {
+        return () => h(MaplibreMap, { options: {} }, {
+          default: () => [
+            h(MaplibreLayer, { layerId: 'anchor', type: 'circle', source: inlineSource }),
+            h(MaplibreLayer, { layerId: 'l', type: 'circle', source: inlineSource, beforeId: beforeId.value })
+          ]
+        })
+      }
+    })
+    mount(Parent)
+    const map = maps[maps.length - 1]!
+    map.fire('style.load')
+
+    beforeId.value = 'anchor'
+    await nextTick()
+    beforeId.value = 'missing'
+    await nextTick()
+    expect(map.moveLayerCalls).toEqual([['l', 'anchor'], ['l', undefined]])
   })
 })
 

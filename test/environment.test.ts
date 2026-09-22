@@ -17,6 +17,7 @@ const { maps, makeFakeMap } = vi.hoisted(() => {
       sourceSpecs: [] as unknown[],
       skyCalls: [] as unknown[],
       terrainCalls: [] as unknown[],
+      setTilesCalls: [] as unknown[],
       styleLoaded: true,
       // 模拟 maplibre Style._checkLoaded：样式未加载完时样式级 setter 必抛
       checkLoaded() {
@@ -42,7 +43,9 @@ const { maps, makeFakeMap } = vi.hoisted(() => {
         self.checkLoaded()
         self.terrainCalls.push(value)
       },
-      getSource: (id: string) => (sources.has(id) ? {} : undefined),
+      getSource: (id: string) => (sources.has(id)
+        ? { setUrl() {}, setTiles(tiles: unknown) { self.setTilesCalls.push(tiles) } }
+        : undefined),
       addSource: (id: string, spec: unknown) => {
         sources.add(id)
         self.sourceSpecs.push(spec)
@@ -213,6 +216,26 @@ describe('Terrain 地形', () => {
     await nextTick()
     expect(map.terrainCalls[1]).toBeNull()
     expect(map.sources.has('movk-terrain-dem')).toBe(false)
+  })
+
+  it('source 变化时经 setTiles 原地更新 DEM 源', async () => {
+    const source = ref(DEM)
+    const Parent = defineComponent({
+      setup() {
+        return () => h(MaplibreMap, { options: {} }, {
+          default: () => h(MaplibreTerrain, { source: source.value })
+        })
+      }
+    })
+    mount(Parent)
+    const map = maps[maps.length - 1]!
+    map.fire('style.load')
+
+    const tiles = ['https://example.com/dem-v2/{z}/{x}/{y}.png']
+    source.value = { ...DEM, tiles }
+    await nextTick()
+    expect(map.setTilesCalls).toEqual([tiles])
+    expect(map.sourceSpecs).toHaveLength(1)
   })
 
   it('样式未加载完时卸载不抛错', async () => {

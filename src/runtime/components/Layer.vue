@@ -7,20 +7,21 @@ import { useMap } from '../composables/useMap'
 import { LayerGroupKey } from '../domains/map/layer-group'
 import { applyLayerProps, type LayerUpdate } from '../utils/layer'
 import { bindMapEvents } from '../utils/events'
+import { updateSource } from '../utils/source'
 
 type PropBag = Record<string, unknown>
 
 const props = withDefaults(defineProps<{
-  /** 图层 id，全局唯一 */
+  /** 图层 id，全局唯一；变更需配合 :key 重建 */
   layerId: string
   /**
-   * 图层类型，决定渲染方式与可用的 paint / layout 属性
+   * 图层类型，决定渲染方式与可用的 paint / layout 属性；变更需配合 :key 重建
    * @see https://maplibre.org/maplibre-style-spec/layers/
    */
   type: LayerSpecification['type']
-  /** source id 字符串引用，或内联 source 对象（自动创建匿名源并随图层卸载） */
+  /** source id 字符串引用，或内联 source 对象（自动创建匿名源并随图层卸载，内容变化时增量更新）；二者之间切换需配合 :key 重建 */
   source?: string | SourceSpecification
-  /** 矢量瓦片源内的子图层名（source-layer），消费矢量源时必填 */
+  /** 矢量瓦片源内的子图层名（source-layer），消费矢量源时必填；变更需配合 :key 重建 */
   sourceLayer?: string
   /**
    * 绘制样式属性，响应式变更经 setPaintProperty 增量下发
@@ -93,14 +94,18 @@ function buildSpec(): LayerSpecification {
   return spec as unknown as LayerSpecification
 }
 
+// 锚点图层不存在时返回 undefined，即置于图层栈顶部
+function resolveBeforeId(map: MaplibreMap): string | undefined {
+  const anchor = props.beforeId ?? group?.beforeId.value
+  return anchor && map.getLayer(anchor) ? anchor : undefined
+}
+
 function addLayer(map: MaplibreMap): void {
   if (map.getLayer(props.layerId)) return
   if (hasInlineSource && !map.getSource(inlineSourceId)) {
     map.addSource(inlineSourceId, props.source as SourceSpecification)
   }
-  const anchor = props.beforeId ?? group?.beforeId.value
-  const before = anchor && map.getLayer(anchor) ? anchor : undefined
-  map.addLayer(buildSpec(), before)
+  map.addLayer(buildSpec(), resolveBeforeId(map))
   if (group && !group.visible.value) {
     map.setLayoutProperty(props.layerId, 'visibility', 'none')
   }
@@ -146,6 +151,20 @@ watch(
   },
   { deep: true }
 )
+
+// 内联源尚未建立时跳过：onReady 重建时读取的是最新 props.source
+if (hasInlineSource) {
+  watch(() => props.source as SourceSpecification, (next, prev) => {
+    const source = ctx.map.value?.getSource(inlineSourceId)
+    if (source) updateSource(source, next, prev)
+  }, { deep: true })
+}
+
+watch(() => props.beforeId ?? group?.beforeId.value, () => {
+  const map = ctx.map.value
+  if (!map?.getLayer(props.layerId)) return
+  map.moveLayer(props.layerId, resolveBeforeId(map))
+})
 
 if (group) {
   watch(group.visible, (visible) => {

@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { onUnmounted, watch } from 'vue'
-import type { GeoJSONSource, ImageSource, RasterTileSource, VectorTileSource, VideoSource } from 'maplibre-gl'
 import type { SourceSpecification } from '@maplibre/maplibre-gl-style-spec'
 import { useMap } from '../composables/useMap'
+import { updateSource } from '../utils/source'
 
 const props = defineProps<{
-  /** 数据源 id，供图层经 source 字段按字符串引用 */
+  /** 数据源 id，供图层经 source 字段按字符串引用；变更需配合 :key 重建 */
   sourceId: string
   /**
-   * 数据源定义
+   * 数据源定义，变化时按类型增量更新（setData / setTiles 等）
    * @see https://maplibre.org/maplibre-style-spec/sources/
    */
   source: SourceSpecification
@@ -23,23 +23,9 @@ const stopReady = ctx.onReady((map) => {
 })
 
 // 按类型增量更新已有 source，避免整源重建
-watch(() => props.source, (next) => {
+watch(() => props.source, (next, prev) => {
   const source = ctx.map.value?.getSource(props.sourceId)
-  if (!source) return
-
-  if (next.type === 'geojson' && next.data) {
-    (source as GeoJSONSource).setData(next.data)
-  } else if (next.type === 'vector') {
-    if (next.url) (source as VectorTileSource).setUrl(next.url)
-    if (next.tiles) (source as VectorTileSource).setTiles(next.tiles)
-  } else if (next.type === 'raster' || next.type === 'raster-dem') {
-    if (next.url) (source as RasterTileSource).setUrl(next.url)
-    if (next.tiles) (source as RasterTileSource).setTiles(next.tiles)
-  } else if (next.type === 'image' && next.url) {
-    (source as ImageSource).updateImage(next as typeof next & { url: string })
-  } else if (next.type === 'video' && next.coordinates) {
-    (source as VideoSource).setCoordinates(next.coordinates)
-  }
+  if (source) updateSource(source, next, prev)
 }, { deep: true })
 
 onUnmounted(() => {
