@@ -26,11 +26,8 @@ export interface FrameStyleImageOptions {
   frames: () => ImageData[]
   /** 取地图实例以触发重绘 */
   getMap: () => MaplibreMap | undefined
-  /**
-   * 固定帧率；durations 缺省时生效
-   * @defaultValue 12
-   */
-  fps?: number
+  /** 固定帧率（响应式取值），durations 缺省时生效；省略时为 12 */
+  fps?: () => number
   /** 每帧时长 ms（响应式取值），优先于 fps */
   durations?: () => number[] | undefined
 }
@@ -42,18 +39,26 @@ export interface FrameStyleImageOptions {
  */
 export function createFrameStyleImage(options: FrameStyleImageOptions): StyleImageInterface {
   const { size, frames, getMap } = options
-  const fps = options.fps ?? 12
+  const byteLength = size * size * 4
   let start = 0
   let lastIndex = -1
   let committed = false
+  let current: ImageData[] | undefined
   const image: StyleImageInterface = {
     width: size,
     height: size,
-    data: new Uint8Array(size * size * 4),
+    data: new Uint8Array(byteLength),
     render() {
       const fs = frames()
+      // 换帧序列后从头计时，避免新序列首帧下标恰等于 lastIndex 而不刷新
+      if (fs !== current) {
+        current = fs
+        start = 0
+        lastIndex = -1
+      }
       const total = fs.length
-      if (!total) {
+      // 帧未就绪或尺寸与纹理不符（size 变更后尚未重新切帧）：maplibre 上传时不校验长度，错配数据不得下发
+      if (!total || fs[0]!.data.length !== byteLength) {
         if (committed) return false
         committed = true
         return true
@@ -62,7 +67,7 @@ export function createFrameStyleImage(options: FrameStyleImageOptions): StyleIma
       if (map) map.triggerRepaint()
       committed = true
       if (!start) start = performance.now()
-      const index = pickFrameIndex(performance.now() - start, options.durations?.(), fps, total)
+      const index = pickFrameIndex(performance.now() - start, options.durations?.(), options.fps?.() ?? 12, total)
       if (index === lastIndex) return false
       lastIndex = index
       image.data = fs[index]!.data
