@@ -9,7 +9,7 @@ import MaplibreBuildingLayer from '../layers/BuildingLayer.vue'
 const props = withDefaults(defineProps<BuildingSourceOptions & {
   /** 贴图地址 */
   url: string
-  /** 图层 id；省略时自动生成 */
+  /** 图层 id；省略时自动生成，变更需配合 :key 重建 */
   layerId?: string
   /**
    * 整体透明度
@@ -31,7 +31,7 @@ const id = props.layerId ?? `movk-texture-building-${useId()}`
 const imageName = `${id}-texture`
 
 // 复用 useMaplibreImage:加载贴图并在 setStyle 后自动补回
-const { loaded } = useMaplibreImage(imageName, props.url)
+const { loaded } = useMaplibreImage(imageName, () => props.url)
 
 const paint = computed(() => ({
   'fill-extrusion-pattern': imageName,
