@@ -3,6 +3,7 @@ import { defineComponent, h, nextTick, ref } from 'vue'
 import { mount } from '@vue/test-utils'
 import MaplibreMap from '../src/runtime/components/Map.vue'
 import MaplibreLayer from '../src/runtime/components/Layer.vue'
+import MaplibreCustomLayer from '../src/runtime/components/CustomLayer.vue'
 import MaplibreTiandituLayer from '../src/runtime/components/extensions/TiandituLayer.vue'
 import { useMap } from '../src/runtime/composables/useMap'
 import { setMaplibreConfig } from '../src/runtime/domains/map/config'
@@ -294,6 +295,59 @@ describe('Layer 响应式更新', () => {
     beforeId.value = 'missing'
     await nextTick()
     expect(map.moveLayerCalls).toEqual([['l', 'anchor'], ['l', undefined]])
+  })
+})
+
+describe('CustomLayer 响应式更新', () => {
+  const custom = (id: string) => ({ id, type: 'custom' as const, render() {} })
+
+  function mountCustom(initial: { layer: ReturnType<typeof custom>, beforeId?: string }) {
+    const state = ref<{ layer: ReturnType<typeof custom>, beforeId?: string }>(initial)
+    const Parent = defineComponent({
+      setup() {
+        return () => h(MaplibreMap, { options: {} }, {
+          default: () => [
+            h(MaplibreLayer, { layerId: 'anchor', type: 'circle', source: inlineSource }),
+            h(MaplibreCustomLayer, state.value)
+          ]
+        })
+      }
+    })
+    mount(Parent)
+    const map = maps[maps.length - 1]!
+    map.fire('style.load')
+    return { state, map }
+  }
+
+  it('替换 layer 时移除旧 id 并添加新图层', async () => {
+    const { state, map } = mountCustom({ layer: custom('a') })
+    expect(map.layers.has('a')).toBe(true)
+
+    const next = custom('b')
+    state.value = { layer: next }
+    await nextTick()
+    expect(map.layers.has('a')).toBe(false)
+    expect(map.layers.has('b')).toBe(true)
+    expect(map.layerSpecs.at(-1)).toBe(next)
+  })
+
+  it('同 id 换对象也会替换', async () => {
+    const { state, map } = mountCustom({ layer: custom('a') })
+    const next = custom('a')
+    state.value = { layer: next }
+    await nextTick()
+    expect(map.layers.has('a')).toBe(true)
+    expect(map.layerSpecs.at(-1)).toBe(next)
+  })
+
+  it('beforeId 变化时 moveLayer，锚点不存在时移至栈顶', async () => {
+    const layer = custom('c')
+    const { state, map } = mountCustom({ layer })
+    state.value = { layer, beforeId: 'anchor' }
+    await nextTick()
+    state.value = { layer, beforeId: 'missing' }
+    await nextTick()
+    expect(map.moveLayerCalls).toEqual([['c', 'anchor'], ['c', undefined]])
   })
 })
 
