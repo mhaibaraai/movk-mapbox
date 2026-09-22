@@ -109,12 +109,11 @@ describe('useMapAnimation', () => {
     }
   }
 
-  it('样式未就绪不调 frame；就绪后以动画起点计 elapsed', async () => {
-    const raf = stubRaf()
-    const frames: number[] = []
+  function mountAnimation() {
+    const frames: Array<[number, number]> = []
     const Child = defineComponent({
       setup() {
-        useMapAnimation((_map, elapsed) => frames.push(elapsed))
+        useMapAnimation((_map, elapsed, delta) => frames.push([elapsed, delta]))
         return () => h('div')
       }
     })
@@ -122,17 +121,62 @@ describe('useMapAnimation', () => {
       props: { options: {} },
       slots: { default: () => h(Child) }
     })
-    const map = maps[maps.length - 1]!
+    return { frames, wrapper, map: maps[maps.length - 1]! }
+  }
 
-    map.styleLoaded = false
+  it('style.load 前不调 frame；之后以动画起点计 elapsed', () => {
+    const raf = stubRaf()
+    const { frames, wrapper, map } = mountAnimation()
+
     raf.tick(1000)
     expect(frames).toHaveLength(0)
 
-    map.styleLoaded = true
+    map.fire('style.load')
     raf.tick(2000)
     raf.tick(2500)
     // 起点为首个有效帧时间戳，elapsed 从 0 起算
-    expect(frames).toEqual([0, 500])
+    expect(frames.map(([elapsed]) => elapsed)).toEqual([0, 500])
+    wrapper.unmount()
+  })
+
+  it('瓦片/源加载中（isStyleLoaded 为 false）仍逐帧执行', () => {
+    const raf = stubRaf()
+    const { frames, wrapper, map } = mountAnimation()
+    map.fire('style.load')
+
+    map.styleLoaded = false
+    raf.tick(1000)
+    raf.tick(1016)
+    raf.tick(1032)
+    expect(frames.map(([elapsed]) => elapsed)).toEqual([0, 16, 32])
+    wrapper.unmount()
+  })
+
+  it('styledataloading 后暂停，再次 style.load 恢复', () => {
+    const raf = stubRaf()
+    const { frames, wrapper, map } = mountAnimation()
+    map.fire('style.load')
+    raf.tick(1000)
+
+    map.fire('styledataloading')
+    raf.tick(1100)
+    expect(frames).toHaveLength(1)
+
+    map.fire('style.load')
+    raf.tick(1200)
+    expect(frames.map(([elapsed]) => elapsed)).toEqual([0, 200])
+    wrapper.unmount()
+  })
+
+  it('frame 第三参为相邻 rAF 帧间隔', () => {
+    const raf = stubRaf()
+    const { frames, wrapper, map } = mountAnimation()
+    map.fire('style.load')
+
+    raf.tick(1000)
+    raf.tick(1016)
+    raf.tick(1050)
+    expect(frames.slice(1).map(([, delta]) => delta)).toEqual([16, 34])
     wrapper.unmount()
   })
 })
