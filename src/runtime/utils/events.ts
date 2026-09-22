@@ -32,28 +32,37 @@ export function bindMapEvents<E extends string>(
 }
 
 /**
- * 目标图层所用 source 的数据变化（setData / setTiles 等）且重新渲染完成后回调，返回解绑函数。
+ * 目标图层所用 source 的数据变化（setData / setTiles 等）且重新加载完成后，在下一次 render 时回调，返回解绑函数。
  * 仅响应 sourceDataType 为 'content' 的事件，瓦片加载不会触发；同一轮多次变化只回调一次。
+ * 不依赖 idle：动效组件逐帧重绘时地图不会进入 idle。
  */
 export function onLayerDataChange(map: MaplibreMap, layerId: string, handler: () => void): () => void {
-  let pending = false
+  let pendingSource: string | undefined
 
-  const onIdle = (): void => {
-    pending = false
+  function stop(): void {
+    map.off('render', onRender)
+    pendingSource = undefined
+  }
+
+  // content 事件冒泡到地图前，瓦片已被置为重新加载，isSourceLoaded 在新数据就绪后才为 true
+  function onRender(): void {
+    if (!pendingSource) return
+    if (!map.getSource(pendingSource)) return stop()
+    if (!map.isSourceLoaded(pendingSource)) return
+    stop()
     handler()
   }
 
   const onSourceData = (event: MapSourceDataEvent): void => {
-    if (pending || event.sourceDataType !== 'content') return
+    if (pendingSource || event.sourceDataType !== 'content') return
     if (event.sourceId !== map.getLayer(layerId)?.source) return
-    pending = true
-    map.once('idle', onIdle)
+    pendingSource = event.sourceId
+    map.on('render', onRender)
   }
 
   map.on('sourcedata', onSourceData)
   return () => {
     map.off('sourcedata', onSourceData)
-    if (pending) map.off('idle', onIdle)
-    pending = false
+    stop()
   }
 }

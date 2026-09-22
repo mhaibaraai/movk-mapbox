@@ -35,6 +35,8 @@ const { maps, rendered, sourceFeatures, makeFakeMap } = vi.hoisted(() => {
       setFeatureState: vi.fn(),
       removeFeatureState: vi.fn(),
       getLayer: (id: string) => (id === 'poi' ? { source: 'poi-src' } : undefined),
+      getSource: (id: string) => (id === 'poi-src' ? {} : undefined),
+      isSourceLoaded: () => true,
       project: (lngLat: unknown) => lngLat,
       queryRenderedFeatures: () => [...rendered],
       querySourceFeatures: vi.fn(() => [...sourceFeatures]),
@@ -94,7 +96,7 @@ async function mountFeatureState() {
 
 function dataChanged(map: typeof maps[number]) {
   map.fire('sourcedata', { sourceId: 'poi-src', sourceDataType: 'content' })
-  map.fire('idle')
+  map.fire('render')
 }
 
 describe('useFeatureState 图层数据更新', () => {
