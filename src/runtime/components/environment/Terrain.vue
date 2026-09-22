@@ -4,6 +4,7 @@ import type { Map as MaplibreMap } from 'maplibre-gl'
 import type { RasterDEMSourceSpecification } from '@maplibre/maplibre-gl-style-spec'
 import { useMap } from '../../composables/useMap'
 import { logger } from '../../utils/logger'
+import { updateSource } from '../../utils/source'
 
 const props = withDefaults(defineProps<{
   /**
@@ -12,7 +13,7 @@ const props = withDefaults(defineProps<{
    */
   exaggeration?: number
   /**
-   * DEM 数据源，如 Terrarium / Mapbox 编码的 raster-dem 瓦片
+   * DEM 数据源，如 Terrarium / Mapbox 编码的 raster-dem 瓦片；url / tiles 变化时原地更新
    * @see https://maplibre.org/maplibre-style-spec/sources/#raster-dem
    */
   source: RasterDEMSourceSpecification
@@ -48,6 +49,11 @@ watch(() => props.exaggeration, (value) => {
     map.setTerrain({ source: props.sourceId, exaggeration: value })
   }
 })
+
+watch(() => props.source, (next, prev) => {
+  const source = ctx.map.value?.getSource(props.sourceId)
+  if (source && next) updateSource(source, next, prev)
+}, { deep: true })
 
 onUnmounted(() => {
   stopReady()
