@@ -19,7 +19,7 @@ export interface MigrationRoute {
 const props = withDefaults(defineProps<{
   /** 起讫点对列表 */
   data: MigrationRoute[]
-  /** 图层 id 前缀；省略时自动生成 */
+  /** 图层 id 前缀；省略时自动生成，变更需配合 :key 重建 */
   layerId?: string
   /**
    * 主色

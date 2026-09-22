@@ -8,7 +8,7 @@ import MaplibreBuildingLayer from '../layers/BuildingLayer.vue'
 
 /** 流动建筑：渐变着色 + 高亮带沿建筑高度循环流动。 */
 const props = withDefaults(defineProps<BuildingSourceOptions & {
-  /** 图层 id；省略时自动生成 */
+  /** 图层 id；省略时自动生成，变更需配合 :key 重建 */
   layerId?: string
   /**
    * 基色
