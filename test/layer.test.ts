@@ -30,6 +30,18 @@ describe('applyLayerProps', () => {
     expect(map.setPaintProperty).not.toHaveBeenCalled()
   })
 
+  it('移除的 paint / layout 属性以 undefined 下发以恢复默认值', () => {
+    const map = createMapStub()
+    applyLayerProps(
+      map as unknown as MaplibreMap,
+      { id: 'l', paint: { 'circle-color': '#f00' }, layout: {} },
+      { id: 'l', paint: { 'circle-color': '#f00', 'circle-radius': 8 }, layout: { visibility: 'none' } }
+    )
+    expect(map.setPaintProperty).toHaveBeenCalledTimes(1)
+    expect(map.setPaintProperty).toHaveBeenCalledWith('l', 'circle-radius', undefined)
+    expect(map.setLayoutProperty).toHaveBeenCalledWith('l', 'visibility', undefined)
+  })
+
   it('filter 变化时调用 setFilter，缩放范围变化时调用 setLayerZoomRange', () => {
     const map = createMapStub()
     applyLayerProps(
