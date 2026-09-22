@@ -3,15 +3,16 @@ import { onMounted, onUnmounted, shallowRef, useTemplateRef, watch } from 'vue'
 import { Popup } from 'maplibre-gl'
 import type { GeoJSONFeature, LngLat, Map as MaplibreMap, MapMouseEvent, PopupOptions } from 'maplibre-gl'
 import { useMap } from '../composables/useMap'
+import { isDeepEqual } from '../utils/equal'
 import { onLayerDataChange } from '../utils/events'
 import type { PopupTrigger } from '../types'
 
 /** 目标图层要素的弹窗：按 trigger 以悬浮或点击触发，作用域插槽拿到当前要素。 */
 const props = withDefaults(defineProps<{
-  /** 目标图层 id */
+  /** 目标图层 id；变化时改绑到新图层 */
   layerId: string
   /**
-   * Popup 选项（hover 模式下 closeButton/closeOnClick 由组件接管）
+   * Popup 选项（hover 模式下 closeButton/closeOnClick 由组件接管）；值变化时重建弹窗
    * @see https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/PopupOptions/
    */
   options?: PopupOptions
@@ -37,6 +38,7 @@ let popup: Popup | undefined
 // 最近一次展示所在位置，图层数据更新后据此重新查询要素
 let anchor: LngLat | undefined
 let unbind: (() => void) | undefined
+let disposed = false
 
 type LayerMouseEvent = MapMouseEvent & { features?: GeoJSONFeature[] }
 
@@ -45,13 +47,17 @@ function setCursor(value: string): void {
   if (map) map.getCanvas().style.cursor = value
 }
 
-function show(event: LayerMouseEvent): void {
+function open(lngLat: LngLat, feature: GeoJSONFeature | undefined): void {
   const map = ctx.map.value
   if (!map || !popup || !el.value) return
-  hovered.value = event.features?.[0]
-  anchor = event.lngLat
-  popup.setLngLat(event.lngLat).setDOMContent(el.value)
+  hovered.value = feature
+  anchor = lngLat
+  popup.setLngLat(lngLat).setDOMContent(el.value)
   if (!popup.isOpen()) popup.addTo(map)
+}
+
+function show(event: LayerMouseEvent): void {
+  open(event.lngLat, event.features?.[0])
 }
 
 function close(): void {
@@ -102,27 +108,29 @@ function popupOptions(): PopupOptions {
 function bind(map: MaplibreMap): void {
   if (props.trigger === 'none') return
 
-  const stopDataChange = onLayerDataChange(map, props.layerId, () => revalidate(map))
+  // 解绑须用绑定时的图层 id，layerId 变更后 props 已是新值
+  const { layerId } = props
+  const stopDataChange = onLayerDataChange(map, layerId, () => revalidate(map))
 
   if (props.trigger === 'hover') {
-    map.on('mousemove', props.layerId, onMove)
-    map.on('mouseleave', props.layerId, onLeave)
+    map.on('mousemove', layerId, onMove)
+    map.on('mouseleave', layerId, onLeave)
     unbind = () => {
       stopDataChange()
-      map.off('mousemove', props.layerId, onMove)
-      map.off('mouseleave', props.layerId, onLeave)
+      map.off('mousemove', layerId, onMove)
+      map.off('mouseleave', layerId, onLeave)
     }
     return
   }
 
-  map.on('click', props.layerId, onClick)
-  map.on('mouseenter', props.layerId, onEnter)
-  map.on('mouseleave', props.layerId, onLeaveCursor)
+  map.on('click', layerId, onClick)
+  map.on('mouseenter', layerId, onEnter)
+  map.on('mouseleave', layerId, onLeaveCursor)
   unbind = () => {
     stopDataChange()
-    map.off('click', props.layerId, onClick)
-    map.off('mouseenter', props.layerId, onEnter)
-    map.off('mouseleave', props.layerId, onLeaveCursor)
+    map.off('click', layerId, onClick)
+    map.off('mouseenter', layerId, onEnter)
+    map.off('mouseleave', layerId, onLeaveCursor)
   }
 }
 
@@ -142,18 +150,31 @@ function setup(map: MaplibreMap): void {
 
 onMounted(async () => {
   const map = await ctx.whenLoaded()
+  if (disposed) return
   setup(map)
 })
 
-// trigger 变更需重建 popup：其 closeButton 等选项在构造时确定
-watch(() => props.trigger, () => {
-  const map = ctx.map.value
-  if (!map) return
+// trigger/options 变更需重建 popup：closeButton 等选项在构造时确定；layerId 变更需改绑监听
+watch(
+  [() => props.trigger, () => props.layerId, () => props.options],
+  ([trigger, layerId, options], [prevTrigger, prevLayerId, prevOptions]) => {
+    const map = ctx.map.value
+    // 模板内联 options 每次渲染都是新引用，值相同时跳过
+    if (!map || !popup || (trigger === prevTrigger && layerId === prevLayerId && isDeepEqual(options, prevOptions))) return
+    // 仅 options 变化时，click 模式下已打开的弹窗在原位恢复；hover 由下一次 mousemove 自然恢复
+    const restore = trigger === 'click' && trigger === prevTrigger && layerId === prevLayerId && popup.isOpen() && anchor
+      ? { lngLat: anchor, feature: hovered.value }
+      : undefined
+    teardown()
+    setup(map)
+    if (restore) open(restore.lngLat, restore.feature)
+  }
+)
+
+onUnmounted(() => {
+  disposed = true
   teardown()
-  setup(map)
 })
-
-onUnmounted(teardown)
 
 defineExpose({
   /** 当前激活要素 */
