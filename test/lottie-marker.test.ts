@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { defineComponent, h, nextTick, ref } from 'vue'
 import { mount } from '@vue/test-utils'
 import MaplibreMap from '../src/runtime/components/Map.vue'
@@ -82,5 +82,66 @@ describe('LottieMarker 动画标记', () => {
     show.value = false
     await nextTick()
     expect(anim.destroy).toHaveBeenCalled()
+  })
+
+  describe('props 响应式', () => {
+    beforeEach(() => {
+      loadAnimation.mockClear()
+      anim.setSpeed.mockClear()
+      anim.destroy.mockClear()
+    })
+
+    async function mountLottie(initial: Record<string, unknown>) {
+      const state = ref<Record<string, unknown>>({ lnglat: [0, 0], ...initial })
+      const Parent = defineComponent({
+        setup() {
+          return () => h(MaplibreMap, { options: {} }, { default: () => h(MaplibreLottieMarker, state.value) })
+        }
+      })
+      mount(Parent)
+      maps[maps.length - 1]!.fire('load')
+      await nextTick()
+      return state
+    }
+
+    it('path 与 loop 变化时销毁旧实例并以新参数重新加载', async () => {
+      const state = await mountLottie({ path: 'a.json' })
+      expect(loadAnimation).toHaveBeenCalledTimes(1)
+
+      state.value = { ...state.value, path: 'b.json' }
+      await nextTick()
+      expect(anim.destroy).toHaveBeenCalledTimes(1)
+      expect(loadAnimation).toHaveBeenCalledTimes(2)
+      expect(loadAnimation.mock.calls[1]![0]).toMatchObject({ path: 'b.json', loop: true })
+
+      state.value = { ...state.value, loop: false }
+      await nextTick()
+      expect(anim.destroy).toHaveBeenCalledTimes(2)
+      expect(loadAnimation.mock.calls[2]![0]).toMatchObject({ path: 'b.json', loop: false })
+    })
+
+    it('speed 变化只调速不重建', async () => {
+      const state = await mountLottie({ path: 'a.json' })
+      state.value = { ...state.value, speed: 3 }
+      await nextTick()
+      expect(anim.setSpeed).toHaveBeenLastCalledWith(3)
+      expect(loadAnimation).toHaveBeenCalledTimes(1)
+      expect(anim.destroy).not.toHaveBeenCalled()
+    })
+
+    it('animationData 按引用比较：同一引用不重建，换对象才重建', async () => {
+      const data = { v: '5.0.0' }
+      const state = await mountLottie({ animationData: data })
+
+      state.value = { ...state.value, animationData: data }
+      await nextTick()
+      expect(loadAnimation).toHaveBeenCalledTimes(1)
+
+      const next = { v: '5.0.0' }
+      state.value = { ...state.value, animationData: next }
+      await nextTick()
+      expect(loadAnimation).toHaveBeenCalledTimes(2)
+      expect(loadAnimation.mock.calls[1]![0]).toMatchObject({ animationData: next })
+    })
   })
 })

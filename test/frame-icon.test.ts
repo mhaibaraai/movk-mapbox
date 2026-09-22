@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest'
-import { pickFrameIndex } from '../src/runtime/utils/frame-icon'
+import { describe, expect, it, vi } from 'vitest'
+import { createFrameStyleImage, pickFrameIndex } from '../src/runtime/utils/frame-icon'
 
 describe('pickFrameIndex', () => {
   it('无 durations 时按 fps 推进并回绕', () => {
@@ -32,5 +32,53 @@ describe('pickFrameIndex', () => {
   it('total 为 0 返回 0,cycle 为 0 返回 0', () => {
     expect(pickFrameIndex(100, undefined, 12, 0)).toBe(0)
     expect(pickFrameIndex(100, [0, 0], 12, 2)).toBe(0)
+  })
+})
+
+describe('createFrameStyleImage', () => {
+  const frame = (size: number, fill = 0) => ({ data: new Uint8ClampedArray(size * size * 4).fill(fill) }) as ImageData
+
+  function setup(options: { size?: number, fps?: () => number, frames: () => ImageData[] }) {
+    return createFrameStyleImage({ size: options.size ?? 2, frames: options.frames, fps: options.fps, getMap: () => undefined })
+  }
+
+  it('fps getter 在 render 时读取，变化后按新帧率选帧', () => {
+    let now = 1000
+    vi.spyOn(performance, 'now').mockImplementation(() => now)
+    let fps = 1
+    const frames = [frame(2, 1), frame(2, 2), frame(2, 3), frame(2, 4)]
+    const image = setup({ frames: () => frames, fps: () => fps })
+
+    expect(image.render!()).toBe(true)
+    expect(image.data).toBe(frames[0]!.data)
+    now = 1500
+    // 1fps 下 500ms 仍在第 0 帧
+    expect(image.render!()).toBe(false)
+    fps = 4
+    // 4fps 下 500ms 为第 2 帧
+    expect(image.render!()).toBe(true)
+    expect(image.data).toBe(frames[2]!.data)
+    vi.restoreAllMocks()
+  })
+
+  it('frames 换成新数组后即使下标相同也刷新', () => {
+    vi.spyOn(performance, 'now').mockImplementation(() => 1000)
+    let frames = [frame(2, 1), frame(2, 2)]
+    const image = setup({ frames: () => frames })
+    expect(image.render!()).toBe(true)
+    expect(image.render!()).toBe(false)
+
+    frames = [frame(2, 9), frame(2, 8)]
+    expect(image.render!()).toBe(true)
+    expect(image.data).toBe(frames[0]!.data)
+    vi.restoreAllMocks()
+  })
+
+  it('帧数据长度与纹理尺寸不符时视同未就绪，不上传错配数据', () => {
+    const image = setup({ size: 4, frames: () => [frame(2)] })
+    // 首次仍以透明 data 建立纹理
+    expect(image.render!()).toBe(true)
+    expect(image.render!()).toBe(false)
+    expect(image.data.length).toBe(4 * 4 * 4)
   })
 })

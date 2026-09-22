@@ -24,7 +24,8 @@ const props = withDefaults(defineProps<{
   /** 地图 id；省略时自动生成。提供后可经 useMaplibre(id) 外部访问 */
   mapId?: string
   /**
-   * maplibre-gl Map 初始化选项（container 由组件接管）；缺省 style 时使用空白样式
+   * maplibre-gl Map 初始化选项（container 由组件接管）；缺省 style 时使用空白样式。
+   * 除 style 外仅在创建时读取，变更需配合 :key 重建
    * @see https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/MapOptions/
    */
   options?: MaplibreMapOptions

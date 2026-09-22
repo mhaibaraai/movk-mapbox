@@ -23,7 +23,7 @@ const props = withDefaults(defineProps<{
    * @defaultValue 12
    */
   fps?: number
-  /** 图层 id；省略时自动生成 */
+  /** 图层 id；省略时自动生成，变更需配合 :key 重建 */
   layerId?: string
   /** 插入到该图层之前 */
   beforeId?: string
@@ -50,24 +50,29 @@ const durations = ref<number[]>([])
 
 useFrameIcon({
   imageName,
-  size: props.size,
+  size: () => props.size,
   frames: () => frames.value,
-  fps: props.fps,
+  fps: () => props.fps,
   durations: () => durations.value
 })
 
-async function load(url: string): Promise<void> {
+let loadToken = 0
+
+async function load(): Promise<void> {
+  // 竞态保护:image/size 连续变化时丢弃晚到的旧解码结果
+  const token = ++loadToken
   frames.value = []
   durations.value = []
-  const decoded = await decodeAnimatedImage(url, props.size)
+  const decoded = await decodeAnimatedImage(props.image, props.size)
+  if (token !== loadToken) return
   frames.value = decoded.frames
   durations.value = decoded.durations
   // 解码晚于 onReady,就绪后触发一次以启动渲染循环
   ctx.map.value?.triggerRepaint()
 }
 
-onMounted(() => load(props.image))
-watch(() => props.image, url => load(url))
+onMounted(load)
+watch([() => props.image, () => props.size], load)
 </script>
 
 <template>

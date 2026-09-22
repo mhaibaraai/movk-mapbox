@@ -15,12 +15,17 @@ const { maps, popups, rendered, makeFakeMap } = vi.hoisted(() => {
     const onceHandlers: Record<string, Set<(e?: unknown) => void>> = {}
     // 仅记录带 layerId 的三参数监听，避免把 Map 组件自身的事件转发计入
     const layerHandlers: Record<string, Set<(e?: unknown) => void>> = {}
+    // 按「事件:图层」记录，验证监听绑定到哪个图层
+    const byLayer: Record<string, Set<(e?: unknown) => void>> = {}
     const canvas = document.createElement('canvas')
     const self = {
       on(type: string, a: unknown, b?: unknown) {
         const fn = (b ?? a) as (e?: unknown) => void
         ;(handlers[type] ??= new Set()).add(fn)
-        if (b !== undefined) (layerHandlers[type] ??= new Set()).add(fn)
+        if (b !== undefined) {
+          (layerHandlers[type] ??= new Set()).add(fn)
+          ;(byLayer[`${type}:${a}`] ??= new Set()).add(fn)
+        }
       },
       once(type: string, fn: (e?: unknown) => void) {
         (onceHandlers[type] ??= new Set()).add(fn)
@@ -30,6 +35,7 @@ const { maps, popups, rendered, makeFakeMap } = vi.hoisted(() => {
         handlers[type]?.delete(fn)
         onceHandlers[type]?.delete(fn)
         layerHandlers[type]?.delete(fn)
+        if (b !== undefined) byLayer[`${type}:${a}`]?.delete(fn)
       },
       fire(type: string, e?: unknown) {
         handlers[type]?.forEach(fn => fn(e))
@@ -42,6 +48,9 @@ const { maps, popups, rendered, makeFakeMap } = vi.hoisted(() => {
       queryRenderedFeatures: () => [...rendered],
       count(type: string) {
         return layerHandlers[type]?.size ?? 0
+      },
+      countOn(type: string, layerId: string) {
+        return byLayer[`${type}:${layerId}`]?.size ?? 0
       },
       getCanvas: () => canvas,
       isStyleLoaded: () => true,
@@ -266,6 +275,69 @@ describe('MaplibreTooltip 图层数据更新', () => {
     await nextTick()
 
     expect(popup().isOpen()).toBe(true)
+    wrapper.unmount()
+  })
+})
+
+describe('MaplibreTooltip options / layerId 响应式', () => {
+  beforeEach(() => {
+    maps.length = 0
+    popups.length = 0
+    rendered.length = 0
+  })
+
+  async function mountReactive(initial: Record<string, unknown>) {
+    const state = ref<Record<string, unknown>>({ layerId: 'poi', ...initial })
+    const Parent = defineComponent({
+      setup() {
+        return () => h(MaplibreMap, { options: {} }, {
+          default: () => h(MaplibreTooltip, state.value, { default: () => h('p', 'x') })
+        })
+      }
+    })
+    const wrapper = mount(Parent, { attachTo: document.body })
+    const map = maps[maps.length - 1]!
+    map.fire('load')
+    await nextTick()
+    await nextTick()
+    return { state, map, wrapper }
+  }
+
+  it('options 值变化时以新参数重建，值相同不重建', async () => {
+    const { state, wrapper } = await mountReactive({ options: { maxWidth: '200px' } })
+    state.value = { ...state.value, options: { maxWidth: '200px' } }
+    await nextTick()
+    expect(popups).toHaveLength(1)
+
+    state.value = { ...state.value, options: { maxWidth: '320px' } }
+    await nextTick()
+    expect(popups).toHaveLength(2)
+    expect(popups[1]!.options).toMatchObject({ maxWidth: '320px', closeButton: false })
+    wrapper.unmount()
+  })
+
+  it('layerId 变化后在新图层上重新绑定监听', async () => {
+    const { state, map, wrapper } = await mountReactive({})
+    expect(map.countOn('mousemove', 'poi')).toBe(1)
+
+    state.value = { ...state.value, layerId: 'shops' }
+    await nextTick()
+    expect(map.countOn('mousemove', 'poi')).toBe(0)
+    expect(map.countOn('mousemove', 'shops')).toBe(1)
+    wrapper.unmount()
+  })
+
+  it('click 模式下弹窗打开时修改 options，弹窗保持打开', async () => {
+    const { state, map, wrapper } = await mountReactive({ trigger: 'click' })
+    map.fire('click', layerEvent)
+    await nextTick()
+    expect(popups[0]!.opened).toBe(true)
+
+    state.value = { ...state.value, options: { maxWidth: '320px' } }
+    await nextTick()
+    expect(popups).toHaveLength(2)
+    expect(popups[1]!.opened).toBe(true)
+    expect(wrapper.text()).toContain('x')
     wrapper.unmount()
   })
 })

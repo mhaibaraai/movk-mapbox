@@ -1,14 +1,18 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref, useSlots, useTemplateRef, watch } from 'vue'
 import { Marker } from 'maplibre-gl'
-import type { LngLatLike, MarkerOptions, PopupOptions } from 'maplibre-gl'
+import type { LngLatLike, Map as MaplibreMap, MarkerOptions, PopupOptions } from 'maplibre-gl'
 import { useMap } from '../composables/useMap'
+import { isDeepEqual } from '../utils/equal'
+import { applyMarkerOptions, markerNeedsRebuild, removeMarkerClassName } from '../utils/marker'
+import type { MarkerInputOptions } from '../utils/marker'
 import type { PopupTrigger } from '../types'
 import MaplibrePopup from './Popup.vue'
 
 const props = withDefaults(defineProps<{
   /**
-   * 标记选项；element 由默认插槽提供，无需在此传入
+   * 标记选项；element 由默认插槽提供，无需在此传入。
+   * 有 setter 的字段（rotation、draggable 等）增量更新，anchor、color、scale 变化时重建
    * @see https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/MarkerOptions/
    */
   options?: Omit<MarkerOptions, 'element'>
@@ -37,7 +41,10 @@ const el = useTemplateRef<HTMLDivElement>('el')
 // 定位完成前隐藏插槽元素，避免初始化时先停在文档流位置（地图左上角）再跳到目标点
 const ready = ref(false)
 let marker: Marker | undefined
+// 当前实例已生效的选项，作为增量比较的基准
+let applied: MarkerInputOptions = {}
 let unbindTrigger: (() => void) | undefined
+let disposed = false
 
 function openPopup(): void {
   open.value = true
@@ -79,20 +86,44 @@ function bindTrigger(): void {
   }
 }
 
+function onDragEnd(): void {
+  if (!marker) return
+  const { lng, lat } = marker.getLngLat()
+  lnglat.value = [lng, lat]
+}
+
+function createMarker(map: MaplibreMap): void {
+  const useSlot = Boolean(slots.default && el.value)
+  applied = { ...props.options }
+  marker = new Marker({ ...applied, ...(useSlot ? { element: el.value! } : {}) })
+  marker.setLngLat(lnglat.value).addTo(map)
+  // draggable 可能在运行时开启，dragend 无条件绑定
+  marker.on('dragend', onDragEnd)
+  bindTrigger()
+}
+
 onMounted(async () => {
   const map = await ctx.whenLoaded()
-  const useSlot = Boolean(slots.default && el.value)
-  marker = new Marker({ ...props.options, ...(useSlot ? { element: el.value! } : {}) })
-  marker.setLngLat(lnglat.value).addTo(map)
+  if (disposed) return
+  createMarker(map)
   ready.value = true
-  bindTrigger()
+})
 
-  if (props.options?.draggable) {
-    marker.on('dragend', () => {
-      const { lng, lat } = marker!.getLngLat()
-      lnglat.value = [lng, lat]
-    })
+// 模板内联对象每次渲染都是新引用，值相同时跳过
+watch(() => props.options, (value) => {
+  const map = ctx.map.value
+  const next = value ?? {}
+  if (!marker || !map || isDeepEqual(next, applied)) return
+  if (markerNeedsRebuild(next, applied)) {
+    // 插槽元素复用于新实例，先清掉旧 className
+    removeMarkerClassName(marker, applied.className)
+    unbindTrigger?.()
+    marker.remove()
+    createMarker(map)
+    return
   }
+  applyMarkerOptions(marker, next, applied)
+  applied = { ...next }
 })
 
 watch(lnglat, (value) => {
@@ -102,6 +133,7 @@ watch(lnglat, (value) => {
 watch(() => props.trigger, bindTrigger)
 
 onUnmounted(() => {
+  disposed = true
   unbindTrigger?.()
   marker?.remove()
 })

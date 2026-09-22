@@ -20,21 +20,21 @@ type FeatureId = TerraDrawExtend.FeatureId
 type OnFinishContext = Parameters<TerraDrawEventListeners['finish']>[1]
 
 const props = withDefaults(defineProps<{
-  /** 工具栏停靠位置；省略用地图默认位置 */
+  /** 工具栏停靠位置；省略用地图默认位置，变更需配合 :key 重建 */
   position?: ControlPosition
   /**
-   * terra-draw 模式实例；缺省使用 movkDrawModes({ theme })
+   * terra-draw 模式实例；缺省使用 movkDrawModes({ theme })，变更需配合 :key 重建
    * @see https://github.com/JamesLMilner/terra-draw/blob/main/guides/4.MODES.md
    */
   modes?: DrawMode[]
-  /** 缺省模式集合的主题；传入 modes 时忽略 */
+  /** 缺省模式集合的主题；传入 modes 时忽略，变更需配合 :key 重建 */
   theme?: DrawThemeOptions
   /**
-   * 工具栏按钮：true 显示全部模式，数组限定模式名，false 不显示工具栏
+   * 工具栏按钮：true 显示全部模式，数组限定模式名，false 不显示工具栏；变更需配合 :key 重建
    * @defaultValue true
    */
   controls?: boolean | string[]
-  /** 绘制图层插入到该图层之下 */
+  /** 绘制图层插入到该图层之下；变更需配合 :key 重建 */
   renderBelowLayerId?: string
 }>(), {
   controls: true

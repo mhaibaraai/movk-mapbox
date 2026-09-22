@@ -4,6 +4,7 @@ import type { GeoJSONSourceSpecification } from '@maplibre/maplibre-gl-style-spe
 import { spriteFrame, spriteFrameRect } from '../../utils/sprite'
 import { useMap } from '../../composables/useMap'
 import { useFrameIcon } from '../../composables/useFrameIcon'
+import { logger } from '../../utils/logger'
 import MaplibreSource from '../Source.vue'
 import MaplibreLayer from '../Layer.vue'
 
@@ -36,7 +37,7 @@ const props = withDefaults(defineProps<{
    * @defaultValue 64
    */
   size?: number
-  /** 图层 id；省略时自动生成 */
+  /** 图层 id；省略时自动生成，变更需配合 :key 重建 */
   layerId?: string
   /** 插入到该图层之前 */
   beforeId?: string
@@ -59,41 +60,59 @@ const layout = computed(() => ({
 
 // 预切的逐帧 ImageData;无 canvas 环境(SSR/测试)保持空,render 自然跳过
 const sliced = ref<ImageData[]>([])
+// 已加载的雪碧图:切帧参数变化时复用,只有 image 变化才重新请求
+let sheet: HTMLImageElement | undefined
+let loadToken = 0
 
 // 帧驱动 StyleImageInterface 注册/兜底/清理(与 AnimatedImage 共用)
-useFrameIcon({ imageName, size: props.size, frames: () => sliced.value, fps: props.fps })
+useFrameIcon({ imageName, size: () => props.size, frames: () => sliced.value, fps: () => props.fps })
 
-function prepareFrames(): void {
+function sliceFrames(): void {
+  if (!sheet) return
+  const columns = props.columns ?? props.frames
+  const rows = props.rows ?? 1
+  const grid = {
+    columns,
+    rows,
+    frameWidth: props.frameWidth ?? sheet.width / columns,
+    frameHeight: props.frameHeight ?? sheet.height / rows,
+    frames: props.frames
+  }
+  const next: ImageData[] = []
+  for (let i = 0; i < props.frames; i++) {
+    const frame = spriteFrame(sheet, spriteFrameRect(i, grid), props.size)
+    if (frame) next.push(frame)
+  }
+  sliced.value = next
+  // 初始 sliced 为空时 render 不自驱,切帧完成触发一次以启动渲染循环
+  ctx.map.value?.triggerRepaint()
+}
+
+function loadSheet(url: string): void {
+  sheet = undefined
+  sliced.value = []
   if (typeof Image === 'undefined') return
+  // 竞态保护:image 连续变化时丢弃晚到的旧图
+  const token = ++loadToken
   const img = new Image()
   img.crossOrigin = 'anonymous'
   img.onload = () => {
-    const columns = props.columns ?? props.frames
-    const rows = props.rows ?? 1
-    const grid = {
-      columns,
-      rows,
-      frameWidth: props.frameWidth ?? img.width / columns,
-      frameHeight: props.frameHeight ?? img.height / rows,
-      frames: props.frames
-    }
-    const next: ImageData[] = []
-    for (let i = 0; i < props.frames; i++) {
-      const frame = spriteFrame(img, spriteFrameRect(i, grid), props.size)
-      if (frame) next.push(frame)
-    }
-    sliced.value = next
-    // 初始 sliced 为空时 render 不自驱,加载完触发一次以启动渲染循环
-    ctx.map.value?.triggerRepaint()
+    if (token !== loadToken) return
+    sheet = img
+    sliceFrames()
   }
-  img.src = props.image
+  img.onerror = () => {
+    if (token === loadToken) logger.warn(`SpriteImage: failed to load sprite sheet "${url}".`)
+  }
+  img.src = url
 }
 
-prepareFrames()
-watch(() => props.image, () => {
-  sliced.value = []
-  prepareFrames()
-})
+loadSheet(props.image)
+watch(() => props.image, loadSheet)
+watch(
+  [() => props.frames, () => props.columns, () => props.rows, () => props.frameWidth, () => props.frameHeight, () => props.size],
+  sliceFrames
+)
 </script>
 
 <template>

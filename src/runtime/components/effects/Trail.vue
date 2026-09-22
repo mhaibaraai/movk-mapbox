@@ -10,7 +10,7 @@ import MaplibreLayer from '../Layer.vue'
 const props = withDefaults(defineProps<{
   /** 线要素数据（GeoJSON 或其 URL） */
   data: GeoJSONSourceSpecification['data']
-  /** 图层 id 前缀；省略时自动生成 */
+  /** 图层 id 前缀；省略时自动生成，变更需配合 :key 重建 */
   layerId?: string
   /**
    * 主色

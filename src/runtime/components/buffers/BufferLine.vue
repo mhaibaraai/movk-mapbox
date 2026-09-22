@@ -13,7 +13,7 @@ const props = withDefaults(defineProps<{
   line: Feature<LineString> | LineString | [number, number][]
   /** 缓冲宽度（米） */
   width: number
-  /** 图层 id 前缀；省略时自动生成 */
+  /** 图层 id 前缀；省略时自动生成，变更需配合 :key 重建 */
   layerId?: string
   /** 主色（快捷样式） */
   color?: string

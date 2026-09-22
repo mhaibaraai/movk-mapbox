@@ -5,7 +5,14 @@ import MaplibreMap from '../src/runtime/components/Map.vue'
 import MaplibreMarker from '../src/runtime/components/Marker.vue'
 
 const { maps, markers, popups, makeFakeMap } = vi.hoisted(() => {
-  interface FakeMarkerLike { element: HTMLElement }
+  interface FakeMarkerLike {
+    element: HTMLElement
+    options: Record<string, unknown>
+    calls: Array<[string, unknown[]]>
+    removed: number
+    fire: (type: string) => void
+    lnglat: unknown
+  }
   interface FakePopupLike { opened: boolean }
   const maps: ReturnType<typeof makeFakeMap>[] = []
   const markers: FakeMarkerLike[] = []
@@ -61,21 +68,52 @@ vi.mock('maplibre-gl', () => {
   }
   class FakeMarker {
     element: HTMLElement
-    constructor(options: { element?: HTMLElement } = {}) {
+    calls: Array<[string, unknown[]]> = []
+    removed = 0
+    lnglat: unknown = [0, 0]
+    private listeners: Record<string, Set<() => void>> = {}
+    constructor(public options: { element?: HTMLElement } & Record<string, unknown> = {}) {
       this.element = options.element ?? document.createElement('div')
       markers.push(this)
     }
 
-    setLngLat() { return this }
+    setLngLat(v: unknown) {
+      this.lnglat = v
+      return this
+    }
+
     addTo(map: FakeMapLike) {
       map.getCanvasContainer().appendChild(this.element)
       return this
     }
 
-    on() {}
-    remove() {}
+    on(type: string, fn: () => void) { (this.listeners[type] ??= new Set()).add(fn) }
+    fire(type: string) { this.listeners[type]?.forEach(fn => fn()) }
+    remove() {
+      this.removed++
+      this.element.remove()
+    }
+
     getElement() { return this.element }
-    getLngLat() { return { lng: 0, lat: 0 } }
+    getLngLat() {
+      const [lng, lat] = this.lnglat as [number, number]
+      return { lng, lat }
+    }
+
+    private record(name: string, args: unknown[]) {
+      this.calls.push([name, args])
+      return this
+    }
+
+    setDraggable(...args: unknown[]) { return this.record('setDraggable', args) }
+    setRotation(...args: unknown[]) { return this.record('setRotation', args) }
+    setRotationAlignment(...args: unknown[]) { return this.record('setRotationAlignment', args) }
+    setPitchAlignment(...args: unknown[]) { return this.record('setPitchAlignment', args) }
+    setOffset(...args: unknown[]) { return this.record('setOffset', args) }
+    setOpacity(...args: unknown[]) { return this.record('setOpacity', args) }
+    setSubpixelPositioning(...args: unknown[]) { return this.record('setSubpixelPositioning', args) }
+    addClassName(...args: unknown[]) { return this.record('addClassName', args) }
+    removeClassName(...args: unknown[]) { return this.record('removeClassName', args) }
   }
   class FakePopup {
     opened = false
@@ -272,5 +310,99 @@ describe('MaplibreMarker 弹窗', () => {
     await nextTick()
     expect(wrapper.findAll('[data-test="card"]')).toHaveLength(2)
     wrapper.unmount()
+  })
+})
+
+describe('MaplibreMarker options 响应式', () => {
+  beforeEach(() => {
+    maps.length = 0
+    markers.length = 0
+    popups.length = 0
+  })
+
+  async function mountMarker(options: Record<string, unknown>) {
+    const state = ref<Record<string, unknown>>(options)
+    const lnglat = ref<[number, number]>([0, 0])
+    const wrapper = await mountMap(() => h(MaplibreMarker, {
+      'lnglat': lnglat.value,
+      'onUpdate:lnglat': (v: [number, number]) => (lnglat.value = v),
+      'options': state.value
+    }, { default: () => h('div', 'pin') }))
+    return { state, lnglat, wrapper }
+  }
+
+  it('rotation / draggable 变化走 setter，不重建', async () => {
+    const { state, wrapper } = await mountMarker({ rotation: 0 })
+    state.value = { rotation: 90, draggable: true }
+    await nextTick()
+
+    expect(markers).toHaveLength(1)
+    expect(markers[0]!.calls).toContainEqual(['setRotation', [90]])
+    expect(markers[0]!.calls).toContainEqual(['setDraggable', [true]])
+    wrapper.unmount()
+  })
+
+  it('className 变化时移除旧类、添加新类', async () => {
+    const { state, wrapper } = await mountMarker({ className: 'a b' })
+    state.value = { className: 'c' }
+    await nextTick()
+
+    expect(markers).toHaveLength(1)
+    expect(markers[0]!.calls).toEqual([
+      ['removeClassName', ['a']],
+      ['removeClassName', ['b']],
+      ['addClassName', ['c']]
+    ])
+    wrapper.unmount()
+  })
+
+  it('color / anchor 变化时重建并带上新参数，复用插槽元素', async () => {
+    const { state, wrapper } = await mountMarker({ color: 'red', className: 'x' })
+    const element = markers[0]!.element
+    state.value = { color: 'blue', anchor: 'bottom', className: 'x' }
+    await nextTick()
+
+    expect(markers).toHaveLength(2)
+    expect(markers[0]!.removed).toBe(1)
+    // 重建前清除旧 className，避免残留在复用的插槽元素上
+    expect(markers[0]!.calls).toContainEqual(['removeClassName', ['x']])
+    expect(markers[1]!.options).toMatchObject({ color: 'blue', anchor: 'bottom', className: 'x' })
+    expect(markers[1]!.element).toBe(element)
+    wrapper.unmount()
+  })
+
+  it('内联对象值不变、引用变化时不做任何操作', async () => {
+    const { state, wrapper } = await mountMarker({ rotation: 30, offset: [0, 1] })
+    state.value = { rotation: 30, offset: [0, 1] }
+    await nextTick()
+
+    expect(markers).toHaveLength(1)
+    expect(markers[0]!.calls).toEqual([])
+    wrapper.unmount()
+  })
+
+  it('draggable 运行时开启后，dragend 回写 lnglat', async () => {
+    const { state, lnglat, wrapper } = await mountMarker({})
+    state.value = { draggable: true }
+    await nextTick()
+
+    markers[0]!.lnglat = [5, 6]
+    markers[0]!.fire('dragend')
+    expect(lnglat.value).toEqual([5, 6])
+    wrapper.unmount()
+  })
+
+  it('地图就绪前卸载不会创建 marker', async () => {
+    const Parent = defineComponent({
+      setup: () => () => h(MaplibreMap, { options: {} }, { default: () => h(MaplibreMarker, { lnglat: [0, 0] }) })
+    })
+    const wrapper = mount(Parent, { attachTo: document.body })
+    await nextTick()
+    const map = maps[maps.length - 1]!
+    wrapper.unmount()
+    map.fire('load')
+    await nextTick()
+    await nextTick()
+    expect(markers).toHaveLength(0)
   })
 })
