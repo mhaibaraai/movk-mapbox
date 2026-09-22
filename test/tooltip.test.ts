@@ -44,6 +44,8 @@ const { maps, popups, rendered, makeFakeMap } = vi.hoisted(() => {
         once.forEach(fn => fn(e))
       },
       getLayer: (id: string) => (id === 'poi' ? { source: 'poi-src' } : undefined),
+      getSource: (id: string) => (id === 'poi-src' ? {} : undefined),
+      isSourceLoaded: () => true,
       project: (lngLat: unknown) => lngLat,
       queryRenderedFeatures: () => [...rendered],
       count(type: string) {
@@ -229,7 +231,7 @@ describe('MaplibreTooltip 触发模式', () => {
 describe('MaplibreTooltip 图层数据更新', () => {
   const dataChanged = (map: typeof maps[number]) => {
     map.fire('sourcedata', { sourceId: 'poi-src', sourceDataType: 'content' })
-    map.fire('idle')
+    map.fire('render')
   }
 
   beforeEach(() => {
@@ -271,7 +273,7 @@ describe('MaplibreTooltip 图层数据更新', () => {
     await nextTick()
 
     map.fire('sourcedata', { sourceId: 'other-src', sourceDataType: 'content' })
-    map.fire('idle')
+    map.fire('render')
     await nextTick()
 
     expect(popup().isOpen()).toBe(true)
