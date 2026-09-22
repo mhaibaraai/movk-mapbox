@@ -4,12 +4,15 @@ import { mount } from '@vue/test-utils'
 import MaplibreMap from '../src/runtime/components/Map.vue'
 import MaplibreTooltip from '../src/runtime/components/Tooltip.vue'
 
-const { maps, popups, makeFakeMap } = vi.hoisted(() => {
+const { maps, popups, rendered, makeFakeMap } = vi.hoisted(() => {
   interface FakePopupLike { opened: boolean, options: Record<string, unknown> }
   const maps: ReturnType<typeof makeFakeMap>[] = []
   const popups: FakePopupLike[] = []
+  // queryRenderedFeatures 的返回值，由用例控制数据更新后原位置能否查到要素
+  const rendered: unknown[] = []
   function makeFakeMap() {
     const handlers: Record<string, Set<(e?: unknown) => void>> = {}
+    const onceHandlers: Record<string, Set<(e?: unknown) => void>> = {}
     // 仅记录带 layerId 的三参数监听，避免把 Map 组件自身的事件转发计入
     const layerHandlers: Record<string, Set<(e?: unknown) => void>> = {}
     const canvas = document.createElement('canvas')
@@ -19,14 +22,24 @@ const { maps, popups, makeFakeMap } = vi.hoisted(() => {
         ;(handlers[type] ??= new Set()).add(fn)
         if (b !== undefined) (layerHandlers[type] ??= new Set()).add(fn)
       },
+      once(type: string, fn: (e?: unknown) => void) {
+        (onceHandlers[type] ??= new Set()).add(fn)
+      },
       off(type: string, a: unknown, b?: unknown) {
         const fn = (b ?? a) as (e?: unknown) => void
         handlers[type]?.delete(fn)
+        onceHandlers[type]?.delete(fn)
         layerHandlers[type]?.delete(fn)
       },
       fire(type: string, e?: unknown) {
         handlers[type]?.forEach(fn => fn(e))
+        const once = [...(onceHandlers[type] ?? [])]
+        onceHandlers[type]?.clear()
+        once.forEach(fn => fn(e))
       },
+      getLayer: (id: string) => (id === 'poi' ? { source: 'poi-src' } : undefined),
+      project: (lngLat: unknown) => lngLat,
+      queryRenderedFeatures: () => [...rendered],
       count(type: string) {
         return layerHandlers[type]?.size ?? 0
       },
@@ -43,7 +56,7 @@ const { maps, popups, makeFakeMap } = vi.hoisted(() => {
     maps.push(self)
     return self
   }
-  return { maps, popups, makeFakeMap }
+  return { maps, popups, rendered, makeFakeMap }
 })
 
 vi.mock('maplibre-gl', () => {
@@ -109,6 +122,7 @@ describe('MaplibreTooltip 触发模式', () => {
   beforeEach(() => {
     maps.length = 0
     popups.length = 0
+    rendered.length = 0
   })
 
   it('默认 hover：mousemove 展示、mouseleave 收起', async () => {
@@ -199,6 +213,59 @@ describe('MaplibreTooltip 触发模式', () => {
 
     await wrapper.find('button').trigger('click')
     expect(popup().isOpen()).toBe(false)
+    wrapper.unmount()
+  })
+})
+
+describe('MaplibreTooltip 图层数据更新', () => {
+  const dataChanged = (map: typeof maps[number]) => {
+    map.fire('sourcedata', { sourceId: 'poi-src', sourceDataType: 'content' })
+    map.fire('idle')
+  }
+
+  beforeEach(() => {
+    maps.length = 0
+    popups.length = 0
+    rendered.length = 0
+  })
+
+  it('原位置已无要素时关闭', async () => {
+    const { wrapper, map, popup } = await mountTooltip({})
+    map.fire('mousemove', layerEvent)
+    await nextTick()
+
+    dataChanged(map)
+    await nextTick()
+
+    expect(popup().isOpen()).toBe(false)
+    expect(wrapper.text()).not.toContain('天安门')
+    wrapper.unmount()
+  })
+
+  it('原位置仍有要素时保持打开并刷新为新要素', async () => {
+    const { wrapper, map, popup } = await mountTooltip({ trigger: 'click' })
+    map.fire('click', layerEvent)
+    await nextTick()
+
+    rendered.push({ ...feature, properties: { title: '故宫' } })
+    dataChanged(map)
+    await nextTick()
+
+    expect(popup().isOpen()).toBe(true)
+    expect(wrapper.text()).toContain('故宫')
+    wrapper.unmount()
+  })
+
+  it('其他 source 的数据变化不影响弹窗', async () => {
+    const { wrapper, map, popup } = await mountTooltip({})
+    map.fire('mousemove', layerEvent)
+    await nextTick()
+
+    map.fire('sourcedata', { sourceId: 'other-src', sourceDataType: 'content' })
+    map.fire('idle')
+    await nextTick()
+
+    expect(popup().isOpen()).toBe(true)
     wrapper.unmount()
   })
 })

@@ -1,7 +1,8 @@
 import { onMounted, onUnmounted, shallowRef } from 'vue'
 import type { ShallowRef } from 'vue'
-import type { MapGeoJSONFeature, Map as MaplibreMap, MapMouseEvent } from 'maplibre-gl'
+import type { LngLat, MapGeoJSONFeature, Map as MaplibreMap, MapMouseEvent } from 'maplibre-gl'
 import { useContextResolver } from '../domains/map/resolve'
+import { onLayerDataChange } from '../utils/events'
 import { logger } from '../utils/logger'
 
 export interface UseFeatureStateOptions {
@@ -47,6 +48,9 @@ export function useFeatureState(layerId: string, options: UseFeatureStateOptions
   const hovered = shallowRef<MapGeoJSONFeature>()
   const selected = shallowRef<MapGeoJSONFeature>()
   let boundMap: MaplibreMap | undefined
+  // 最近一次悬浮位置，图层数据更新后据此重新查询要素
+  let anchor: LngLat | undefined
+  let stopDataChange: (() => void) | undefined
 
   function clearState(map: MaplibreMap, feature: MapGeoJSONFeature, key: string): void {
     // 样式切换后旧 source 可能已不存在，残留清理失败可安全忽略
@@ -63,23 +67,29 @@ export function useFeatureState(layerId: string, options: UseFeatureStateOptions
     if (canvas) canvas.style.cursor = value
   }
 
+  function setHovered(map: MaplibreMap, feature: MapGeoJSONFeature | undefined): void {
+    const prev = hovered.value
+    if (prev && prev.id !== feature?.id) clearState(map, prev, 'hover')
+    if (feature && prev?.id !== feature.id) map.setFeatureState(feature, { hover: true })
+    hovered.value = feature
+  }
+
   function onMove(event: LayerMouseEvent): void {
     const map = boundMap
     const feature = event.features?.[0]
     if (!map || !feature || feature.id === undefined) return
     if (cursor) setCursor(map, 'pointer')
+    anchor = event.lngLat
     if (hovered.value?.id === feature.id) return
-    if (hovered.value) clearState(map, hovered.value, 'hover')
-    map.setFeatureState(feature, { hover: true })
-    hovered.value = feature
+    setHovered(map, feature)
   }
 
   function onLeave(): void {
     const map = boundMap
     if (!map) return
     if (cursor) setCursor(map, '')
-    if (hovered.value) clearState(map, hovered.value, 'hover')
-    hovered.value = undefined
+    anchor = undefined
+    setHovered(map, undefined)
   }
 
   function onClick(event: LayerMouseEvent): void {
@@ -96,6 +106,20 @@ export function useFeatureState(layerId: string, options: UseFeatureStateOptions
     selected.value = undefined
   }
 
+  // feature-state 按 id 保留，数据更新后需校验旧要素是否仍存在，避免状态错挂到新数据的同 id 要素上
+  function revalidate(map: MaplibreMap): void {
+    if (hovered.value && anchor) {
+      const [feature] = map.queryRenderedFeatures(map.project(anchor), { layers: [layerId] })
+      setHovered(map, feature?.id === undefined ? undefined : feature)
+    }
+    // 选中要素的 id 仍存在时 feature-state 自动延续，只需在消失时清除
+    const { source, sourceLayer, id } = selected.value ?? {}
+    if (source && id !== undefined) {
+      const exists = map.querySourceFeatures(source, { sourceLayer, filter: ['==', ['id'], id] }).length > 0
+      if (!exists) clearSelection()
+    }
+  }
+
   onMounted(async () => {
     const ctx = resolve()
     if (!ctx) {
@@ -109,6 +133,7 @@ export function useFeatureState(layerId: string, options: UseFeatureStateOptions
       map.on('mouseleave', layerId, onLeave)
     }
     if (select) map.on('click', layerId, onClick)
+    stopDataChange = onLayerDataChange(map, layerId, () => revalidate(map))
   })
 
   onUnmounted(() => {
@@ -120,6 +145,8 @@ export function useFeatureState(layerId: string, options: UseFeatureStateOptions
       onLeave()
     }
     if (select) map.off('click', layerId, onClick)
+    stopDataChange?.()
+    stopDataChange = undefined
     clearSelection()
     boundMap = undefined
   })
