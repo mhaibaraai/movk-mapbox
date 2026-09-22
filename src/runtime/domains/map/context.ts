@@ -13,6 +13,7 @@ export const MaplibreContextKey: InjectionKey<MaplibreContext> = Symbol('movk-ma
 export function createMaplibreContext(id: string): { context: MaplibreContext, attach: (map: MaplibreMap) => void } {
   const map = shallowRef<MaplibreMap>()
   const isLoaded = ref(false)
+  const isStyleReady = ref(false)
   const readyCallbacks = new Set<(map: MaplibreMap) => void>()
 
   let resolveLoaded!: (value: MaplibreMap) => void
@@ -26,8 +27,13 @@ export function createMaplibreContext(id: string): { context: MaplibreContext, a
       isLoaded.value = true
       resolveLoaded(instance)
     })
+    // 非 diff 的 setStyle 会新建 Style 实例，解析完成前不可操作图层
+    instance.on('styledataloading', () => {
+      isStyleReady.value = false
+    })
     // style.load 在初次加载与每次 setStyle 后触发：重跑就绪回调以便重建 source/layer
     instance.on('style.load', () => {
+      isStyleReady.value = true
       for (const callback of readyCallbacks) callback(instance)
     })
   }
@@ -36,6 +42,7 @@ export function createMaplibreContext(id: string): { context: MaplibreContext, a
     id,
     map,
     isLoaded,
+    isStyleReady,
     whenLoaded: () => loadedPromise,
     onReady(callback) {
       readyCallbacks.add(callback)
