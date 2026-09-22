@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, useTemplateRef, watch } from 'vue'
 import { Popup } from 'maplibre-gl'
-import type { LngLatLike, PopupOptions } from 'maplibre-gl'
+import type { LngLatLike, Map as MaplibreMap, PopupOptions } from 'maplibre-gl'
 import { useMap } from '../composables/useMap'
+import { isDeepEqual } from '../utils/equal'
 
 const props = defineProps<{
   /** 弹窗锚定的经纬度 */
   lnglat: LngLatLike
   /**
-   * Popup 选项
+   * Popup 选项；值变化时重建弹窗
    * @see https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/PopupOptions/
    */
   options?: PopupOptions
@@ -21,19 +22,42 @@ defineOptions({ inheritAttrs: false })
 const ctx = useMap()
 const el = useTemplateRef<HTMLDivElement>('el')
 let popup: Popup | undefined
+let disposed = false
 
-onMounted(async () => {
-  const map = await ctx.whenLoaded()
+function onClose(): void {
+  emit('close')
+}
+
+function createPopup(map: MaplibreMap): void {
   popup = new Popup(props.options)
   popup.setLngLat(props.lnglat)
   if (el.value) popup.setDOMContent(el.value)
-  popup.on('close', () => emit('close'))
+  popup.on('close', onClose)
   popup.addTo(map)
+}
+
+onMounted(async () => {
+  const map = await ctx.whenLoaded()
+  if (disposed) return
+  createPopup(map)
 })
 
 watch(() => props.lnglat, value => popup?.setLngLat(value))
 
-onUnmounted(() => popup?.remove())
+// 构造期选项（anchor、closeButton 等）无 setter，值变化时重建；模板内联对象值相同则跳过
+watch(() => props.options, (next, prev) => {
+  const map = ctx.map.value
+  if (!popup || !map || isDeepEqual(next, prev)) return
+  // 重建是内部行为：先解绑再移除，不对外派发 close
+  popup.off('close', onClose)
+  popup.remove()
+  createPopup(map)
+})
+
+onUnmounted(() => {
+  disposed = true
+  popup?.remove()
+})
 
 defineExpose({ popup: () => popup })
 </script>

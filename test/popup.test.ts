@@ -10,6 +10,7 @@ const { maps, popups, makeFakeMap } = vi.hoisted(() => {
     content?: HTMLElement
     lnglats: unknown[]
     removed: number
+    options: Record<string, unknown>
   }
   const maps: ReturnType<typeof makeFakeMap>[] = []
   const popups: FakePopupLike[] = []
@@ -67,13 +68,20 @@ vi.mock('maplibre-gl', () => {
       return this
     }
 
+    private listeners: Record<string, Set<() => void>> = {}
+
+    // 与 maplibre 一致：打开状态下 remove 派发 close
     remove() {
       this.removed++
-      this.opened = false
+      if (this.opened) {
+        this.opened = false
+        this.listeners.close?.forEach(fn => fn())
+      }
       return this
     }
 
-    on() {}
+    on(type: string, fn: () => void) { (this.listeners[type] ??= new Set()).add(fn) }
+    off(type: string, fn: () => void) { this.listeners[type]?.delete(fn) }
     isOpen() { return this.opened }
   }
   return {
@@ -169,5 +177,63 @@ describe('MaplibrePopup 挂载前的内容隔离', () => {
 
     wrapper.unmount()
     expect(popups[0]!.removed).toBeGreaterThan(0)
+  })
+})
+
+describe('MaplibrePopup options 响应式', () => {
+  beforeEach(() => {
+    maps.length = 0
+    popups.length = 0
+  })
+
+  async function mountWithOptions(options: Record<string, unknown>) {
+    const state = ref<Record<string, unknown>>(options)
+    const onClose = vi.fn()
+    const Parent = defineComponent({
+      setup() {
+        return () => h(MaplibreMap, { options: {} }, {
+          default: () => h(MaplibrePopup, { lnglat: [1, 2], options: state.value, onClose }, {
+            default: () => h('span', { 'data-test': 'card' }, 'content')
+          })
+        })
+      }
+    })
+    const wrapper = mount(Parent, { attachTo: document.body })
+    maps[maps.length - 1]!.fire('load')
+    await nextTick()
+    await nextTick()
+    return { state, onClose, wrapper }
+  }
+
+  it('options 值变化时重建并带上新参数，恢复位置与内容', async () => {
+    const { state, onClose, wrapper } = await mountWithOptions({ maxWidth: '200px' })
+    const content = popups[0]!.content
+    state.value = { maxWidth: '300px', anchor: 'top' }
+    await nextTick()
+
+    expect(popups).toHaveLength(2)
+    expect(popups[0]!.opened).toBe(false)
+    expect(popups[1]!.options).toMatchObject({ maxWidth: '300px', anchor: 'top' })
+    expect(popups[1]!.lnglats).toContainEqual([1, 2])
+    expect(popups[1]!.content).toBe(content)
+    expect(popups[1]!.opened).toBe(true)
+    // 重建是内部行为，不应对外派发 close
+    expect(onClose).not.toHaveBeenCalled()
+    wrapper.unmount()
+  })
+
+  it('内联对象值不变、引用变化时不重建', async () => {
+    const { state, wrapper } = await mountWithOptions({ offset: [0, 10] })
+    state.value = { offset: [0, 10] }
+    await nextTick()
+    expect(popups).toHaveLength(1)
+    wrapper.unmount()
+  })
+
+  it('用户关闭时仍派发 close', async () => {
+    const { onClose, wrapper } = await mountWithOptions({})
+    popups[0]!.remove()
+    expect(onClose).toHaveBeenCalledTimes(1)
+    wrapper.unmount()
   })
 })
