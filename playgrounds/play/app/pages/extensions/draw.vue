@@ -2,9 +2,9 @@
 import type { Feature } from 'geojson'
 
 const features = ref<Feature[]>([])
-const mode = ref('simple_select')
+const mode = ref('select')
 
-// 导出即序列化 features 模型；还原即赋值触发 draw.set
+// 导出即序列化 features 模型；还原即赋值，控件清空后重新下发
 const snapshot = ref<Feature[]>()
 
 function saveSnapshot() {
@@ -31,13 +31,13 @@ const state = computed(() => ({
     :state="state"
   >
     <template #toolbar>
-      <UButton size="sm" variant="soft" @click="mode = 'draw_point'">
+      <UButton size="sm" variant="soft" @click="mode = 'point'">
         画点
       </UButton>
-      <UButton size="sm" variant="soft" @click="mode = 'draw_line_string'">
+      <UButton size="sm" variant="soft" @click="mode = 'linestring'">
         画线
       </UButton>
-      <UButton size="sm" variant="soft" @click="mode = 'draw_polygon'">
+      <UButton size="sm" variant="soft" @click="mode = 'polygon'">
         画面
       </UButton>
       <UButton size="sm" :disabled="!features.length" @click="saveSnapshot">
@@ -52,14 +52,11 @@ const state = computed(() => ({
     </template>
 
     <DemoMap :center="[116.39, 39.91]" :zoom="11">
-      <MapboxDrawControl
+      <MaplibreDrawControl
         v-model:features="features"
         v-model:mode="mode"
         position="top-left"
-        :options="{
-          displayControlsDefault: false,
-          controls: { polygon: true, line_string: true, point: true, trash: true }
-        }"
+        :controls="['point', 'linestring', 'polygon']"
       />
     </DemoMap>
   </MapShowcase>

@@ -15,8 +15,8 @@ const points: Poi[] = [
 
 <template>
   <div class="h-115 w-full overflow-hidden rounded-(--ui-radius) border border-default">
-    <MapboxMap :options="{ style: 'mapbox://styles/mapbox/light-v11', center: [116.39, 39.94], zoom: 10.6 }">
-      <MapboxMarker
+    <MaplibreMap :options="{ style: 'https://tiles.openfreemap.org/styles/positron', center: [116.39, 39.94], zoom: 10.6 }">
+      <MaplibreMarker
         v-for="point in points"
         :key="point.id"
         :lnglat="point.lnglat"
@@ -30,7 +30,7 @@ const points: Poi[] = [
             <span class="text-muted"> · {{ point.type }}</span>
           </div>
         </template>
-      </MapboxMarker>
-    </MapboxMap>
+      </MaplibreMarker>
+    </MaplibreMap>
   </div>
 </template>

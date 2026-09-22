@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { omitUndefined } from '@movk/core'
-import { AttributionControl } from 'mapbox-gl'
-import type { ControlPosition } from 'mapbox-gl'
+import { AttributionControl } from 'maplibre-gl'
+import type { ControlPosition } from 'maplibre-gl'
 import { useControl } from '../../domains/map/control'
 
 const props = defineProps<{
@@ -9,7 +9,7 @@ const props = defineProps<{
   position?: ControlPosition
   /**
    * AttributionControl 构造选项
-   * @see https://docs.mapbox.com/mapbox-gl-js/api/markers/#attributioncontrol
+   * @see https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/AttributionControlOptions/
    */
   options?: ConstructorParameters<typeof AttributionControl>[0]
 }>()

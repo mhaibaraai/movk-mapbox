@@ -1,4 +1,4 @@
-import type { Map as MapboxMap, StyleImageInterface } from 'mapbox-gl'
+import type { Map as MaplibreMap, StyleImageInterface } from 'maplibre-gl'
 
 /**
  * 按经过时间选当前帧索引。
@@ -25,7 +25,7 @@ export interface FrameStyleImageOptions {
   /** 当前帧序列(响应式取值) */
   frames: () => ImageData[]
   /** 取地图实例以触发重绘 */
-  getMap: () => MapboxMap | undefined
+  getMap: () => MaplibreMap | undefined
   /**
    * 固定帧率；durations 缺省时生效
    * @defaultValue 12
@@ -36,8 +36,8 @@ export interface FrameStyleImageOptions {
 }
 
 /**
- * 构造帧动画 StyleImageInterface:mapbox 每帧调 render 取当前帧并自重绘。
- * 帧未就绪时首次返回 true 以初始透明 data 建立纹理(mapbox 仅在 render 首次返回 true 时建纹理),
+ * 构造帧动画 StyleImageInterface:maplibre 每帧调 render 取当前帧并自重绘。
+ * 帧未就绪时首次返回 true 以初始透明 data 建立纹理(maplibre 仅在 render 首次返回 true 时建纹理),
  * 避免 symbol 图层 styleimagemissing。
  */
 export function createFrameStyleImage(options: FrameStyleImageOptions): StyleImageInterface {

@@ -1,14 +1,16 @@
+import type { GeoJSONStoreFeatures, HexColor } from 'terra-draw'
+
 export interface DrawThemeOptions {
   /**
    * 非激活态主色
    * @defaultValue '#3b82f6'
    */
-  color?: string
+  color?: HexColor
   /**
-   * 激活态（绘制/选中）主色
+   * 激活态（绘制辅助点/选中）主色
    * @defaultValue '#f59e0b'
    */
-  activeColor?: string
+  activeColor?: HexColor
   /**
    * 多边形填充不透明度
    * @defaultValue 0.1
@@ -26,94 +28,63 @@ export interface DrawThemeOptions {
   vertexRadius?: number
 }
 
-type StyleSpec = Record<string, unknown>
+type ColorStyle = (feature: GeoJSONStoreFeatures) => HexColor
+type ModeStyles = Record<string, number | HexColor | ColorStyle>
+
+/** 各模式的 terra-draw styles，键为模式名 */
+export interface DrawThemeStyles {
+  select: Record<string, number | HexColor>
+  point: ModeStyles
+  linestring: ModeStyles
+  polygon: ModeStyles
+  rectangle: ModeStyles
+  circle: ModeStyles
+  ellipse: ModeStyles
+  sector: ModeStyles
+}
 
 /**
- * 生成完整 mapbox-gl-draw styles 数组,配合 `userProperties: true` 使用:
- * 颜色取 `['coalesce', ['get', 'user_color'], 主题色]`,要素级 user_color 覆盖主题。
+ * 生成 terra-draw 各模式的主题样式。
+ * 要素 `properties.color` 优先于主题色，便于按要素单独着色（配合 setFeatureProperty）。
  */
-export function drawThemeStyles(options: DrawThemeOptions = {}): StyleSpec[] {
+export function drawThemeStyles(options: DrawThemeOptions = {}): DrawThemeStyles {
   const color = options.color ?? '#3b82f6'
   const activeColor = options.activeColor ?? '#f59e0b'
   const fillOpacity = options.fillOpacity ?? 0.1
   const lineWidth = options.lineWidth ?? 2
   const vertexRadius = options.vertexRadius ?? 5
 
-  // user_color 优先,回退到激活/非激活主题色
-  const themed = (active: string) => ['coalesce', ['get', 'user_color'], active]
-  const inactive = ['==', 'active', 'false']
-  const active = ['==', 'active', 'true']
+  const themed: ColorStyle = feature => (feature.properties?.color as HexColor | undefined) ?? color
+  const shape: ModeStyles = { fillColor: themed, fillOpacity, outlineColor: themed, outlineWidth: lineWidth }
+  const guidance = (prefix: string): Record<string, number | HexColor> => ({
+    [`${prefix}Color`]: activeColor,
+    [`${prefix}Width`]: vertexRadius,
+    [`${prefix}OutlineColor`]: '#ffffff',
+    [`${prefix}OutlineWidth`]: 2
+  })
 
-  return [
-    {
-      id: 'movk-gl-draw-polygon-fill-inactive',
-      type: 'fill',
-      filter: ['all', inactive, ['==', '$type', 'Polygon'], ['!=', 'mode', 'static']],
-      paint: { 'fill-color': themed(color), 'fill-opacity': fillOpacity }
+  return {
+    select: {
+      selectedPointColor: activeColor,
+      selectedPointWidth: vertexRadius + 1,
+      selectedLineStringColor: activeColor,
+      selectedLineStringWidth: lineWidth,
+      selectedPolygonColor: activeColor,
+      selectedPolygonFillOpacity: fillOpacity,
+      selectedPolygonOutlineColor: activeColor,
+      selectedPolygonOutlineWidth: lineWidth,
+      ...guidance('selectionPoint'),
+      midPointColor: activeColor,
+      midPointWidth: Math.max(vertexRadius - 2, 1),
+      midPointOutlineColor: '#ffffff',
+      midPointOutlineWidth: 1
     },
-    {
-      id: 'movk-gl-draw-polygon-fill-active',
-      type: 'fill',
-      filter: ['all', active, ['==', '$type', 'Polygon']],
-      paint: { 'fill-color': themed(activeColor), 'fill-opacity': fillOpacity }
-    },
-    {
-      id: 'movk-gl-draw-polygon-stroke-inactive',
-      type: 'line',
-      filter: ['all', inactive, ['==', '$type', 'Polygon'], ['!=', 'mode', 'static']],
-      layout: { 'line-cap': 'round', 'line-join': 'round' },
-      paint: { 'line-color': themed(color), 'line-width': lineWidth }
-    },
-    {
-      id: 'movk-gl-draw-polygon-stroke-active',
-      type: 'line',
-      filter: ['all', active, ['==', '$type', 'Polygon']],
-      layout: { 'line-cap': 'round', 'line-join': 'round' },
-      paint: { 'line-color': themed(activeColor), 'line-width': lineWidth, 'line-dasharray': [2, 1] }
-    },
-    {
-      id: 'movk-gl-draw-line-inactive',
-      type: 'line',
-      filter: ['all', inactive, ['==', '$type', 'LineString'], ['!=', 'mode', 'static']],
-      layout: { 'line-cap': 'round', 'line-join': 'round' },
-      paint: { 'line-color': themed(color), 'line-width': lineWidth }
-    },
-    {
-      id: 'movk-gl-draw-line-active',
-      type: 'line',
-      filter: ['all', active, ['==', '$type', 'LineString']],
-      layout: { 'line-cap': 'round', 'line-join': 'round' },
-      paint: { 'line-color': themed(activeColor), 'line-width': lineWidth, 'line-dasharray': [2, 1] }
-    },
-    {
-      id: 'movk-gl-draw-vertex-halo',
-      type: 'circle',
-      filter: ['all', ['==', 'meta', 'vertex'], ['==', '$type', 'Point']],
-      paint: { 'circle-radius': vertexRadius + 2, 'circle-color': '#fff' }
-    },
-    {
-      id: 'movk-gl-draw-vertex',
-      type: 'circle',
-      filter: ['all', ['==', 'meta', 'vertex'], ['==', '$type', 'Point']],
-      paint: { 'circle-radius': vertexRadius, 'circle-color': themed(activeColor) }
-    },
-    {
-      id: 'movk-gl-draw-midpoint',
-      type: 'circle',
-      filter: ['all', ['==', 'meta', 'midpoint'], ['==', '$type', 'Point']],
-      paint: { 'circle-radius': vertexRadius - 2, 'circle-color': themed(activeColor) }
-    },
-    {
-      id: 'movk-gl-draw-point-inactive',
-      type: 'circle',
-      filter: ['all', inactive, ['==', 'meta', 'feature'], ['==', '$type', 'Point'], ['!=', 'mode', 'static']],
-      paint: { 'circle-radius': vertexRadius, 'circle-color': themed(color) }
-    },
-    {
-      id: 'movk-gl-draw-point-active',
-      type: 'circle',
-      filter: ['all', active, ['==', 'meta', 'feature'], ['==', '$type', 'Point']],
-      paint: { 'circle-radius': vertexRadius + 1, 'circle-color': themed(activeColor) }
-    }
-  ]
+    point: { pointColor: themed, pointWidth: vertexRadius, pointOutlineColor: '#ffffff', pointOutlineWidth: 2 },
+    linestring: { lineStringColor: themed, lineStringWidth: lineWidth, ...guidance('closingPoint'), ...guidance('coordinatePoint') },
+    polygon: { ...shape, ...guidance('closingPoint'), ...guidance('coordinatePoint') },
+    rectangle: shape,
+    circle: shape,
+    ellipse: shape,
+    sector: shape
+  }
 }

@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { computed, useId } from 'vue'
 import { buildingGradientPaint } from '../../utils/building-effects'
-import MapboxBuildingLayer from '../layers/BuildingLayer.vue'
+import type { BuildingSourceOptions } from '../../utils/building'
+import MaplibreBuildingLayer from '../layers/BuildingLayer.vue'
 
-/** 渐变建筑：按高度插值着色的 3D 建筑。依赖 Mapbox 官方样式 composite/building。 */
-const props = withDefaults(defineProps<{
+/** 渐变建筑：按高度插值着色的 3D 建筑。 */
+const props = withDefaults(defineProps<BuildingSourceOptions & {
   /** 图层 id；省略时自动生成 */
   layerId?: string
   /** 高度-颜色断点 */
@@ -29,10 +30,21 @@ const id = props.layerId ?? `movk-gradient-building-${useId()}`
 const paint = computed(() => buildingGradientPaint({
   stops: props.stops,
   opacity: props.opacity,
-  minzoom: props.minzoom
+  minzoom: props.minzoom,
+  heightProperty: props.heightProperty,
+  baseProperty: props.baseProperty
 }))
 </script>
 
 <template>
-  <MapboxBuildingLayer :layer-id="id" :minzoom="minzoom" :paint="paint" :before-id="beforeId" />
+  <MaplibreBuildingLayer
+    :layer-id="id"
+    :source="source"
+    :source-layer="sourceLayer"
+    :height-property="heightProperty"
+    :base-property="baseProperty"
+    :minzoom="minzoom"
+    :paint="paint"
+    :before-id="beforeId"
+  />
 </template>

@@ -1,4 +1,4 @@
-import type { RouteMode } from '#mapbox/types'
+import type { RouteMode } from '#maplibre/types'
 
 export default defineEventHandler(async (event) => {
   const { origLng, origLat, destLng, destLat, mode } = getQuery(event)

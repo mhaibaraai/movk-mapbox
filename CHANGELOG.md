@@ -1,24 +1,24 @@
 # 📋 Changelog
 
-## [1.3.0](https://github.com/mhaibaraai/movk-mapbox/compare/v1.2.0...v1.3.0) (2026-07-24)
+## [1.3.0](https://github.com/mhaibaraai/movk-maplibre/compare/v1.2.0...v1.3.0) (2026-07-24)
 
 ### ✨ Features
 
-* **map:** 新增 hideLogo 隐藏 Mapbox 字标 ([f674556](https://github.com/mhaibaraai/movk-mapbox/commit/f6745569826dbf757e8b802dc4d2cd919beadb60))
+* **map:** 新增 hideLogo 隐藏 Mapbox 字标 ([f674556](https://github.com/mhaibaraai/movk-maplibre/commit/f6745569826dbf757e8b802dc4d2cd919beadb60))
 
 ### 🐛 Bug Fixes
 
-* **module:** 仅在可解析时加入 optimizeDeps 条目 ([0660322](https://github.com/mhaibaraai/movk-mapbox/commit/0660322e4726af0643440c2b3bb6be72be85d13e))
+* **module:** 仅在可解析时加入 optimizeDeps 条目 ([0660322](https://github.com/mhaibaraai/movk-maplibre/commit/0660322e4726af0643440c2b3bb6be72be85d13e))
 
 ### 🔧 Chores
 
-* **deps:** 切换 @movk/nuxt-docs 预发布版本并调整 overrides ([ef11b70](https://github.com/mhaibaraai/movk-mapbox/commit/ef11b70a9e3cfc66673bda5f0942288eb44945a0))
-* **deps:** 升级 mapbox-gl 至 3.27 及相关依赖 ([9b35fb7](https://github.com/mhaibaraai/movk-mapbox/commit/9b35fb703ac58cc53332b51ade9a29efbe6e89ed))
-* **deps:** 升级依赖并切回 @movk/nuxt-docs 正式版 ([824a1e4](https://github.com/mhaibaraai/movk-mapbox/commit/824a1e4ecaed60ad79963fabc6db9ca192df169c))
-* **deps:** 升级依赖版本 ([1afc5ec](https://github.com/mhaibaraai/movk-mapbox/commit/1afc5ec5f79a397d66668adce7745839bc0957ac))
-* **docs:** 调整 Vite 预构建条目为 @unhead/schema-org/vue ([53394be](https://github.com/mhaibaraai/movk-mapbox/commit/53394be4d69b0b56d0b8de527d1f2c29dbd24a88))
+* **deps:** 切换 @movk/nuxt-docs 预发布版本并调整 overrides ([ef11b70](https://github.com/mhaibaraai/movk-maplibre/commit/ef11b70a9e3cfc66673bda5f0942288eb44945a0))
+* **deps:** 升级 mapbox-gl 至 3.27 及相关依赖 ([9b35fb7](https://github.com/mhaibaraai/movk-maplibre/commit/9b35fb703ac58cc53332b51ade9a29efbe6e89ed))
+* **deps:** 升级依赖并切回 @movk/nuxt-docs 正式版 ([824a1e4](https://github.com/mhaibaraai/movk-maplibre/commit/824a1e4ecaed60ad79963fabc6db9ca192df169c))
+* **deps:** 升级依赖版本 ([1afc5ec](https://github.com/mhaibaraai/movk-maplibre/commit/1afc5ec5f79a397d66668adce7745839bc0957ac))
+* **docs:** 调整 Vite 预构建条目为 @unhead/schema-org/vue ([53394be](https://github.com/mhaibaraai/movk-maplibre/commit/53394be4d69b0b56d0b8de527d1f2c29dbd24a88))
 
-## [1.2.0](https://github.com/mhaibaraai/movk-mapbox/compare/v1.1.1...v1.2.0) (2026-07-13)
+## [1.2.0](https://github.com/mhaibaraai/movk-maplibre/compare/v1.1.1...v1.2.0) (2026-07-13)
 
 ### ⚠ BREAKING CHANGES
 
@@ -28,80 +28,80 @@
 
 ### ✨ Features
 
-* **build:** 新增 @movk/mapbox/draw-modes 子路径导出 ([b8d265b](https://github.com/mhaibaraai/movk-mapbox/commit/b8d265ba76e37b1515a6a6ad1e20e423c51070fd))
-* **draw:** useMapboxDraw 支持按 mapId 跨组件树驱动绘制 ([7b45c70](https://github.com/mhaibaraai/movk-mapbox/commit/7b45c70de830a5008d0512a89fd4104186eeeda1))
-* **marker:** 新增 [#popup](https://github.com/mhaibaraai/movk-mapbox/issues/popup) 插槽与 trigger 触发配置 ([298d58d](https://github.com/mhaibaraai/movk-mapbox/commit/298d58de4567ff7978ae2f260d236f35ac2b8841))
-* **play:** 新增 Draw 跨组件树驱动示例页 ([9f5ab82](https://github.com/mhaibaraai/movk-mapbox/commit/9f5ab82447653242390e49130ba5609e2fd9f469))
-* **tooltip:** trigger 支持 hover/click/none 并向插槽暴露 close ([f7ee356](https://github.com/mhaibaraai/movk-mapbox/commit/f7ee3563d547347523b0c6752565cf32e722198f))
+* **build:** 新增 @movk/mapbox/draw-modes 子路径导出 ([b8d265b](https://github.com/mhaibaraai/movk-maplibre/commit/b8d265ba76e37b1515a6a6ad1e20e423c51070fd))
+* **draw:** useMapboxDraw 支持按 mapId 跨组件树驱动绘制 ([7b45c70](https://github.com/mhaibaraai/movk-maplibre/commit/7b45c70de830a5008d0512a89fd4104186eeeda1))
+* **marker:** 新增 [#popup](https://github.com/mhaibaraai/movk-maplibre/issues/popup) 插槽与 trigger 触发配置 ([298d58d](https://github.com/mhaibaraai/movk-maplibre/commit/298d58de4567ff7978ae2f260d236f35ac2b8841))
+* **play:** 新增 Draw 跨组件树驱动示例页 ([9f5ab82](https://github.com/mhaibaraai/movk-maplibre/commit/9f5ab82447653242390e49130ba5609e2fd9f469))
+* **tooltip:** trigger 支持 hover/click/none 并向插槽暴露 close ([f7ee356](https://github.com/mhaibaraai/movk-maplibre/commit/f7ee3563d547347523b0c6752565cf32e722198f))
 
 ### 🐛 Bug Fixes
 
-* **map:** 修复地图容器高度塌陷为 300px ([8f2e7af](https://github.com/mhaibaraai/movk-mapbox/commit/8f2e7af13eeb6caa7c6f2200df49b24c8532a8f0))
-* **popup:** 修复地图挂载前弹窗内容裸露在文档流 ([b57a1a9](https://github.com/mhaibaraai/movk-mapbox/commit/b57a1a9e3eb44188df6c3831daf2498ecc4f97d0))
+* **map:** 修复地图容器高度塌陷为 300px ([8f2e7af](https://github.com/mhaibaraai/movk-maplibre/commit/8f2e7af13eeb6caa7c6f2200df49b24c8532a8f0))
+* **popup:** 修复地图挂载前弹窗内容裸露在文档流 ([b57a1a9](https://github.com/mhaibaraai/movk-maplibre/commit/b57a1a9e3eb44188df6c3831daf2498ecc4f97d0))
 
 ### 📝 Documentation
 
-* **draw-modes:** 补充显式导入路径说明 ([da9e824](https://github.com/mhaibaraai/movk-mapbox/commit/da9e8248f900fe6a1ed3e66ce66db73e89f8853b))
-* **draw:** 补充绘制上下文 API 与跨组件树驱动示例 ([0ecf220](https://github.com/mhaibaraai/movk-mapbox/commit/0ecf22087bdbba7193397cd55478791ffae95b6b))
-* **examples:** Draw 跨组件树示例改由 MapboxMap 自身定高 ([d2fd1eb](https://github.com/mhaibaraai/movk-mapbox/commit/d2fd1ebd6399f08a72b64cd8157622a814fd2537))
-* **examples:** Draw 跨组件树示例改由外层容器定高 ([e3bc560](https://github.com/mhaibaraai/movk-mapbox/commit/e3bc560e9eee95a0c344db6bed98949976eaefb0))
-* **popup:** 新增多弹窗共存示例与选型说明 ([00d5edb](https://github.com/mhaibaraai/movk-mapbox/commit/00d5edba13e2fdda89326fbf2d4ce7ba2adbe830))
-* 未发布特性徽章统一为 v1.2.0+ ([908ceec](https://github.com/mhaibaraai/movk-mapbox/commit/908ceec9c045a7339e1dd2519cf83db10c846e00))
+* **draw-modes:** 补充显式导入路径说明 ([da9e824](https://github.com/mhaibaraai/movk-maplibre/commit/da9e8248f900fe6a1ed3e66ce66db73e89f8853b))
+* **draw:** 补充绘制上下文 API 与跨组件树驱动示例 ([0ecf220](https://github.com/mhaibaraai/movk-maplibre/commit/0ecf22087bdbba7193397cd55478791ffae95b6b))
+* **examples:** Draw 跨组件树示例改由 MapboxMap 自身定高 ([d2fd1eb](https://github.com/mhaibaraai/movk-maplibre/commit/d2fd1ebd6399f08a72b64cd8157622a814fd2537))
+* **examples:** Draw 跨组件树示例改由外层容器定高 ([e3bc560](https://github.com/mhaibaraai/movk-maplibre/commit/e3bc560e9eee95a0c344db6bed98949976eaefb0))
+* **popup:** 新增多弹窗共存示例与选型说明 ([00d5edb](https://github.com/mhaibaraai/movk-maplibre/commit/00d5edba13e2fdda89326fbf2d4ce7ba2adbe830))
+* 未发布特性徽章统一为 v1.2.0+ ([908ceec](https://github.com/mhaibaraai/movk-maplibre/commit/908ceec9c045a7339e1dd2519cf83db10c846e00))
 
 ### ✅ Tests
 
-* **draw:** 覆盖 draw 注册表与跨组件树绘制上下文 ([ce29120](https://github.com/mhaibaraai/movk-mapbox/commit/ce291201d5daf01099e800026ba9dc08a32624ea))
+* **draw:** 覆盖 draw 注册表与跨组件树绘制上下文 ([ce29120](https://github.com/mhaibaraai/movk-maplibre/commit/ce291201d5daf01099e800026ba9dc08a32624ea))
 
 ### 🔧 Chores
 
-* **deps:** update all non-major dependencies ([8b08af9](https://github.com/mhaibaraai/movk-mapbox/commit/8b08af900afc62eb3a10c4f2b516213a585237a0))
-* **deps:** 回退部分依赖版本 ([b238a8c](https://github.com/mhaibaraai/movk-mapbox/commit/b238a8c1ff0b70b85528c1a806d26e26fe5cca0a))
-* **gitignore:** 忽略 .playwright-mcp ([0599986](https://github.com/mhaibaraai/movk-mapbox/commit/059998638e2d119d0e6d6e1c9d5ecbabc8ca2025))
+* **deps:** update all non-major dependencies ([8b08af9](https://github.com/mhaibaraai/movk-maplibre/commit/8b08af900afc62eb3a10c4f2b516213a585237a0))
+* **deps:** 回退部分依赖版本 ([b238a8c](https://github.com/mhaibaraai/movk-maplibre/commit/b238a8c1ff0b70b85528c1a806d26e26fe5cca0a))
+* **gitignore:** 忽略 .playwright-mcp ([0599986](https://github.com/mhaibaraai/movk-maplibre/commit/059998638e2d119d0e6d6e1c9d5ecbabc8ca2025))
 
-## [1.1.1](https://github.com/mhaibaraai/movk-mapbox/compare/v1.1.0...v1.1.1) (2026-07-09)
+## [1.1.1](https://github.com/mhaibaraai/movk-maplibre/compare/v1.1.0...v1.1.1) (2026-07-09)
 
 ### ♻️ Code Refactoring
 
-* **types:** 拆分运行时类型定义并统一类型导出方式 ([a47bd84](https://github.com/mhaibaraai/movk-mapbox/commit/a47bd84ae214446f22236db3117fc2522262bdb6))
+* **types:** 拆分运行时类型定义并统一类型导出方式 ([a47bd84](https://github.com/mhaibaraai/movk-maplibre/commit/a47bd84ae214446f22236db3117fc2522262bdb6))
 
 ### 🔧 Chores
 
-* **play:** 移除空的 mapbox token 占位配置 ([cfd5ca4](https://github.com/mhaibaraai/movk-mapbox/commit/cfd5ca4dd486eaca228d648b55c3b4d5df593d88))
+* **play:** 移除空的 mapbox token 占位配置 ([cfd5ca4](https://github.com/mhaibaraai/movk-maplibre/commit/cfd5ca4dd486eaca228d648b55c3b4d5df593d88))
 
-## [1.1.0](https://github.com/mhaibaraai/movk-mapbox/compare/v1.0.1...v1.1.0) (2026-07-09)
+## [1.1.0](https://github.com/mhaibaraai/movk-maplibre/compare/v1.0.1...v1.1.0) (2026-07-09)
 
 ### ✨ Features
 
-* **tianditu:** 新增天地图 WEB 服务 API 工具与类型 ([4c552f2](https://github.com/mhaibaraai/movk-mapbox/commit/4c552f2b8453837a4dd980b773226a73e4f16bc7))
+* **tianditu:** 新增天地图 WEB 服务 API 工具与类型 ([4c552f2](https://github.com/mhaibaraai/movk-maplibre/commit/4c552f2b8453837a4dd980b773226a73e4f16bc7))
 
 ### 🐛 Bug Fixes
 
-* **build:** 修正 utils 导出后缀并移除 optimizeDeps 中的 CJS 依赖 ([58a5f60](https://github.com/mhaibaraai/movk-mapbox/commit/58a5f609caebc6df8939f2fc9b128cb9a24fd86d))
+* **build:** 修正 utils 导出后缀并移除 optimizeDeps 中的 CJS 依赖 ([58a5f60](https://github.com/mhaibaraai/movk-maplibre/commit/58a5f609caebc6df8939f2fc9b128cb9a24fd86d))
 
 ### 📝 Documentation
 
-* **tianditu:** 修正天地图坐标系说明为 WGS84 ([fb0bd9d](https://github.com/mhaibaraai/movk-mapbox/commit/fb0bd9dac475b1339553c6012bf31430cc8467db))
-* 新增天地图 API 文档与技能参考 ([8e9e419](https://github.com/mhaibaraai/movk-mapbox/commit/8e9e419a7be8b0fb374a071dea2deee7819fa0ef))
-* 更新天地图文档链接和changelog组件配置 ([9adbd0c](https://github.com/mhaibaraai/movk-mapbox/commit/9adbd0c2c660fbc3c97e78af97a773f9a27868a1))
-* 添加 optimizeDeps 配置文档说明 ([82799d4](https://github.com/mhaibaraai/movk-mapbox/commit/82799d4142617b26ab1f8515417269fd11bf5c61))
+* **tianditu:** 修正天地图坐标系说明为 WGS84 ([fb0bd9d](https://github.com/mhaibaraai/movk-maplibre/commit/fb0bd9dac475b1339553c6012bf31430cc8467db))
+* 新增天地图 API 文档与技能参考 ([8e9e419](https://github.com/mhaibaraai/movk-maplibre/commit/8e9e419a7be8b0fb374a071dea2deee7819fa0ef))
+* 更新天地图文档链接和changelog组件配置 ([9adbd0c](https://github.com/mhaibaraai/movk-maplibre/commit/9adbd0c2c660fbc3c97e78af97a773f9a27868a1))
+* 添加 optimizeDeps 配置文档说明 ([82799d4](https://github.com/mhaibaraai/movk-maplibre/commit/82799d4142617b26ab1f8515417269fd11bf5c61))
 
 ### ♻️ Code Refactoring
 
-* **config:** 统一 Mapbox/天地图 token 环境变量注入 ([3f27e32](https://github.com/mhaibaraai/movk-mapbox/commit/3f27e3260df3f7465cbcb010ac6bd96407449154))
+* **config:** 统一 Mapbox/天地图 token 环境变量注入 ([3f27e32](https://github.com/mhaibaraai/movk-maplibre/commit/3f27e3260df3f7465cbcb010ac6bd96407449154))
 
 ### 🔧 Chores
 
-* **deps:** 升级各包依赖与 packageManager 版本 ([9c0428b](https://github.com/mhaibaraai/movk-mapbox/commit/9c0428b534e81ffe9872792a6533c4c60be2a02f))
+* **deps:** 升级各包依赖与 packageManager 版本 ([9c0428b](https://github.com/mhaibaraai/movk-maplibre/commit/9c0428b534e81ffe9872792a6533c4c60be2a02f))
 
-## [1.0.1](https://github.com/mhaibaraai/movk-mapbox/compare/v1.0.0...v1.0.1) (2026-07-06)
+## [1.0.1](https://github.com/mhaibaraai/movk-maplibre/compare/v1.0.0...v1.0.1) (2026-07-06)
 
 ### 🐛 Bug Fixes
 
-* **module:** 自动注册 CJS 依赖至 optimizeDeps 并修正相机初始值 ([3e2f898](https://github.com/mhaibaraai/movk-mapbox/commit/3e2f898adcb9d2dbe559d8e82bc6aab241884310))
+* **module:** 自动注册 CJS 依赖至 optimizeDeps 并修正相机初始值 ([3e2f898](https://github.com/mhaibaraai/movk-maplibre/commit/3e2f898adcb9d2dbe559d8e82bc6aab241884310))
 
 ### 🔧 Chores
 
-* 升级 pnpm 至 11.9.0 及各依赖版本 ([9db79bc](https://github.com/mhaibaraai/movk-mapbox/commit/9db79bc9a651c894202d2c6c65123102885187bc))
+* 升级 pnpm 至 11.9.0 及各依赖版本 ([9db79bc](https://github.com/mhaibaraai/movk-maplibre/commit/9db79bc9a651c894202d2c6c65123102885187bc))
 
 ## 1.0.0 (2026-06-16)
 

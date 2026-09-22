@@ -42,12 +42,12 @@ useFrameIcon({ imageName: 'pulse-ring', size, frames: () => frames.value, fps: 2
 </script>
 
 <template>
-  <MapboxSource source-id="pulse-pts" :source="{ type: 'geojson', data }">
-    <MapboxLayer
+  <MaplibreSource source-id="pulse-pts" :source="{ type: 'geojson', data }">
+    <MaplibreLayer
       layer-id="pulse-pts"
       type="symbol"
       source="pulse-pts"
       :layout="{ 'icon-image': 'pulse-ring', 'icon-allow-overlap': true }"
     />
-  </MapboxSource>
+  </MaplibreSource>
 </template>

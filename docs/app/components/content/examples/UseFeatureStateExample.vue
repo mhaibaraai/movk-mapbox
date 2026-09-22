@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { GeoJSONFeature } from 'mapbox-gl'
+import type { GeoJSONFeature } from 'maplibre-gl'
 import type { Feature, FeatureCollection } from 'geojson'
 
 const mapId = 'use-feature-state-demo'
@@ -25,9 +25,9 @@ const nameOf = (feature: GeoJSONFeature | undefined) => (feature?.properties?.na
 
 <template>
   <div class="relative h-115 w-full overflow-hidden rounded-(--ui-radius) border border-default">
-    <MapboxMap :map-id="mapId" :options="{ style: 'mapbox://styles/mapbox/light-v11', center: [116.42, 39.92], zoom: 10.5 }">
-      <MapboxSource source-id="blocks" :source="{ type: 'geojson', data, generateId: true }">
-        <MapboxLayer
+    <MaplibreMap :map-id="mapId" :options="{ style: 'https://tiles.openfreemap.org/styles/positron', center: [116.42, 39.92], zoom: 10.5 }">
+      <MaplibreSource source-id="blocks" :source="{ type: 'geojson', data, generateId: true }">
+        <MaplibreLayer
           layer-id="blocks-fill"
           type="fill"
           source="blocks"
@@ -41,9 +41,9 @@ const nameOf = (feature: GeoJSONFeature | undefined) => (feature?.properties?.na
             ]
           }"
         />
-        <MapboxLayer layer-id="blocks-line" type="line" source="blocks" :paint="{ 'line-color': '#1d4ed8', 'line-width': 1 }" />
-      </MapboxSource>
-    </MapboxMap>
+        <MaplibreLayer layer-id="blocks-line" type="line" source="blocks" :paint="{ 'line-color': '#1d4ed8', 'line-width': 1 }" />
+      </MaplibreSource>
+    </MaplibreMap>
     <div class="absolute left-2 top-2 z-10 flex items-center gap-2 rounded bg-default/90 px-3 py-1.5 text-xs text-default ring ring-default">
       <span>悬浮：{{ nameOf(hovered) }}</span>
       <span>选中：{{ nameOf(selected) }}</span>

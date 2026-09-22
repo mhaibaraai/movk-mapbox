@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed, useId } from 'vue'
-import type { GeoJSONSourceSpecification } from 'mapbox-gl'
+import type { GeoJSONSourceSpecification } from '@maplibre/maplibre-gl-style-spec'
 import { useMapAnimation } from '../../composables/useMapAnimation'
-import MapboxSource from '../Source.vue'
-import MapboxLayer from '../Layer.vue'
+import MaplibreSource from '../Source.vue'
+import MaplibreLayer from '../Layer.vue'
 
 /** 炫光圆：实心内核 + 模糊光晕，可选呼吸脉冲。 */
 const props = withDefaults(defineProps<{
@@ -71,8 +71,8 @@ useMapAnimation((map, elapsed) => {
 </script>
 
 <template>
-  <MapboxSource :source-id="id" :source="source">
-    <MapboxLayer :layer-id="`${id}-glow`" type="circle" :source="id" :paint="glowPaint" :before-id="beforeId" />
-    <MapboxLayer :layer-id="`${id}-core`" type="circle" :source="id" :paint="corePaint" :before-id="beforeId" />
-  </MapboxSource>
+  <MaplibreSource :source-id="id" :source="source">
+    <MaplibreLayer :layer-id="`${id}-glow`" type="circle" :source="id" :paint="glowPaint" :before-id="beforeId" />
+    <MaplibreLayer :layer-id="`${id}-core`" type="circle" :source="id" :paint="corePaint" :before-id="beforeId" />
+  </MaplibreSource>
 </template>

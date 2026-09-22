@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { GeoJSONSourceSpecification } from 'mapbox-gl'
+import type { GeoJSONSourceSpecification } from '@maplibre/maplibre-gl-style-spec'
 
 const rings = ref(3)
 const maxRadius = ref(40)
@@ -26,8 +26,8 @@ const data: GeoJSONSourceSpecification['data'] = {
       <USlider v-model="maxRadius" :min="20" :max="80" :step="5" class="w-24" />
     </template>
 
-    <DemoMap map-style="mapbox://styles/mapbox/dark-v11" :center="[116.39, 39.93]" :zoom="10.5">
-      <MapboxDiffusionCircle :data="data" :rings="rings" :max-radius="maxRadius" color="#38bdf8" />
+    <DemoMap map-style="https://tiles.openfreemap.org/styles/dark" :center="[116.39, 39.93]" :zoom="10.5">
+      <MaplibreDiffusionCircle :data="data" :rings="rings" :max-radius="maxRadius" color="#38bdf8" />
     </DemoMap>
   </MapShowcase>
 </template>

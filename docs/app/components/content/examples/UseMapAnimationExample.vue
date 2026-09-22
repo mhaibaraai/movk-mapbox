@@ -19,13 +19,13 @@ useMapAnimation((map, elapsed) => {
 
 <template>
   <div class="h-115 w-full overflow-hidden rounded-(--ui-radius) border border-default">
-    <MapboxMap :map-id="mapId" :options="{ style: 'mapbox://styles/mapbox/dark-v11', center: [116.397, 39.908], zoom: 12 }">
-      <MapboxLayer
+    <MaplibreMap :map-id="mapId" :options="{ style: 'https://tiles.openfreemap.org/styles/dark', center: [116.397, 39.908], zoom: 12 }">
+      <MaplibreLayer
         layer-id="pulse"
         type="circle"
         :source="{ type: 'geojson', data }"
         :paint="{ 'circle-color': '#22d3ee', 'circle-opacity': 0.6, 'circle-radius': 14 }"
       />
-    </MapboxMap>
+    </MaplibreMap>
   </div>
 </template>

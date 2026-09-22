@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { GeoJSONSourceSpecification } from 'mapbox-gl'
+import type { GeoJSONSourceSpecification } from '@maplibre/maplibre-gl-style-spec'
 
 const pulse = ref(true)
 
@@ -22,9 +22,9 @@ const data: GeoJSONSourceSpecification['data'] = {
       <USwitch v-model="pulse" label="呼吸脉冲" />
     </template>
 
-    <DemoMap map-style="mapbox://styles/mapbox/dark-v11" :center="[121.48, 31.23]" :zoom="11.5">
+    <DemoMap map-style="https://tiles.openfreemap.org/styles/dark" :center="[121.48, 31.23]" :zoom="11.5">
       <!-- pulse 经 key 重建以切换帧循环启停 -->
-      <MapboxGlowCircle :key="String(pulse)" :data="data" color="#fbbf24" :radius="7" :pulse="pulse" />
+      <MaplibreGlowCircle :key="String(pulse)" :data="data" color="#fbbf24" :radius="7" :pulse="pulse" />
     </DemoMap>
   </MapShowcase>
 </template>

@@ -10,11 +10,11 @@ withDefaults(defineProps <{
 
 <template>
   <div class="h-115 w-full overflow-hidden rounded-(--ui-radius) border border-default">
-    <MapboxMap :options="{ style: 'mapbox://styles/mapbox/empty-v9', center: [116.397, 39.908], zoom: 10 }">
-      <MapboxTiandituLayer
+    <MaplibreMap :options="{ center: [116.397, 39.908], zoom: 10 }">
+      <MaplibreTiandituLayer
         :layer="layer"
         :annotation="annotation"
       />
-    </MapboxMap>
+    </MaplibreMap>
   </div>
 </template>

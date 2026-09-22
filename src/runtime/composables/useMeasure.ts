@@ -3,15 +3,16 @@ import type { Ref } from 'vue'
 import { length } from '@turf/length'
 import { area } from '@turf/area'
 import type { Feature, FeatureCollection, LineString, Polygon } from 'geojson'
-import type { GeoJSONSource, Map as MapboxMap, MapMouseEvent } from 'mapbox-gl'
+import type { GeoJSONSource, Map as MaplibreMap, MapMouseEvent } from 'maplibre-gl'
 import { useContextResolver } from '../domains/map/resolve'
 import { formatArea, formatDistance } from '../utils/measure'
 import { logger } from '../utils/logger'
+import { textFontLayout } from '../domains/map/config'
 
 export type MeasureMode = 'distance' | 'area'
 
 export interface UseMeasureOptions {
-  /** 目标地图 id；在 MapboxMap 子树外使用时必填 */
+  /** 目标地图 id；在 MaplibreMap 子树外使用时必填 */
   mapId?: string
   /**
    * 主色
@@ -50,21 +51,21 @@ export function useMeasure(options: UseMeasureOptions = {}): UseMeasureReturn {
   let finished: Feature[] = []
   let vertices: Position2D[] = []
   let cursor: Position2D | undefined
-  let boundMap: MapboxMap | undefined
+  let boundMap: MaplibreMap | undefined
   let stopReady: (() => void) | undefined
 
   // remove() 后 getCanvas() 返回 undefined：地图已销毁，getSource/getLayer 都会抛
-  function isAlive(map: MapboxMap): boolean {
+  function isAlive(map: MaplibreMap): boolean {
     return Boolean(map.getCanvas())
   }
 
-  function setCursor(map: MapboxMap, value: string): void {
+  function setCursor(map: MaplibreMap, value: string): void {
     // 地图移除后 getCanvas() 返回 undefined，卸载期游标重置可安全跳过
     const canvas = map.getCanvas()
     if (canvas) canvas.style.cursor = value
   }
 
-  function ensureLayers(map: MapboxMap): void {
+  function ensureLayers(map: MaplibreMap): void {
     if (!map.getSource(SOURCE_ID)) {
       map.addSource(SOURCE_ID, { type: 'geojson', data: collection() })
     }
@@ -72,7 +73,7 @@ export function useMeasure(options: UseMeasureOptions = {}): UseMeasureReturn {
       { id: `${SOURCE_ID}-fill`, type: 'fill', filter: ['==', ['geometry-type'], 'Polygon'], paint: { 'fill-color': color, 'fill-opacity': 0.15 } },
       { id: `${SOURCE_ID}-line`, type: 'line', filter: ['!=', ['geometry-type'], 'Point'], paint: { 'line-color': color, 'line-width': 2, 'line-dasharray': [2, 1] } },
       { id: `${SOURCE_ID}-points`, type: 'circle', filter: ['==', ['geometry-type'], 'Point'], paint: { 'circle-radius': 4, 'circle-color': '#fff', 'circle-stroke-color': color, 'circle-stroke-width': 2 } },
-      { id: `${SOURCE_ID}-labels`, type: 'symbol', filter: ['has', 'label'], layout: { 'text-field': ['get', 'label'], 'text-size': 13, 'text-offset': [0, -1.2], 'text-anchor': 'bottom' }, paint: { 'text-color': color, 'text-halo-color': '#fff', 'text-halo-width': 1.5 } }
+      { id: `${SOURCE_ID}-labels`, type: 'symbol', filter: ['has', 'label'], layout: { 'text-field': ['get', 'label'], 'text-size': 13, 'text-offset': [0, -1.2], 'text-anchor': 'bottom', ...textFontLayout() }, paint: { 'text-color': color, 'text-halo-color': '#fff', 'text-halo-width': 1.5 } }
     ]
     for (const layer of layers) {
       if (!map.getLayer(layer.id)) map.addLayer({ source: SOURCE_ID, ...layer } as never)
@@ -158,7 +159,7 @@ export function useMeasure(options: UseMeasureOptions = {}): UseMeasureReturn {
   function start(nextMode: MeasureMode): void {
     const ctx = resolve()
     if (!ctx) {
-      logger.warn('useMeasure: no map context found; pass options.mapId or call inside <MapboxMap>.')
+      logger.warn('useMeasure: no map context found; pass options.mapId or call inside <MaplibreMap>.')
       return
     }
     if (active.value) stop()
@@ -212,7 +213,7 @@ export function useMeasure(options: UseMeasureOptions = {}): UseMeasureReturn {
   function teardown(): void {
     stop()
     const map = boundMap
-    // 地图已被销毁（如子组件先卸载）：source/layer 已由 mapbox 清理，再访问必抛
+    // 地图已被销毁（如子组件先卸载）：source/layer 已由 maplibre 清理，再访问必抛
     if (!map || !isAlive(map)) {
       boundMap = undefined
       return

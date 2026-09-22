@@ -1,22 +1,13 @@
 <script setup lang="ts">
 import { computed, useId } from 'vue'
 import { buildingLayerSpec } from '../../utils/building'
-import MapboxLayer from '../Layer.vue'
+import type { BuildingSourceOptions } from '../../utils/building'
+import MaplibreLayer from '../Layer.vue'
 
-// 依赖 Mapbox 官方样式的 composite/building 矢量源；天地图等空样式下无效
-const props = defineProps<{
+/** 3D 建筑：按要素高度属性拉伸的 fill-extrusion 图层。 */
+const props = defineProps<BuildingSourceOptions & {
   /** 图层 id；省略时自动生成 */
   layerId?: string
-  /**
-   * 矢量数据源 id
-   * @defaultValue 'composite'
-   */
-  source?: string
-  /**
-   * 数据源图层名
-   * @defaultValue 'building'
-   */
-  sourceLayer?: string
   /**
    * 建筑颜色
    * @defaultValue '#aaa'
@@ -44,6 +35,8 @@ const spec = computed(() => buildingLayerSpec({
   id,
   source: props.source,
   sourceLayer: props.sourceLayer,
+  heightProperty: props.heightProperty,
+  baseProperty: props.baseProperty,
   color: props.color,
   opacity: props.opacity,
   minzoom: props.minzoom,
@@ -52,12 +45,11 @@ const spec = computed(() => buildingLayerSpec({
 </script>
 
 <template>
-  <MapboxLayer
+  <MaplibreLayer
     :layer-id="id"
     type="fill-extrusion"
     :source="spec.source"
     :source-layer="spec['source-layer']"
-    :filter="spec.filter"
     :minzoom="spec.minzoom"
     :paint="spec.paint"
     :before-id="beforeId"

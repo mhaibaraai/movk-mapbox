@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type { Map as MapboxMap } from 'mapbox-gl'
+import type { Map as MaplibreMap } from 'maplibre-gl'
 
 const status = ref('initializing')
 
-function onLoad(_map: MapboxMap) {
+function onLoad(_map: MaplibreMap) {
   status.value = 'loaded'
 }
 </script>
@@ -15,9 +15,8 @@ function onLoad(_map: MapboxMap) {
     :state="{ status }"
     state-label="Map"
   >
-    <MapboxMap
-      :options="{ style: 'mapbox://styles/mapbox/streets-v12', center: [116.39, 39.91], zoom: 10, attributionControl: false }"
-      hide-logo
+    <MaplibreMap
+      :options="{ style: 'https://tiles.openfreemap.org/styles/liberty', center: [116.39, 39.91], zoom: 10, attributionControl: false }"
       @load="onLoad"
     />
   </MapShowcase>

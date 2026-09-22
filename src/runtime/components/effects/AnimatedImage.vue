@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, useId, watch } from 'vue'
-import type { GeoJSONSourceSpecification } from 'mapbox-gl'
+import type { GeoJSONSourceSpecification } from '@maplibre/maplibre-gl-style-spec'
 import { decodeAnimatedImage } from '../../utils/animated-image'
 import { useMap } from '../../composables/useMap'
 import { useFrameIcon } from '../../composables/useFrameIcon'
-import MapboxSource from '../Source.vue'
-import MapboxLayer from '../Layer.vue'
+import MaplibreSource from '../Source.vue'
+import MaplibreLayer from '../Layer.vue'
 
 /** 动图图标层：ImageDecoder 解码 GIF/APNG/WebP 为帧，按各帧时长驱动 symbol 循环播放，零解码依赖。 */
 const props = withDefaults(defineProps<{
@@ -71,7 +71,7 @@ watch(() => props.image, url => load(url))
 </script>
 
 <template>
-  <MapboxSource :source-id="id" :source="source">
-    <MapboxLayer :layer-id="id" type="symbol" :source="id" :layout="layout" :before-id="beforeId" />
-  </MapboxSource>
+  <MaplibreSource :source-id="id" :source="source">
+    <MaplibreLayer :layer-id="id" type="symbol" :source="id" :layout="layout" :before-id="beforeId" />
+  </MaplibreSource>
 </template>

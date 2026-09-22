@@ -1,4 +1,4 @@
-import type { RasterSourceSpecification } from 'mapbox-gl'
+import type { RasterSourceSpecification } from '@maplibre/maplibre-gl-style-spec'
 
 export interface WmsSourceOptions {
   /** WMS 服务基础地址（GetMap 端点） */
@@ -41,7 +41,7 @@ export interface WmsSourceOptions {
   params?: Record<string, string | undefined>
 }
 
-/** 构造 WMS GetMap 栅格数据源规格；mapbox 用 {bbox-epsg-3857} 占位符按瓦片请求。 */
+/** 构造 WMS GetMap 栅格数据源规格；maplibre 用 {bbox-epsg-3857} 占位符按瓦片请求。 */
 export function wmsRasterSource(options: WmsSourceOptions): RasterSourceSpecification {
   const version = options.version ?? '1.1.1'
   const crs = options.crs ?? 'EPSG:3857'

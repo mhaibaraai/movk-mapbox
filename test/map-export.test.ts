@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { defineComponent, h } from 'vue'
 import { mount } from '@vue/test-utils'
-import MapboxMap from '../src/runtime/components/Map.vue'
+import MaplibreMap from '../src/runtime/components/Map.vue'
 import { useMapExport } from '../src/runtime/composables/useMapExport'
 
 const { maps, makeFakeMap } = vi.hoisted(() => {
@@ -48,13 +48,13 @@ const { maps, makeFakeMap } = vi.hoisted(() => {
   return { maps, makeFakeMap }
 })
 
-vi.mock('mapbox-gl', () => {
+vi.mock('maplibre-gl', () => {
   function FakeGlMap(this: unknown) {
     return makeFakeMap()
   }
   function Noop() {}
   return {
-    default: { Map: FakeGlMap, accessToken: '', prewarm() {}, setRTLTextPlugin() {} },
+    Map: FakeGlMap,
     LngLat: { convert: (v: unknown) => v },
     Marker: Noop,
     Popup: Noop
@@ -69,7 +69,7 @@ async function mountExport() {
       return () => h('div')
     }
   })
-  mount(MapboxMap, { props: { options: {} }, slots: { default: () => h(Child) } })
+  mount(MaplibreMap, { props: { options: {} }, slots: { default: () => h(Child) } })
   const map = maps[maps.length - 1]!
   map.fire('load')
   await Promise.resolve()

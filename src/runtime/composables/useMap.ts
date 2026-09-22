@@ -1,12 +1,12 @@
 import { inject } from 'vue'
-import type { MapboxContext } from '../types'
-import { MapboxContextKey } from '../domains/map/context'
+import type { MaplibreContext } from '../types'
+import { MaplibreContextKey } from '../domains/map/context'
 
-/** 注入当前 MapboxMap 的上下文；必须在 MapboxMap 子树内调用。 */
-export function useMap(): MapboxContext {
-  const context = inject(MapboxContextKey, null)
+/** 注入当前 MaplibreMap 的上下文；必须在 MaplibreMap 子树内调用。 */
+export function useMap(): MaplibreContext {
+  const context = inject(MaplibreContextKey, null)
   if (!context) {
-    throw new Error('[movk-mapbox] useMap() must be called inside a <MapboxMap> component.')
+    throw new Error('[movk-maplibre] useMap() must be called inside a <MaplibreMap> component.')
   }
   return context
 }

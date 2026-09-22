@@ -10,12 +10,12 @@ const coordinates: [[number, number], [number, number], [number, number], [numbe
 
 <template>
   <div class="h-115 w-full overflow-hidden rounded-(--ui-radius) border border-default">
-    <MapboxMap :options="{ style: 'mapbox://styles/mapbox/light-v11', center: [-75.79, 42.1], zoom: 4 }">
-      <MapboxImageLayer
-        url="https://docs.mapbox.com/mapbox-gl-js/assets/radar.gif"
+    <MaplibreMap :options="{ style: 'https://tiles.openfreemap.org/styles/positron', center: [-75.79, 42.1], zoom: 4 }">
+      <MaplibreImageLayer
+        url="https://maplibre.org/maplibre-gl-js/docs/assets/radar.gif"
         :coordinates="coordinates"
         :opacity="0.85"
       />
-    </MapboxMap>
+    </MaplibreMap>
   </div>
 </template>

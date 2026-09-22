@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { computed, useId } from 'vue'
-import type { GeoJSONFeature, GeoJSONSource, GeoJSONSourceSpecification, MapEventOf } from 'mapbox-gl'
+import type { GeoJSONSource, MapGeoJSONFeature, MapLayerMouseEvent } from 'maplibre-gl'
+import type { GeoJSONSourceSpecification } from '@maplibre/maplibre-gl-style-spec'
 import type { Point } from 'geojson'
 import { clusterLayerSpecs } from '../../utils/cluster'
 import { useMap } from '../../composables/useMap'
-import MapboxSource from '../Source.vue'
-import MapboxLayer from '../Layer.vue'
+import { logger } from '../../utils/logger'
+import MaplibreSource from '../Source.vue'
+import MaplibreLayer from '../Layer.vue'
 
 type PropBag = Record<string, unknown>
 
@@ -47,7 +49,7 @@ const props = withDefaults(defineProps<{
 
 const emit = defineEmits<{
   clusterClick: [payload: { clusterId: number, coordinates: [number, number], expansionZoom: number }]
-  pointClick: [feature: GeoJSONFeature]
+  pointClick: [feature: MapGeoJSONFeature]
 }>()
 
 const ctx = useMap()
@@ -70,32 +72,31 @@ const specs = computed(() => clusterLayerSpecs({
   pointPaint: props.pointPaint
 }))
 
-type LayerClickEvent = MapEventOf<'click'> & { features?: GeoJSONFeature[] }
-
-function onClusterClick(event: MapEventOf<'click'>): void {
+function onClusterClick(event: MapLayerMouseEvent): void {
   const map = ctx.map.value
-  const feature = (event as LayerClickEvent).features?.[0]
+  const feature = event.features?.[0]
   const clusterId = feature?.properties?.cluster_id as number | undefined
   if (!map || !feature || clusterId === undefined) return
 
   const coordinates = (feature.geometry as Point).coordinates as [number, number]
   const geojsonSource = map.getSource(id) as GeoJSONSource
-  geojsonSource.getClusterExpansionZoom(clusterId, (error, expansionZoom) => {
-    if (error || expansionZoom == null) return
-    if (props.autoExpand) map.easeTo({ center: coordinates, zoom: expansionZoom })
-    emit('clusterClick', { clusterId, coordinates, expansionZoom })
-  })
+  geojsonSource.getClusterExpansionZoom(clusterId)
+    .then((expansionZoom) => {
+      if (props.autoExpand) map.easeTo({ center: coordinates, zoom: expansionZoom })
+      emit('clusterClick', { clusterId, coordinates, expansionZoom })
+    })
+    .catch(error => logger.warn('Failed to get cluster expansion zoom', error))
 }
 
-function onPointClick(event: MapEventOf<'click'>): void {
-  const feature = (event as LayerClickEvent).features?.[0]
+function onPointClick(event: MapLayerMouseEvent): void {
+  const feature = event.features?.[0]
   if (feature) emit('pointClick', feature)
 }
 </script>
 
 <template>
-  <MapboxSource :source-id="id" :source="source">
-    <MapboxLayer
+  <MaplibreSource :source-id="id" :source="source">
+    <MaplibreLayer
       :layer-id="specs.clusters.id"
       type="circle"
       :source="id"
@@ -104,7 +105,7 @@ function onPointClick(event: MapEventOf<'click'>): void {
       :before-id="beforeId"
       @click="onClusterClick"
     />
-    <MapboxLayer
+    <MaplibreLayer
       :layer-id="specs.count.id"
       type="symbol"
       :source="id"
@@ -113,7 +114,7 @@ function onPointClick(event: MapEventOf<'click'>): void {
       :paint="specs.count.paint"
       :before-id="beforeId"
     />
-    <MapboxLayer
+    <MaplibreLayer
       :layer-id="specs.points.id"
       type="circle"
       :source="id"
@@ -122,5 +123,5 @@ function onPointClick(event: MapEventOf<'click'>): void {
       :before-id="beforeId"
       @click="onPointClick"
     />
-  </MapboxSource>
+  </MaplibreSource>
 </template>

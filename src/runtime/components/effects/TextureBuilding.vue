@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { computed, useId } from 'vue'
-import { useMapboxImage } from '../../composables/useMapboxImage'
-import MapboxBuildingLayer from '../layers/BuildingLayer.vue'
+import { useMaplibreImage } from '../../composables/useMaplibreImage'
+import { buildingExtrusionPaint } from '../../utils/building'
+import type { BuildingSourceOptions } from '../../utils/building'
+import MaplibreBuildingLayer from '../layers/BuildingLayer.vue'
 
-/** 纹理建筑：用户贴图 url 作 fill-extrusion-pattern。依赖 Mapbox composite/building。 */
-const props = withDefaults(defineProps<{
+/** 纹理建筑：用户贴图 url 作 fill-extrusion-pattern。 */
+const props = withDefaults(defineProps<BuildingSourceOptions & {
   /** 贴图地址 */
   url: string
   /** 图层 id；省略时自动生成 */
@@ -28,25 +30,26 @@ const props = withDefaults(defineProps<{
 const id = props.layerId ?? `movk-texture-building-${useId()}`
 const imageName = `${id}-texture`
 
-// 复用 useMapboxImage:加载贴图并在 setStyle 后自动补回
-const { loaded } = useMapboxImage(imageName, props.url)
+// 复用 useMaplibreImage:加载贴图并在 setStyle 后自动补回
+const { loaded } = useMaplibreImage(imageName, props.url)
 
 const paint = computed(() => ({
   'fill-extrusion-pattern': imageName,
-  'fill-extrusion-height': [
-    'interpolate', ['linear'], ['zoom'],
-    props.minzoom, 0,
-    props.minzoom + 0.05, ['get', 'height']
-  ],
-  'fill-extrusion-base': [
-    'interpolate', ['linear'], ['zoom'],
-    props.minzoom, 0,
-    props.minzoom + 0.05, ['get', 'min_height']
-  ],
+  ...buildingExtrusionPaint({ minzoom: props.minzoom, heightProperty: props.heightProperty, baseProperty: props.baseProperty }),
   'fill-extrusion-opacity': props.opacity ?? 1
 }))
 </script>
 
 <template>
-  <MapboxBuildingLayer v-if="loaded" :layer-id="id" :minzoom="minzoom" :paint="paint" :before-id="beforeId" />
+  <MaplibreBuildingLayer
+    v-if="loaded"
+    :layer-id="id"
+    :source="source"
+    :source-layer="sourceLayer"
+    :height-property="heightProperty"
+    :base-property="baseProperty"
+    :minzoom="minzoom"
+    :paint="paint"
+    :before-id="beforeId"
+  />
 </template>

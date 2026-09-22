@@ -5,12 +5,12 @@ const zoom = ref(9)
 
 <template>
   <div class="h-115 w-full overflow-hidden rounded-(--ui-radius) border border-default">
-    <MapboxMap
+    <MaplibreMap
       v-model:center="center"
       v-model:zoom="zoom"
-      :options="{ style: 'mapbox://styles/mapbox/streets-v12' }"
+      :options="{ style: 'https://tiles.openfreemap.org/styles/liberty' }"
     >
-      <MapboxNavigationControl position="top-right" />
-    </MapboxMap>
+      <MaplibreNavigationControl position="top-right" />
+    </MaplibreMap>
   </div>
 </template>

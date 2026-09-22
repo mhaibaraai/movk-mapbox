@@ -1,6 +1,6 @@
 # AGENTS.md
 
-声明式 Mapbox GL v3 封装库。同一套 `src/runtime/` 既作为 Nuxt 4 模块发布，也通过 unplugin/Vite 插件在纯 Vue + Vite 项目中使用。
+声明式 MapLibre GL 封装库。同一套 `src/runtime/` 既作为 Nuxt 4 模块发布，也通过 unplugin/Vite 插件在纯 Vue + Vite 项目中使用。
 
 ## 常用命令
 
@@ -29,27 +29,27 @@ pnpm vitest test/layer.test.ts              # 单文件 watch 模式
 
 库的全部运行时实现都在 [src/runtime/](src/runtime/)，两条分发链共用它：
 
-- Nuxt：[src/module.ts](src/module.ts) 用 `addComponentsDir` / `addImportsDir` 注册组件与 composables，把 token 写入 `runtimeConfig.public.mapbox`，并挂 `#mapbox` 别名指向 runtime。
-- Vue + Vite：[src/unplugin.ts](src/unplugin.ts) 暴露 `MapboxUnplugin`，[src/vite.ts](src/vite.ts) / [src/vue-plugin.ts](src/vue-plugin.ts) 是对外入口。`mapboxComponentResolver` 与 `mapboxAutoImports` 也可注入到宿主已有的 unplugin 实例（如 @nuxt/ui 的单例）复用。
+- Nuxt：[src/module.ts](src/module.ts) 用 `addComponentsDir` / `addImportsDir` 注册组件与 composables，把天地图 token、`glyphs`、`textFont` 等配置写入 `runtimeConfig.public.maplibre`，并挂 `#maplibre` 别名指向 runtime。
+- Vue + Vite：[src/unplugin.ts](src/unplugin.ts) 暴露 `MaplibreUnplugin`，[src/vite.ts](src/vite.ts) / [src/vue-plugin.ts](src/vue-plugin.ts) 是对外入口。`maplibreComponentResolver` 与 `maplibreAutoImports` 也可注入到宿主已有的 unplugin 实例（如 @nuxt/ui 的单例）复用。
 
 构建产物分两套：主模块走 `nuxt-module-build`（`pnpm build`）；`vite` / `unplugin` / `vue-plugin` 三个入口由 [build.config.ts](build.config.ts)（unbuild）单独产出。新增对外入口需同时改 `package.json` 的 `exports` 和 `build.config.ts`。
 
 ### 自动导入约定（关键）
 
-- 组件解析按「裸文件名」匹配：`mapboxComponentResolver` 递归扫描 `components/` 下所有 `.vue`，以去掉目录与扩展名的文件名作为键。因此 **组件文件名必须全局唯一**，即使分布在不同子目录。加前缀（默认 `Mapbox`）后即为模板里的组件名。
+- 组件解析按「裸文件名」匹配：`maplibreComponentResolver` 递归扫描 `components/` 下所有 `.vue`，以去掉目录与扩展名的文件名作为键。因此 **组件文件名必须全局唯一**，即使分布在不同子目录。加前缀（默认 `Maplibre`）后即为模板里的组件名。
 - composables 目录下每个 `.ts` 自动成为导入项；其文件名即导出的函数名。
 - 非 composable 的导出（标绘模式集合 `movkDrawModes`、主题工厂 `drawThemeStyles`）不在自动扫描范围，必须在 [src/module.ts](src/module.ts) 的 `addImports` 与 [src/unplugin.ts](src/unplugin.ts) 的 `UTIL_MANIFEST` **两处同步登记**。
 
 ### 运行时配置单例
 
-[src/runtime/domains/map/config.ts](src/runtime/domains/map/config.ts) 用 `globalThis[Symbol.for('movk-mapbox:config')]` 持有 token 等配置。这样即便 Nuxt 与 Vue 双构建各自打包一份本模块，也共享同一份状态——`vue-plugin` 注入的配置才能被自动导入的运行时组件读到。改配置读写时不要破坏这个单例语义。
+[src/runtime/domains/map/config.ts](src/runtime/domains/map/config.ts) 用 `globalThis[Symbol.for('movk-maplibre:config')]` 持有天地图 token、字体等配置。这样即便 Nuxt 与 Vue 双构建各自打包一份本模块，也共享同一份状态——`vue-plugin` 注入的配置才能被自动导入的运行时组件读到。改配置读写时不要破坏这个单例语义。
 
 ## 上下文注入与组件生命周期
 
 地图实例不靠 id 查表传递，而是 provide/inject 下发上下文：
 
-- [domains/map/context.ts](src/runtime/domains/map/context.ts) 的 `createMapboxContext` 返回「骨架 + attach」：`MapboxMap` 组件在 **setup 阶段同步 provide 上下文**（map 初始为 `undefined`），实例在 `onMounted` 才创建并 `attach`。子组件用 `useMap()` 注入，无需等地图就绪即可挂载。
-- [domains/map/registry.ts](src/runtime/domains/map/registry.ts) 是纯 `id → context` 注册表，仅供跨树/跨路由访问（`useMapbox(id)`）和 `persistent` 复用，不是主反应式机制。
+- [domains/map/context.ts](src/runtime/domains/map/context.ts) 的 `createMaplibreContext` 返回「骨架 + attach」：`MaplibreMap` 组件在 **setup 阶段同步 provide 上下文**（map 初始为 `undefined`），实例在 `onMounted` 才创建并 `attach`。子组件用 `useMap()` 注入，无需等地图就绪即可挂载。
+- [domains/map/registry.ts](src/runtime/domains/map/registry.ts) 是纯 `id → context` 注册表，仅供跨树/跨路由访问（`useMaplibre(id)`）和 `persistent` 复用，不是主反应式机制。
 
 `onReady(callback)` 是子组件建 source/layer 的统一入口，语义不只是「加载完成一次」：
 
@@ -60,9 +60,11 @@ pnpm vitest test/layer.test.ts              # 单文件 watch 模式
 
 ## 注意事项
 
-- 传给 mapbox API 的选项对象先用 `omitUndefined`（来自 `@movk/core`）剔除 `undefined`：mapbox 以 `key in options` 判定字段，残留 `undefined` 会污染相机矩阵（`+undefined → NaN`）。
+- 传给 maplibre API 的选项对象先用 `omitUndefined`（来自 `@movk/core`）剔除 `undefined`：maplibre 以 `key in options` 判定字段，残留 `undefined` 会污染相机矩阵（`+undefined → NaN`）。
 - 地图实例只在客户端 `onMounted` 创建，组件已做 SSR 安全处理，使用方无需 `<ClientOnly>` 包裹。
-- 本仓配置了 Mapbox 官方文档 MCP（[.mcp.json](.mcp.json) 的 `mapbox-docs-mcp`）；涉及 Mapbox GL API/style spec 时优先查它而非凭记忆。
+- 涉及 MapLibre GL API / style spec 时查 [MapLibre GL JS 文档](https://maplibre.org/maplibre-gl-js/docs/) 与 [Style Spec](https://maplibre.org/maplibre-style-spec/)，或直接读 `node_modules/maplibre-gl/dist/maplibre-gl.d.ts`，不要凭 Mapbox 的记忆推断：两者 API 已有分叉（如 `getClusterExpansionZoom`、`loadImage` 返回 Promise，自定义图层 `render` 第二参数为对象）。style spec 类型从 `@maplibre/maplibre-gl-style-spec` 导入。
+- MapLibre 无内置底图：`MaplibreMap` 缺省 `style` 时使用空白样式，文字标注依赖运行时配置 `glyphs` / `textFont`；docs 与 playground 统一用无需 key 的 OpenFreeMap（矢量样式、字体）与天地图。
+- 绘制基于 terra-draw（可选依赖），模式名沿用 terra-draw 命名（`select` / `polygon` 等）；测试用 `test/fixtures/fake-terra-draw.ts` 替身。
 - 坐标本土化：`utils/coordinate.ts`（gcoord，WGS84/GCJ02/BD09 转换）、`utils/tianditu.ts`（天地图底图）；缓冲/量算几何用 `@turf/*`。
 
 ## 撰写文档
@@ -98,9 +100,9 @@ pnpm vitest test/layer.test.ts              # 单文件 watch 模式
 ### 示例约定
 
 - 示例放 `docs/app/components/content/examples/` 下（拍平、不建子文件夹），文件名全局唯一且语义化（如 `LayerFilterExample.vue`）。
-- 自包含内联：直接写 `<MapboxMap class="h-115" :options="...">`，**禁用 DemoMap**；底图按 play 规范选 `mapStyle` 或叠 `MapboxTiandituLayer`；容器高度用 `h-xxx`，不用内联 `style`。
+- 自包含内联：直接写 `<MaplibreMap class="h-115" :options="...">`，**禁用 DemoMap**；底图按 play 规范选 `mapStyle` 或叠 `MaplibreTiandituLayer`；容器高度用 `h-xxx`，不用内联 `style`。
 - `::component-example` / `::component-code` 一律加 `prettier: true`；源码偏长加 `collapse: true`；交互参数用 `options`（`label` 用英文如 `color`，颜色项 name 以 `color` 结尾自动渲染色块）。
-- `::component-code` 仅能渲染可独立挂载的组件；需要 `<MapboxMap>` 父级或定高容器的地图组件一律用自包含 `::component-example`。
+- `::component-code` 仅能渲染可独立挂载的组件；需要 `<MaplibreMap>` 父级或定高容器的地图组件一律用自包含 `::component-example`。
 
 ### API 章节（自动抽取）
 
@@ -111,15 +113,15 @@ pnpm vitest test/layer.test.ts              # 单文件 watch 模式
 
 ### Props
 
-:component-props{slug="MapboxLayer"}
+:component-props{slug="MaplibreLayer"}
 
 ### Emits
 
-:component-emits{slug="MapboxLayer"}
+:component-emits{slug="MaplibreLayer"}
 
 ### Slots
 
-:component-slots{slug="MapboxLayer"}
+:component-slots{slug="MaplibreLayer"}
 
 ## Changelog
 
@@ -127,7 +129,7 @@ pnpm vitest test/layer.test.ts              # 单文件 watch 模式
 ```
 
 - 改 API 表内容 = 改运行时组件源码 JSDoc（按 jsdoc 规范），不在 md 手写表格；composable / util 不在 component-meta 覆盖范围，需另行处理。
-- `:commit-changelog` 路径 = `commitPath('src/runtime')` + `prefix/` + 组件名 + `.vue`；承载型页面（如 circle 用 MapboxLayer）加 `name=` 指向真实组件文件（`name="Layer"`）。
+- `:commit-changelog` 路径 = `commitPath('src/runtime')` + `prefix/` + 组件名 + `.vue`；承载型页面（如 circle 用 MaplibreLayer）加 `name=` 指向真实组件文件（`name="Layer"`）。
 - 组件经 `defineExpose` 暴露实例时，补一个手写 `### Expose` 表（component-meta 不抽取 exposed）；用法细节先查 nuxt-docs MCP / 读 `@movk/nuxt-docs`。
 
 ### 侧栏分类

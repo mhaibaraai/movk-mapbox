@@ -37,7 +37,7 @@
     },
     "environment": {
       "ambience": "场景氛围",
-      "weather": "天气与温度"
+      "weather": "温度"
     },
     "extensions": {
       "draw": "绘制",

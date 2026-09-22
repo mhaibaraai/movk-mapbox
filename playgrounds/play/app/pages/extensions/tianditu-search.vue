@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { GeocodePoint, Poi, SearchResult } from '#mapbox/types'
+import type { GeocodePoint, Poi, SearchResult } from '#maplibre/types'
 
 const geocodeKeyword = ref('上海南浦大桥')
 const poiKeyword = ref('银行')
@@ -11,7 +11,7 @@ const forwardGeocodePoint = ref<GeocodePoint | null>()
 const poiResults = ref<Poi[]>([])
 const center = ref<[number, number]>()
 
-const { flyTo } = useMapboxCamera({ mapId: 'tianditu-search-demo' })
+const { flyTo } = useMaplibreCamera({ mapId: 'tianditu-search-demo' })
 
 // 从判别联合里取出可落点的 POI 列表与建议行政区
 const geocodePois = computed<Poi[]>(() => (geocodeResult.value?.kind === 'poi' ? geocodeResult.value.pois : []))
@@ -96,25 +96,25 @@ const state = computed(() => ({
     </template>
 
     <DemoMap map-id="tianditu-search-demo" :center="[121.4906, 31.2412]" :zoom="12">
-      <MapboxMarker
+      <MaplibreMarker
         v-for="(poi, index) in geocodePois"
         :key="`geocode-${index}`"
         :lnglat="poi.location"
       >
         <div class="rounded-full bg-info size-3 ring-2 ring-white" :title="poi.name" />
-      </MapboxMarker>
+      </MaplibreMarker>
 
-      <MapboxMarker v-if="forwardGeocodePoint" :lnglat="forwardGeocodePoint.location">
+      <MaplibreMarker v-if="forwardGeocodePoint" :lnglat="forwardGeocodePoint.location">
         <div class="rounded-full bg-warning size-3.5 ring-2 ring-white" title="geocode() 结果" />
-      </MapboxMarker>
+      </MaplibreMarker>
 
-      <MapboxMarker
+      <MaplibreMarker
         v-for="poi in poiResults"
         :key="poi.name + poi.location[0]"
         :lnglat="poi.location"
       >
         <div class="rounded-sm rotate-45 bg-primary size-2.5 ring-2 ring-white" :title="[poi.name, poi.address].filter(Boolean).join(' · ')" />
-      </MapboxMarker>
+      </MaplibreMarker>
     </DemoMap>
   </MapShowcase>
 </template>

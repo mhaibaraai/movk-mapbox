@@ -1,10 +1,10 @@
 import { describe, expect, it, vi } from 'vitest'
 import { defineComponent, h } from 'vue'
 import { mount } from '@vue/test-utils'
-import type { Map as MapboxMap } from 'mapbox-gl'
-import { createMapboxContext } from '../src/runtime/domains/map/context'
+import type { Map as MaplibreMap } from 'maplibre-gl'
+import { createMaplibreContext } from '../src/runtime/domains/map/context'
 import { useMap } from '../src/runtime/composables/useMap'
-import type { MapboxContext } from '../src/runtime/types'
+import type { MaplibreContext } from '../src/runtime/types'
 
 // 仅捕获事件处理器的最小 Map 桩
 function fakeMap() {
@@ -40,7 +40,7 @@ function loadingMap() {
   }
 }
 
-vi.mock('mapbox-gl', () => {
+vi.mock('maplibre-gl', () => {
   class FakeGlMap {
     on() {
       return this
@@ -54,18 +54,18 @@ vi.mock('mapbox-gl', () => {
     resize() {}
   }
   return {
-    default: { Map: FakeGlMap, accessToken: '', prewarm() {}, setRTLTextPlugin() {} }
+    Map: FakeGlMap
   }
 })
 
-describe('createMapboxContext', () => {
+describe('createMaplibreContext', () => {
   it('onReady 在 attach 前入队、attach 后由 style.load 触发', () => {
-    const { context, attach } = createMapboxContext('m')
-    const calls: MapboxMap[] = []
+    const { context, attach } = createMaplibreContext('m')
+    const calls: MaplibreMap[] = []
     context.onReady(map => calls.push(map))
 
     const map = fakeMap()
-    attach(map as unknown as MapboxMap)
+    attach(map as unknown as MaplibreMap)
     expect(calls).toHaveLength(0)
 
     map.handlers['style.load']!()
@@ -73,27 +73,27 @@ describe('createMapboxContext', () => {
   })
 
   it('样式已就绪时 onReady 同步执行', () => {
-    const { context, attach } = createMapboxContext('m')
+    const { context, attach } = createMaplibreContext('m')
     const map = loadingMap()
     map.setStyleLoaded(true)
-    attach(map as unknown as MapboxMap)
+    attach(map as unknown as MaplibreMap)
 
-    const calls: MapboxMap[] = []
+    const calls: MaplibreMap[] = []
     context.onReady(m => calls.push(m))
     expect(calls).toHaveLength(1)
   })
 
   it('动态挂载窗口期：依赖源加载完成的 sourcedata 触发补跑', () => {
-    const { context, attach } = createMapboxContext('m')
+    const { context, attach } = createMaplibreContext('m')
     const map = loadingMap()
-    attach(map as unknown as MapboxMap)
+    attach(map as unknown as MaplibreMap)
     // 样式已加载，进入「已就绪后动态挂载」语境
     map.setStyleLoaded(true)
     map.emit('style.load')
 
     // 同批新建 geojson 源仍在加载，isStyleLoaded 翻为 false
     map.setStyleLoaded(false)
-    const calls: MapboxMap[] = []
+    const calls: MaplibreMap[] = []
     context.onReady(m => calls.push(m))
     expect(calls).toHaveLength(0)
 
@@ -113,12 +113,12 @@ describe('createMapboxContext', () => {
   })
 
   it('动态挂载窗口期：idle 作为静态地图兜底信号补跑', () => {
-    const { context, attach } = createMapboxContext('m')
+    const { context, attach } = createMaplibreContext('m')
     const map = loadingMap()
-    attach(map as unknown as MapboxMap)
+    attach(map as unknown as MaplibreMap)
     map.setStyleLoaded(false)
 
-    const calls: MapboxMap[] = []
+    const calls: MaplibreMap[] = []
     context.onReady(m => calls.push(m))
     expect(calls).toHaveLength(0)
 
@@ -128,9 +128,9 @@ describe('createMapboxContext', () => {
   })
 
   it('whenLoaded 在 load 后 resolve，并置 isLoaded', async () => {
-    const { context, attach } = createMapboxContext('m')
+    const { context, attach } = createMaplibreContext('m')
     const map = fakeMap()
-    attach(map as unknown as MapboxMap)
+    attach(map as unknown as MaplibreMap)
 
     const promise = context.whenLoaded()
     map.handlers['load']!()
@@ -140,9 +140,9 @@ describe('createMapboxContext', () => {
   })
 })
 
-describe('MapboxMap provide 时机', () => {
+describe('MaplibreMap provide 时机', () => {
   it('setup 同步 provide，子组件 useMap() 不抛错且拿到上下文', async () => {
-    let captured: MapboxContext | undefined
+    let captured: MaplibreContext | undefined
     const Child = defineComponent({
       setup() {
         captured = useMap()
@@ -150,8 +150,8 @@ describe('MapboxMap provide 时机', () => {
       }
     })
 
-    const MapboxMap = (await import('../src/runtime/components/Map.vue')).default
-    const wrapper = mount(MapboxMap, {
+    const MaplibreMap = (await import('../src/runtime/components/Map.vue')).default
+    const wrapper = mount(MaplibreMap, {
       props: { options: {} },
       slots: { default: () => h(Child) }
     })

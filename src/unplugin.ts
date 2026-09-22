@@ -6,15 +6,15 @@ import type { UnpluginOptions } from 'unplugin'
 import Components from 'unplugin-vue-components'
 import AutoImport from 'unplugin-auto-import'
 
-export interface MapboxResolverOptions {
+export interface MaplibreResolverOptions {
   /**
    * 组件前缀
-   * @defaultValue 'Mapbox'
+   * @defaultValue 'Maplibre'
    */
   prefix?: string
 }
 
-export interface MapboxUnpluginOptions extends MapboxResolverOptions {
+export interface MaplibreUnpluginOptions extends MaplibreResolverOptions {
   /** 是否生成 components.d.ts / auto-imports.d.ts，默认 true */
   dts?: boolean
 }
@@ -39,9 +39,9 @@ function componentMap(): Map<string, string> {
   return map
 }
 
-/** Mapbox* 组件解析器，注入既有 unplugin-vue-components 实例（如 @nuxt/ui 的单实例）复用 */
-export function mapboxComponentResolver(options: MapboxResolverOptions = {}) {
-  const prefix = options.prefix ?? 'Mapbox'
+/** Maplibre* 组件解析器，注入既有 unplugin-vue-components 实例（如 @nuxt/ui 的单实例）复用 */
+export function maplibreComponentResolver(options: MaplibreResolverOptions = {}) {
+  const prefix = options.prefix ?? 'Maplibre'
   const map = componentMap()
   return {
     type: 'component' as const,
@@ -54,7 +54,7 @@ export function mapboxComponentResolver(options: MapboxResolverOptions = {}) {
 }
 
 /** 本库 composables + 工具的自动导入项，注入既有 unplugin-auto-import 实例复用 */
-export function mapboxAutoImports() {
+export function maplibreAutoImports() {
   const cdir = join(runtimeDir, 'composables')
   const composables = (readdirSync(cdir) as string[])
     .filter(f => f.endsWith('.ts'))
@@ -65,19 +65,19 @@ export function mapboxAutoImports() {
   return [...composables, ...utils]
 }
 
-export const MapboxUnplugin = createUnplugin<MapboxUnpluginOptions | undefined>((options = {}, meta) => {
+export const MaplibreUnplugin = createUnplugin<MaplibreUnpluginOptions | undefined>((options = {}, meta) => {
   const dts = options.dts ?? true
 
   // unplugin-vue-components 与 unplugin-auto-import 内部依赖不同大版本的 unplugin，
   // meta 类型互不兼容；用各自 raw 的形参类型做局部适配（运行时结构一致）
   const components = Components.raw({
     dts,
-    resolvers: [mapboxComponentResolver(options)]
+    resolvers: [maplibreComponentResolver(options)]
   }, meta as Parameters<typeof Components.raw>[1])
 
   const autoImport = AutoImport.raw({
     dts,
-    imports: mapboxAutoImports()
+    imports: maplibreAutoImports()
   }, meta as Parameters<typeof AutoImport.raw>[1])
 
   return [components, autoImport].flat() as UnpluginOptions[]

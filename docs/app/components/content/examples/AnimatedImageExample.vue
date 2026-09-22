@@ -11,13 +11,13 @@ const data: FeatureCollection = {
 
 <template>
   <div class="h-115 w-full overflow-hidden rounded-(--ui-radius) border border-default">
-    <MapboxMap :options="{ style: 'mapbox://styles/mapbox/light-v11', center: [116.397, 39.908], zoom: 12 }">
+    <MaplibreMap :options="{ style: 'https://tiles.openfreemap.org/styles/positron', center: [116.397, 39.908], zoom: 12 }">
       <!-- 自托管多帧动图（docs/public，同源无 CORS） -->
-      <MapboxAnimatedImage
+      <MaplibreAnimatedImage
         :data="data"
         image="/animated-marker.gif"
         :size="64"
       />
-    </MapboxMap>
+    </MaplibreMap>
   </div>
 </template>

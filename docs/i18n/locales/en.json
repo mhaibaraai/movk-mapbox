@@ -37,7 +37,7 @@
     },
     "environment": {
       "ambience": "Ambience",
-      "weather": "Weather"
+      "weather": "Temperature"
     },
     "extensions": {
       "draw": "Drawing",

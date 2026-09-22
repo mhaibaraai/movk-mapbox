@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { formatArea, formatDistance } from '@movk/mapbox/utils/measure'
+import { formatArea, formatDistance } from '@movk/maplibre/utils/measure'
 
 const distances = [12, 850, 1234, 42000]
 const areas = [50, 5000, 1_200_000, 9_000_000]

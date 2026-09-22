@@ -62,9 +62,7 @@ const environmentNav: NavigationMenuItem = {
   defaultOpen: true,
   children: [
     { label: 'Terrain 3D 地形', to: '/environment/terrain' },
-    { label: 'Fog 大气', to: '/environment/fog' },
-    { label: 'Rain/Snow 天气', to: '/environment/weather' },
-    { label: 'Lights 光照', to: '/environment/lights' },
+    { label: 'Sky 天空', to: '/environment/sky' },
     { label: 'Temperature 温度热力', to: '/environment/temperature' }
   ]
 }

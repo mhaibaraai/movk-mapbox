@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { computed, useId } from 'vue'
 import { sector } from '@turf/sector'
-import type { GeoJSONSourceSpecification } from 'mapbox-gl'
+import type { GeoJSONSourceSpecification } from '@maplibre/maplibre-gl-style-spec'
 import { bufferPaints } from '../../utils/buffer'
-import MapboxSource from '../Source.vue'
-import MapboxLayer from '../Layer.vue'
+import MaplibreSource from '../Source.vue'
+import MaplibreLayer from '../Layer.vue'
 
 /** 扇形缓冲区：bearing1 → bearing2（度，正北顺时针），半径单位米。 */
 const props = withDefaults(defineProps<{
@@ -49,8 +49,8 @@ const paints = computed(() => bufferPaints({ color: props.color }))
 </script>
 
 <template>
-  <MapboxSource :source-id="id" :source="source">
-    <MapboxLayer :layer-id="`${id}-fill`" type="fill" :source="id" :paint="fillPaint ?? paints.fill" :before-id="beforeId" />
-    <MapboxLayer :layer-id="`${id}-line`" type="line" :source="id" :paint="linePaint ?? paints.line" :before-id="beforeId" />
-  </MapboxSource>
+  <MaplibreSource :source-id="id" :source="source">
+    <MaplibreLayer :layer-id="`${id}-fill`" type="fill" :source="id" :paint="fillPaint ?? paints.fill" :before-id="beforeId" />
+    <MaplibreLayer :layer-id="`${id}-line`" type="line" :source="id" :paint="linePaint ?? paints.line" :before-id="beforeId" />
+  </MaplibreSource>
 </template>

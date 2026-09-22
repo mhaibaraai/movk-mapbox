@@ -1,13 +1,8 @@
 <script setup lang="ts">
 import { inject, onUnmounted, watch } from 'vue'
 import { omitUndefined } from '@movk/core'
-import type {
-  FilterSpecification,
-  LayerSpecification,
-  Map as MapboxMap,
-  MapEventOf,
-  SourceSpecification
-} from 'mapbox-gl'
+import type { Map as MaplibreMap, MapEventType, MapLayerEventType } from 'maplibre-gl'
+import type { FilterSpecification, LayerSpecification, SourceSpecification } from '@maplibre/maplibre-gl-style-spec'
 import { useMap } from '../composables/useMap'
 import { LayerGroupKey } from '../domains/map/layer-group'
 import { applyLayerProps, type LayerUpdate } from '../utils/layer'
@@ -15,12 +10,12 @@ import { bindMapEvents } from '../utils/events'
 
 type PropBag = Record<string, unknown>
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   /** 图层 id，全局唯一 */
   layerId: string
   /**
    * 图层类型，决定渲染方式与可用的 paint / layout 属性
-   * @see https://docs.mapbox.com/style-spec/reference/layers
+   * @see https://maplibre.org/maplibre-style-spec/layers/
    */
   type: LayerSpecification['type']
   /** source id 字符串引用，或内联 source 对象（自动创建匿名源并随图层卸载） */
@@ -29,17 +24,17 @@ const props = defineProps<{
   sourceLayer?: string
   /**
    * 绘制样式属性，响应式变更经 setPaintProperty 增量下发
-   * @see https://docs.mapbox.com/style-spec/reference/layers
+   * @see https://maplibre.org/maplibre-style-spec/layers/
    */
   paint?: PropBag
   /**
    * 布局属性，响应式变更经 setLayoutProperty 增量下发
-   * @see https://docs.mapbox.com/style-spec/reference/layers
+   * @see https://maplibre.org/maplibre-style-spec/layers/
    */
   layout?: PropBag
   /**
    * 过滤表达式，仅渲染匹配的要素
-   * @see https://docs.mapbox.com/style-spec/reference/expressions
+   * @see https://maplibre.org/maplibre-style-spec/expressions/
    */
   filter?: FilterSpecification
   /**
@@ -54,17 +49,20 @@ const props = defineProps<{
   maxzoom?: number
   /** 插入到该 id 图层之前；省略则追加到图层栈顶部 */
   beforeId?: string
-}>()
+}>(), {
+  // FilterSpecification 含 boolean，缺省值须显式为 undefined，否则 Vue 将缺省的 Boolean 类型 prop 转为 false 并过滤掉全部要素
+  filter: undefined
+})
 
 const emit = defineEmits<{
-  click: [event: MapEventOf<'click'>]
-  dblclick: [event: MapEventOf<'dblclick'>]
-  mousedown: [event: MapEventOf<'mousedown'>]
-  mouseup: [event: MapEventOf<'mouseup'>]
-  mousemove: [event: MapEventOf<'mousemove'>]
-  mouseenter: [event: MapEventOf<'mouseenter'>]
-  mouseleave: [event: MapEventOf<'mouseleave'>]
-  contextmenu: [event: MapEventOf<'contextmenu'>]
+  click: [event: MapLayerEventType['click']]
+  dblclick: [event: MapLayerEventType['dblclick']]
+  mousedown: [event: MapLayerEventType['mousedown']]
+  mouseup: [event: MapLayerEventType['mouseup']]
+  mousemove: [event: MapLayerEventType['mousemove']]
+  mouseenter: [event: MapLayerEventType['mouseenter']]
+  mouseleave: [event: MapLayerEventType['mouseleave']]
+  contextmenu: [event: MapLayerEventType['contextmenu']]
 }>()
 
 const LAYER_EVENTS = ['click', 'dblclick', 'mousedown', 'mouseup', 'mousemove', 'mouseenter', 'mouseleave', 'contextmenu'] as const
@@ -95,7 +93,7 @@ function buildSpec(): LayerSpecification {
   return spec as unknown as LayerSpecification
 }
 
-function addLayer(map: MapboxMap): void {
+function addLayer(map: MaplibreMap): void {
   if (map.getLayer(props.layerId)) return
   if (hasInlineSource && !map.getSource(inlineSourceId)) {
     map.addSource(inlineSourceId, props.source as SourceSpecification)
@@ -109,14 +107,14 @@ function addLayer(map: MapboxMap): void {
 }
 
 let stopEvents: (() => void) | undefined
-let onSourceData: ((event: MapEventOf<'sourcedata'>) => void) | undefined
+let onSourceData: ((event: MapEventType['sourcedata']) => void) | undefined
 
 const stopReady = ctx.onReady((map) => {
   const sourceId = resolveSourceId()
   if (sourceId && !hasInlineSource && !map.getSource(sourceId)) {
     // 引用的 source 尚未就绪，待其加载后再补建图层；先移除上一轮 style.load 残留的监听避免堆叠
     if (onSourceData) map.off('sourcedata', onSourceData)
-    onSourceData = (event: MapEventOf<'sourcedata'>) => {
+    onSourceData = (event: MapEventType['sourcedata']) => {
       if (event.sourceId === sourceId && map.getSource(sourceId)) {
         map.off('sourcedata', onSourceData!)
         onSourceData = undefined
@@ -131,7 +129,7 @@ const stopReady = ctx.onReady((map) => {
   bindLayerEvents(map)
 })
 
-function bindLayerEvents(map: MapboxMap): void {
+function bindLayerEvents(map: MaplibreMap): void {
   stopEvents?.()
   stopEvents = bindMapEvents(map, LAYER_EVENTS, (type, event) => emit(type as never, event as never), props.layerId)
 }

@@ -2,7 +2,7 @@ import { useContextResolver } from '../domains/map/resolve'
 import { logger } from '../utils/logger'
 
 export interface UseMapExportOptions {
-  /** 目标地图 id；在 MapboxMap 子树外使用时必填 */
+  /** 目标地图 id；在 MaplibreMap 子树外使用时必填 */
   mapId?: string
 }
 
@@ -44,7 +44,7 @@ export function useMapExport(options: UseMapExportOptions = {}): UseMapExportRet
   async function exportImage(opts: ExportImageOptions = {}): Promise<string> {
     const ctx = resolve()
     if (!ctx) {
-      throw new Error('[movk-mapbox] useMapExport: no map context found; pass options.mapId or call inside <MapboxMap>.')
+      throw new Error('[movk-maplibre] useMapExport: no map context found; pass options.mapId or call inside <MaplibreMap>.')
     }
     const map = await ctx.whenLoaded()
     return new Promise<string>((resolve, reject) => {

@@ -42,12 +42,12 @@ function flyTo(name: keyof typeof cities) {
       </UButton>
     </template>
 
-    <MapboxMap
+    <MaplibreMap
       v-model:center="center"
       v-model:zoom="zoom"
       v-model:bearing="bearing"
       v-model:pitch="pitch"
-      :options="{ style: 'mapbox://styles/mapbox/streets-v12' }"
+      :options="{ style: 'https://tiles.openfreemap.org/styles/liberty' }"
     />
   </MapShowcase>
 </template>

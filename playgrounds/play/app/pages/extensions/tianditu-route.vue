@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { FeatureCollection } from 'geojson'
-import type { RouteMode, RouteResult } from '#mapbox/types'
+import type { RouteMode, RouteResult } from '#maplibre/types'
 
 const orig = ref<[number, number]>([121.4737, 31.2304])
 const dest = ref<[number, number]>([121.5, 31.25])
@@ -9,7 +9,7 @@ const result = ref<RouteResult>()
 const loading = ref(false)
 const error = ref<string>()
 
-const { fitBounds } = useMapboxCamera({ mapId: 'route-demo' })
+const { fitBounds } = useMaplibreCamera({ mapId: 'route-demo' })
 
 const routeSource = computed<FeatureCollection | undefined>(() => {
   if (!result.value) return undefined
@@ -75,13 +75,13 @@ const state = computed(() => ({
     </template>
 
     <DemoMap map-id="route-demo" :center="[121.487, 31.24]" :zoom="13">
-      <MapboxMarker v-model:lnglat="orig" :options="{ draggable: true }" @update:lnglat="query">
+      <MaplibreMarker v-model:lnglat="orig" :options="{ draggable: true }" @update:lnglat="query">
         <div class="rounded-full bg-success size-3.5 ring-2 ring-white shadow" title="起点" />
-      </MapboxMarker>
-      <MapboxMarker v-model:lnglat="dest" :options="{ draggable: true }" @update:lnglat="query">
+      </MaplibreMarker>
+      <MaplibreMarker v-model:lnglat="dest" :options="{ draggable: true }" @update:lnglat="query">
         <div class="rounded-full bg-error size-3.5 ring-2 ring-white shadow" title="终点" />
-      </MapboxMarker>
-      <MapboxLayer
+      </MaplibreMarker>
+      <MaplibreLayer
         v-if="routeSource"
         layer-id="route-line"
         type="line"

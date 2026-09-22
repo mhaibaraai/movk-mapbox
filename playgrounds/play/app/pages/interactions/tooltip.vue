@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { GeoJSONSourceSpecification } from 'mapbox-gl'
-import type { PopupTrigger } from '#mapbox/types'
+import type { GeoJSONSourceSpecification } from '@maplibre/maplibre-gl-style-spec'
+import type { PopupTrigger } from '#maplibre/types'
 
 const source: GeoJSONSourceSpecification = {
   type: 'geojson',
@@ -21,20 +21,20 @@ const trigger = ref<PopupTrigger>('hover')
 <template>
   <MapShowcase
     title="Tooltip 图层要素弹窗"
-    description="MapboxTooltip 按 trigger 以悬浮或点击触发；none 不绑定监听可临时停用。作用域插槽拿到当前要素与 close。"
+    description="MaplibreTooltip 按 trigger 以悬浮或点击触发；none 不绑定监听可临时停用。作用域插槽拿到当前要素与 close。"
     :state="{ trigger }"
     state-label="Trigger"
   >
     <DemoMap :center="[116.35, 39.96]" :zoom="10.5">
-      <MapboxSource source-id="poi" :source="source">
-        <MapboxLayer
+      <MaplibreSource source-id="poi" :source="source">
+        <MaplibreLayer
           layer-id="poi-circle"
           type="circle"
           source="poi"
           :paint="{ 'circle-color': '#e11d48', 'circle-radius': 8, 'circle-stroke-width': 2, 'circle-stroke-color': '#fff' }"
         />
-      </MapboxSource>
-      <MapboxTooltip layer-id="poi-circle" :trigger="trigger" :options="{ offset: 12 }">
+      </MaplibreSource>
+      <MaplibreTooltip layer-id="poi-circle" :trigger="trigger" :options="{ offset: 12 }">
         <template #default="{ feature, close }">
           <div class="px-1 py-0.5 text-sm">
             <p class="font-semibold">
@@ -55,7 +55,7 @@ const trigger = ref<PopupTrigger>('hover')
             </UButton>
           </div>
         </template>
-      </MapboxTooltip>
+      </MaplibreTooltip>
 
       <div class="absolute left-3 top-3 z-10 flex gap-1 rounded-(--ui-radius) border border-default bg-default/80 p-1 backdrop-blur">
         <UButton

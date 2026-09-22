@@ -1,28 +1,24 @@
 <script setup lang="ts">
 import { useTemplateRef } from 'vue'
-import MapboxDraw from '@mapbox/mapbox-gl-draw'
 import type { Feature } from 'geojson'
 
 const features = ref<Feature[]>([])
 const drawRef = useTemplateRef('drawRef')
-
-// 合并内置模式与 movk 自定义模式
-const options = { displayControlsDefault: false, modes: { ...MapboxDraw.modes, ...movkDrawModes } }
 </script>
 
 <template>
   <div class="flex h-115 w-full flex-col gap-2">
     <div class="flex flex-wrap items-center gap-2">
-      <UButton size="xs" color="neutral" variant="subtle" @click="drawRef?.changeMode('draw_rectangle')">
+      <UButton size="xs" color="neutral" variant="subtle" @click="drawRef?.changeMode('rectangle')">
         矩形
       </UButton>
-      <UButton size="xs" color="neutral" variant="subtle" @click="drawRef?.changeMode('draw_circle')">
+      <UButton size="xs" color="neutral" variant="subtle" @click="drawRef?.changeMode('circle')">
         圆
       </UButton>
-      <UButton size="xs" color="neutral" variant="subtle" @click="drawRef?.changeMode('draw_ellipse')">
+      <UButton size="xs" color="neutral" variant="subtle" @click="drawRef?.changeMode('ellipse')">
         椭圆
       </UButton>
-      <UButton size="xs" color="neutral" variant="subtle" @click="drawRef?.changeMode('draw_sector')">
+      <UButton size="xs" color="neutral" variant="subtle" @click="drawRef?.changeMode('sector')">
         扇形
       </UButton>
       <UButton size="xs" color="error" variant="subtle" @click="drawRef?.deleteAll()">
@@ -30,9 +26,9 @@ const options = { displayControlsDefault: false, modes: { ...MapboxDraw.modes, .
       </UButton>
     </div>
     <div class="relative flex-1 overflow-hidden rounded-(--ui-radius) border border-default">
-      <MapboxMap :options="{ style: 'mapbox://styles/mapbox/light-v11', center: [116.397, 39.908], zoom: 11 }">
-        <MapboxDrawControl ref="drawRef" v-model:features="features" :options="options" />
-      </MapboxMap>
+      <MaplibreMap :options="{ style: 'https://tiles.openfreemap.org/styles/positron', center: [116.397, 39.908], zoom: 11 }">
+        <MaplibreDrawControl ref="drawRef" v-model:features="features" :controls="false" />
+      </MaplibreMap>
     </div>
   </div>
 </template>

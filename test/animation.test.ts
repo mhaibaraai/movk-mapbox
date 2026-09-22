@@ -1,8 +1,8 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { defineComponent, h, nextTick, ref } from 'vue'
 import { mount } from '@vue/test-utils'
-import MapboxMap from '../src/runtime/components/Map.vue'
-import MapboxCustomLayer from '../src/runtime/components/CustomLayer.vue'
+import MaplibreMap from '../src/runtime/components/Map.vue'
+import MaplibreCustomLayer from '../src/runtime/components/CustomLayer.vue'
 import { useMapAnimation } from '../src/runtime/composables/useMapAnimation'
 
 const { maps, makeFakeMap } = vi.hoisted(() => {
@@ -46,13 +46,13 @@ const { maps, makeFakeMap } = vi.hoisted(() => {
   return { maps, makeFakeMap }
 })
 
-vi.mock('mapbox-gl', () => {
+vi.mock('maplibre-gl', () => {
   function FakeGlMap(this: unknown) {
     return makeFakeMap()
   }
   function Noop() {}
   return {
-    default: { Map: FakeGlMap, accessToken: '', prewarm() {}, setRTLTextPlugin() {} },
+    Map: FakeGlMap,
     LngLat: { convert: (v: unknown) => v },
     Marker: Noop,
     Popup: Noop
@@ -69,8 +69,8 @@ describe('CustomLayer', () => {
     const show = ref(true)
     const Parent = defineComponent({
       setup() {
-        return () => h(MapboxMap, { options: {} }, {
-          default: () => (show.value ? h(MapboxCustomLayer, { layer }) : null)
+        return () => h(MaplibreMap, { options: {} }, {
+          default: () => (show.value ? h(MaplibreCustomLayer, { layer }) : null)
         })
       }
     })
@@ -118,7 +118,7 @@ describe('useMapAnimation', () => {
         return () => h('div')
       }
     })
-    const wrapper = mount(MapboxMap, {
+    const wrapper = mount(MaplibreMap, {
       props: { options: {} },
       slots: { default: () => h(Child) }
     })

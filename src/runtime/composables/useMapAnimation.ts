@@ -1,10 +1,10 @@
 import { useRafFn } from '@vueuse/core'
 import type { Ref } from 'vue'
-import type { Map as MapboxMap } from 'mapbox-gl'
+import type { Map as MaplibreMap } from 'maplibre-gl'
 import { useContextResolver } from '../domains/map/resolve'
 
 export interface UseMapAnimationOptions {
-  /** 目标地图 id；在 MapboxMap 子树外使用时必填 */
+  /** 目标地图 id；在 MaplibreMap 子树外使用时必填 */
   mapId?: string
   /**
    * 创建后立即启动
@@ -24,7 +24,7 @@ export interface UseMapAnimationReturn {
  * 仅在地图存在且样式就绪时调用 frame，供动效组件与帧驱动图片复用。
  */
 export function useMapAnimation(
-  frame: (map: MapboxMap, elapsedMs: number) => void,
+  frame: (map: MaplibreMap, elapsedMs: number) => void,
   options: UseMapAnimationOptions = {}
 ): UseMapAnimationReturn {
   const resolve = useContextResolver(options.mapId)

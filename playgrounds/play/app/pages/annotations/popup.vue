@@ -21,7 +21,7 @@ function onClose() {
     </template>
 
     <DemoMap :center="[116.397, 39.909]" :zoom="12">
-      <MapboxPopup
+      <MaplibrePopup
         v-if="open"
         :lnglat="[116.397, 39.909]"
         :options="{ offset: 12, closeOnClick: false }"
@@ -35,7 +35,7 @@ function onClose() {
             116.397, 39.909
           </p>
         </div>
-      </MapboxPopup>
+      </MaplibrePopup>
     </DemoMap>
   </MapShowcase>
 </template>

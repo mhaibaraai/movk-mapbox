@@ -1,26 +1,26 @@
 import { ref, shallowRef } from 'vue'
 import type { InjectionKey } from 'vue'
-import type { Map as MapboxMap } from 'mapbox-gl'
-import type { MapboxContext } from '../../types'
+import type { Map as MaplibreMap } from 'maplibre-gl'
+import type { MaplibreContext } from '../../types'
 
-/** MapboxMap 向子组件下发上下文的注入键 */
-export const MapboxContextKey: InjectionKey<MapboxContext> = Symbol('movk-mapbox:context')
+/** MaplibreMap 向子组件下发上下文的注入键 */
+export const MaplibreContextKey: InjectionKey<MaplibreContext> = Symbol('movk-maplibre:context')
 
 /**
  * 创建上下文骨架（map 初始为 undefined），供 setup 阶段同步 provide。
  * 实例就绪后由返回的 attach 挂载，避免把 provide 推迟到 onMounted。
  */
-export function createMapboxContext(id: string): { context: MapboxContext, attach: (map: MapboxMap) => void } {
-  const map = shallowRef<MapboxMap>()
+export function createMaplibreContext(id: string): { context: MaplibreContext, attach: (map: MaplibreMap) => void } {
+  const map = shallowRef<MaplibreMap>()
   const isLoaded = ref(false)
-  const readyCallbacks = new Set<(map: MapboxMap) => void>()
+  const readyCallbacks = new Set<(map: MaplibreMap) => void>()
 
-  let resolveLoaded!: (value: MapboxMap) => void
-  const loadedPromise = new Promise<MapboxMap>((resolve) => {
+  let resolveLoaded!: (value: MaplibreMap) => void
+  const loadedPromise = new Promise<MaplibreMap>((resolve) => {
     resolveLoaded = resolve
   })
 
-  function attach(instance: MapboxMap): void {
+  function attach(instance: MaplibreMap): void {
     map.value = instance
     instance.on('load', () => {
       isLoaded.value = true
@@ -32,7 +32,7 @@ export function createMapboxContext(id: string): { context: MapboxContext, attac
     })
   }
 
-  const context: MapboxContext = {
+  const context: MaplibreContext = {
     id,
     map,
     isLoaded,

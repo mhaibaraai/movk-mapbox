@@ -1,5 +1,5 @@
-import type { RasterSourceSpecification } from 'mapbox-gl'
-import { getMapboxConfig } from '../domains/map/config'
+import type { RasterSourceSpecification } from '@maplibre/maplibre-gl-style-spec'
+import { getMaplibreConfig } from '../domains/map/config'
 import { logger } from './logger'
 import { wmtsRasterSource } from './wmts'
 
@@ -19,7 +19,7 @@ export function tiandituAnnotationFor(base: TiandituLayerType): TiandituLayerTyp
 }
 
 export interface TiandituSourceOptions {
-  /** 天地图 token（tk）；缺省时回退到运行时配置的 tiandituToken */
+  /** 天地图 token（tk）；缺省时回退到运行时配置 maplibre.tk */
   tk?: string
   /**
    * 瓦片尺寸
@@ -33,12 +33,12 @@ export interface TiandituSourceOptions {
   subdomains?: number
 }
 
-/** 生成天地图球面墨卡托（EPSG:3857）栅格数据源规格，可直接用于 MapboxSource。 */
+/** 生成天地图球面墨卡托（EPSG:3857）栅格数据源规格，可直接用于 MaplibreSource。 */
 export function tiandituRasterSource(
   layer: TiandituLayerType,
   options: TiandituSourceOptions = {}
 ): RasterSourceSpecification {
-  const tk = options.tk ?? getMapboxConfig().tiandituToken
+  const tk = options.tk ?? getMaplibreConfig().tk
   if (!tk) logger.warn('Tianditu token (tk) is missing; tiles may fail to load.')
 
   // 用 WMTS GetTile

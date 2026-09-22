@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import type { LngLatLike } from 'mapbox-gl'
+import type { LngLatLike } from 'maplibre-gl'
 
 const position = ref<LngLatLike>([116.397, 39.908])
 </script>
 
 <template>
   <div class="h-115 w-full overflow-hidden rounded-(--ui-radius) border border-default">
-    <MapboxMap :options="{ style: 'mapbox://styles/mapbox/streets-v12', center: [116.397, 39.908], zoom: 13 }">
-      <MapboxMarker :lnglat="position" :popup-options="{ offset: 20 }">
+    <MaplibreMap :options="{ style: 'https://tiles.openfreemap.org/styles/liberty', center: [116.397, 39.908], zoom: 13 }">
+      <MaplibreMarker :lnglat="position" :popup-options="{ offset: 20 }">
         <div class="flex size-8 cursor-pointer items-center justify-center rounded-full border-2 border-white bg-primary text-white shadow-lg">
           <UIcon name="i-lucide-map-pin" class="size-4" />
         </div>
@@ -24,7 +24,7 @@ const position = ref<LngLatLike>([116.397, 39.908])
             </UButton>
           </div>
         </template>
-      </MapboxMarker>
-    </MapboxMap>
+      </MaplibreMarker>
+    </MaplibreMap>
   </div>
 </template>

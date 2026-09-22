@@ -1,7 +1,17 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
 import { clusterLayerSpecs } from '../src/runtime/utils/cluster'
+import { setMaplibreConfig } from '../src/runtime/domains/map/config'
 
 describe('clusterLayerSpecs', () => {
+  afterEach(() => setMaplibreConfig({ textFont: undefined }))
+
+  it('计数层字体跟随全局 textFont 配置，未配置时交由样式默认', () => {
+    expect(clusterLayerSpecs({ id: 'p', sourceId: 's' }).count.layout).not.toHaveProperty('text-font')
+
+    setMaplibreConfig({ textFont: ['Noto Sans Regular'] })
+    expect(clusterLayerSpecs({ id: 'p', sourceId: 's' }).count.layout).toMatchObject({ 'text-font': ['Noto Sans Regular'] })
+  })
+
   it('生成 clusters/count/points 三层并绑定同一 source', () => {
     const specs = clusterLayerSpecs({ id: 'poi', sourceId: 'poi-source' })
     expect(specs.clusters.id).toBe('poi-clusters')

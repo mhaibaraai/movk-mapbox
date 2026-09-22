@@ -1,20 +1,20 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref, useSlots, useTemplateRef, watch } from 'vue'
-import { Marker } from 'mapbox-gl'
-import type { LngLatLike, MarkerOptions, PopupOptions } from 'mapbox-gl'
+import { Marker } from 'maplibre-gl'
+import type { LngLatLike, MarkerOptions, PopupOptions } from 'maplibre-gl'
 import { useMap } from '../composables/useMap'
 import type { PopupTrigger } from '../types'
-import MapboxPopup from './Popup.vue'
+import MaplibrePopup from './Popup.vue'
 
 const props = withDefaults(defineProps<{
   /**
    * 标记选项；element 由默认插槽提供，无需在此传入
-   * @see https://docs.mapbox.com/mapbox-gl-js/api/markers/#marker
+   * @see https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/MarkerOptions/
    */
   options?: Omit<MarkerOptions, 'element'>
   /**
    * 弹窗选项，仅在提供 #popup 插槽时生效
-   * @see https://docs.mapbox.com/mapbox-gl-js/api/markers/#popup
+   * @see https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/PopupOptions/
    */
   popupOptions?: PopupOptions
   /**
@@ -51,7 +51,7 @@ function togglePopup(): void {
   open.value = !open.value
 }
 
-// marker 元素挂在 canvasContainer 内，点击会冒泡到地图并触发 mapbox 的 preclick。
+// marker 元素挂在 canvasContainer 内，点击会冒泡到地图并触发 maplibre 的 preclick。
 // 浏览器在每个监听器返回后都会跑微任务检查点，popup 已在本次点击继续冒泡前挂载完成，
 // 于是被 preclick 上的 closeOnClick 当场关闭。阻断冒泡让本次点击不抵达地图。
 function onElementClick(event: MouseEvent): void {
@@ -113,12 +113,12 @@ defineExpose({ marker: () => marker })
   <div v-if="$slots.default" ref="el" :style="{ visibility: ready ? undefined : 'hidden' }">
     <slot />
   </div>
-  <MapboxPopup
+  <MaplibrePopup
     v-if="$slots.popup && open"
     :lnglat="lnglat"
     :options="popupOptions"
     @close="closePopup"
   >
     <slot name="popup" :close="closePopup" />
-  </MapboxPopup>
+  </MaplibrePopup>
 </template>

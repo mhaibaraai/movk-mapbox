@@ -6,7 +6,7 @@ const opacity = ref(0.85)
 <template>
   <MapShowcase
     title="BuildingLayer 3D 建筑"
-    description="MapboxBuildingLayer 便捷组件：fill-extrusion 预设按要素高度拉伸。依赖 Mapbox 官方样式的 composite/building 源，本页固定 light 样式。"
+    description="MaplibreBuildingLayer 便捷组件：fill-extrusion 预设按要素高度拉伸。本页使用 OpenFreeMap positron 样式自带的 openmaptiles/building 源。"
   >
     <template #toolbar>
       <input v-model="color" type="color" class="size-8 cursor-pointer rounded border border-default">
@@ -14,13 +14,13 @@ const opacity = ref(0.85)
     </template>
 
     <DemoMap
-      map-style="mapbox://styles/mapbox/light-v11"
+      map-style="https://tiles.openfreemap.org/styles/positron"
       :center="[-74.0066, 40.7135]"
       :zoom="15.5"
       :pitch="60"
       :bearing="-17.6"
     >
-      <MapboxBuildingLayer layer-id="3d-buildings" :color="color" :opacity="opacity" />
+      <MaplibreBuildingLayer source="openmaptiles" source-layer="building" layer-id="3d-buildings" :color="color" :opacity="opacity" />
     </DemoMap>
   </MapShowcase>
 </template>

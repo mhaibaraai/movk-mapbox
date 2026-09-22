@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { LngLatLike } from 'mapbox-gl'
+import type { LngLatLike } from 'maplibre-gl'
 
 const mapId = 'camera-demo'
-const { flyTo } = useMapboxCamera({ mapId })
+const { flyTo } = useMaplibreCamera({ mapId })
 
 const presets: { label: string, center: LngLatLike, zoom: number }[] = [
   { label: 'Beijing', center: [116.397, 39.908], zoom: 10 },
@@ -17,9 +17,9 @@ function go(center: LngLatLike, zoom: number) {
 
 <template>
   <div class="h-115 w-full overflow-hidden rounded-(--ui-radius) border border-default">
-    <MapboxMap
+    <MaplibreMap
       :map-id="mapId"
-      :options="{ style: 'mapbox://styles/mapbox/streets-v12', center: [116.397, 39.908], zoom: 10 }"
+      :options="{ style: 'https://tiles.openfreemap.org/styles/liberty', center: [116.397, 39.908], zoom: 10 }"
     >
       <div class="absolute left-3 top-3 z-10 flex flex-wrap gap-2">
         <UButton
@@ -33,6 +33,6 @@ function go(center: LngLatLike, zoom: number) {
           {{ p.label }}
         </UButton>
       </div>
-    </MapboxMap>
+    </MaplibreMap>
   </div>
 </template>

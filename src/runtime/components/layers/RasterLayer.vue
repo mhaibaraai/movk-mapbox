@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed, useId } from 'vue'
 import { omitUndefined } from '@movk/core'
-import type { RasterSourceSpecification } from 'mapbox-gl'
-import MapboxSource from '../Source.vue'
-import MapboxLayer from '../Layer.vue'
+import type { RasterSourceSpecification } from '@maplibre/maplibre-gl-style-spec'
+import MaplibreSource from '../Source.vue'
+import MaplibreLayer from '../Layer.vue'
 
 const props = withDefaults(defineProps<{
   /** 图层 id；省略时自动生成 */
@@ -53,7 +53,7 @@ const paint = computed(() => ({ 'raster-opacity': props.opacity }))
 </script>
 
 <template>
-  <MapboxSource :source-id="id" :source="source">
-    <MapboxLayer :layer-id="id" type="raster" :source="id" :paint="paint" :before-id="beforeId" />
-  </MapboxSource>
+  <MaplibreSource :source-id="id" :source="source">
+    <MaplibreLayer :layer-id="id" type="raster" :source="id" :paint="paint" :before-id="beforeId" />
+  </MaplibreSource>
 </template>

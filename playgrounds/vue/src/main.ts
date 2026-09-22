@@ -1,11 +1,12 @@
 import './assets/css/main.css'
-import '@movk/mapbox/index.css'
+import '@movk/maplibre/index.css'
 import { createApp } from 'vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
 import { $fetch } from 'ofetch'
 import ui from '@nuxt/ui/vue-plugin'
-import MapboxPlugin from '@movk/mapbox/vue-plugin'
+import MaplibrePlugin from '@movk/maplibre/vue-plugin'
+import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url'
 import App from './App.vue'
 
 // 复用的 play 页面裸写 $fetch(...)（Nuxt 下由 ofetch 全局提供）；这里在真正的
@@ -17,7 +18,7 @@ const globalWithFetch = globalThis as unknown as { $fetch: typeof $fetch }
 globalWithFetch.$fetch = $fetch
 
 // 复用 Nuxt playground（playgrounds/play）的演示页：import.meta.glob 为每个匹配文件生成 import()，
-// 经 vite.config 的 #mapbox 别名与组件/composable 复用即可在纯 Vite 下运行
+// 经 vite.config 的 #maplibre 别名与组件/composable 复用即可在纯 Vite 下运行
 const playPages = import.meta.glob('../../play/app/pages/**/*.vue')
 // 本地 vue 专属页（同路径覆盖）
 const localPages = import.meta.glob('./pages/**/*.vue')
@@ -45,8 +46,12 @@ const router = createRouter({
 createApp(App)
   .use(router)
   .use(ui)
-  .use(MapboxPlugin, {
-    accessToken: import.meta.env.VITE_MAPBOX_TOKEN,
-    tiandituToken: import.meta.env.VITE_TIANDITU_TOKEN
+  .use(MaplibrePlugin, {
+    // maplibre-gl v6 经 Vite 打包时无法自动解析 worker 地址，需显式传入
+    workerUrl,
+    tk: import.meta.env.VITE_TIANDITU_TK,
+    // OpenFreeMap 公开字体服务：空白样式与内置文字图层共用
+    glyphs: 'https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf',
+    textFont: ['Noto Sans Regular']
   })
   .mount('#app')

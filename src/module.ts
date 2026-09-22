@@ -1,18 +1,20 @@
 import { createRequire } from 'node:module'
-import { addComponentsDir, addImports, addImportsDir, addPlugin, createResolver, defineNuxtModule, extendViteConfig, useLogger } from '@nuxt/kit'
+import { addComponentsDir, addImports, addImportsDir, addPlugin, addPluginTemplate, createResolver, defineNuxtModule, extendViteConfig } from '@nuxt/kit'
 import { defu } from 'defu'
 import { name, version } from '../package.json'
 
 export type * from './runtime/types'
 
 export interface ModuleOptions {
-  /** Mapbox access token */
-  accessToken?: string
   /** 天地图服务 token（tk） */
-  tiandituToken?: string
+  tk?: string
+  /** 空白样式的字体 pbf 地址模板（含 {fontstack} 与 {range}） */
+  glyphs?: string
+  /** 库内置文字图层使用的字体栈 */
+  textFont?: string[]
   /**
    * 组件前缀
-   * @defaultValue 'Mapbox'
+   * @defaultValue 'Maplibre'
    */
   prefix?: string
 }
@@ -21,29 +23,23 @@ export default defineNuxtModule<ModuleOptions>({
   meta: {
     name,
     version,
-    configKey: 'mapbox',
+    configKey: 'maplibre',
     compatibility: { nuxt: '>=4.0.0' }
   },
   defaults: {
-    accessToken: '',
-    prefix: 'Mapbox'
+    prefix: 'Maplibre'
   },
   setup(options, nuxt) {
     const { resolve } = createResolver(import.meta.url)
-    const logger = useLogger('@movk/mapbox')
 
-    nuxt.options.alias['#mapbox'] = resolve('./runtime')
+    nuxt.options.alias['#maplibre'] = resolve('./runtime')
 
-    const accessToken = options.accessToken || process.env.NUXT_PUBLIC_MAPBOX_ACCESS_TOKEN || ''
     const publicConfig = nuxt.options.runtimeConfig.public as Record<string, unknown>
-    publicConfig.mapbox = defu(publicConfig.mapbox as Record<string, unknown> | undefined, {
-      accessToken,
-      tiandituToken: options.tiandituToken || process.env.NUXT_PUBLIC_MAPBOX_TIANDITU_TOKEN
+    publicConfig.maplibre = defu(publicConfig.maplibre as Record<string, unknown> | undefined, {
+      tk: options.tk || process.env.NUXT_PUBLIC_MAPLIBRE_TK,
+      glyphs: options.glyphs,
+      textFont: options.textFont
     })
-
-    if (!accessToken) {
-      logger.warn('No Mapbox accessToken configured; set NUXT_PUBLIC_MAPBOX_ACCESS_TOKEN in .env or `mapbox.accessToken` in nuxt.config.')
-    }
 
     nuxt.options.css.push(resolve('./runtime/index.css'))
 
@@ -58,23 +54,30 @@ export default defineNuxtModule<ModuleOptions>({
       { name: 'movkDrawModes', from: resolve('./runtime/draw-modes') },
       { name: 'drawThemeStyles', from: resolve('./runtime/utils/draw-theme') }
     ])
-    addPlugin({ src: resolve('./runtime/plugins/access-token') })
+    addPlugin({ src: resolve('./runtime/plugins/config') })
+    // maplibre-gl v6 经打包工具使用时无法自动解析 worker 地址；由应用自身的 Vite 处理 ?worker&url 并注入
+    addPluginTemplate({
+      filename: 'movk-maplibre-worker.client.mjs',
+      mode: 'client',
+      getContents: () => [
+        `import { defineNuxtPlugin } from '#app'`,
+        `import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url'`,
+        `import { setMaplibreConfig } from ${JSON.stringify(resolve('./runtime/domains/map/config'))}`,
+        `export default defineNuxtPlugin(() => { setMaplibreConfig({ workerUrl }) })`
+      ].join('\n')
+    })
 
-    // mapbox-gl 是伪装成 ESM 的 UMD 包（否则具名导入 500），lottie-web 是纯 CJS
+    // lottie-web 是纯 CJS，需预构建才能具名导入
     extendViteConfig((config) => {
       config.optimizeDeps ||= {}
       const include = (config.optimizeDeps.include ||= [])
       const require = createRequire(import.meta.url)
-      for (const dep of ['mapbox-gl', 'lottie-web']) {
-        if (include.includes(dep)) {
-          continue
-        }
-        try {
-          require.resolve(dep, { paths: [nuxt.options.rootDir] })
-          include.push(dep)
-        } catch {
-          // 可选依赖（lottie-web）未安装时跳过，避免 Vite optimizeDeps 解析告警
-        }
+      if (include.includes('lottie-web')) return
+      try {
+        require.resolve('lottie-web', { paths: [nuxt.options.rootDir] })
+        include.push('lottie-web')
+      } catch {
+        // 可选依赖未安装时跳过，避免 Vite optimizeDeps 解析告警
       }
     })
   }

@@ -39,7 +39,7 @@ const DEFAULT_COLOR_STOPS: [number, string][] = [
 ]
 
 /**
- * 生成 mapbox heatmap 图层 paint:温度属性经 weightRange 线性映射为热力权重,
+ * 生成 maplibre heatmap 图层 paint:温度属性经 weightRange 线性映射为热力权重,
  * heatmap-density 经 colorStops 着色(0 处必透明,否则全图铺底色)。
  */
 export function heatmapPaint(options: HeatmapPaintOptions = {}): PropBag {

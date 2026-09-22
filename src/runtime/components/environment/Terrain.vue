@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { onUnmounted, watch } from 'vue'
-import type { Map as MapboxMap, RasterDEMSourceSpecification } from 'mapbox-gl'
+import type { Map as MaplibreMap } from 'maplibre-gl'
+import type { RasterDEMSourceSpecification } from '@maplibre/maplibre-gl-style-spec'
 import { useMap } from '../../composables/useMap'
+import { logger } from '../../utils/logger'
 
 const props = withDefaults(defineProps<{
   /**
@@ -10,10 +12,10 @@ const props = withDefaults(defineProps<{
    */
   exaggeration?: number
   /**
-   * DEM 数据源，缺省用 Mapbox 官方 terrain-dem-v1
-   * @see https://docs.mapbox.com/style-spec/reference/sources/#raster-dem
+   * DEM 数据源，如 Terrarium / Mapbox 编码的 raster-dem 瓦片
+   * @see https://maplibre.org/maplibre-style-spec/sources/#raster-dem
    */
-  source?: RasterDEMSourceSpecification
+  source: RasterDEMSourceSpecification
   /**
    * DEM source id
    * @defaultValue 'movk-terrain-dem'
@@ -24,19 +26,16 @@ const props = withDefaults(defineProps<{
   sourceId: 'movk-terrain-dem'
 })
 
-const DEFAULT_DEM: RasterDEMSourceSpecification = {
-  type: 'raster-dem',
-  url: 'mapbox://mapbox.mapbox-terrain-dem-v1',
-  tileSize: 512,
-  maxzoom: 14
-}
-
 const ctx = useMap()
 
 // 源与地形在同一回调内顺序建立，规避 onReady 注册顺序导致的 source 未就绪
-function apply(map: MapboxMap): void {
+function apply(map: MaplibreMap): void {
+  if (!props.source) {
+    logger.warn('MaplibreTerrain: missing required prop "source" (raster-dem source specification).')
+    return
+  }
   if (!map.getSource(props.sourceId)) {
-    map.addSource(props.sourceId, props.source ?? DEFAULT_DEM)
+    map.addSource(props.sourceId, props.source)
   }
   map.setTerrain({ source: props.sourceId, exaggeration: props.exaggeration })
 }

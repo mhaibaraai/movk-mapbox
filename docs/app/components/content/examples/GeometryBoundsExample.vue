@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { boundsOfGeoJSON } from '@movk/mapbox/utils/geometry'
+import { boundsOfGeoJSON } from '@movk/maplibre/utils/geometry'
 import type { FeatureCollection } from 'geojson'
 
 const mapId = 'geometry-bounds-demo'
@@ -36,17 +36,17 @@ const bbox: FeatureCollection | undefined = bounds && {
   }]
 }
 
-const { fitBounds } = useMapboxCamera({ mapId })
+const { fitBounds } = useMaplibreCamera({ mapId })
 </script>
 
 <template>
   <div class="relative h-115 w-full overflow-hidden rounded-(--ui-radius) border border-default">
-    <MapboxMap :map-id="mapId" :options="{ style: 'mapbox://styles/mapbox/light-v11', center: [117.5, 39.6], zoom: 6 }">
-      <MapboxLayer layer-id="geo-line" type="line" :source="{ type: 'geojson', data }" :paint="{ 'line-color': '#8b5cf6', 'line-width': 3 }" />
-      <MapboxSource v-if="bbox" source-id="geo-bbox" :source="{ type: 'geojson', data: bbox }">
-        <MapboxLayer layer-id="geo-bbox-line" type="line" source="geo-bbox" :paint="{ 'line-color': '#f59e0b', 'line-width': 1, 'line-dasharray': [2, 2] }" />
-      </MapboxSource>
-    </MapboxMap>
+    <MaplibreMap :map-id="mapId" :options="{ style: 'https://tiles.openfreemap.org/styles/positron', center: [117.5, 39.6], zoom: 6 }">
+      <MaplibreLayer layer-id="geo-line" type="line" :source="{ type: 'geojson', data }" :paint="{ 'line-color': '#8b5cf6', 'line-width': 3 }" />
+      <MaplibreSource v-if="bbox" source-id="geo-bbox" :source="{ type: 'geojson', data: bbox }">
+        <MaplibreLayer layer-id="geo-bbox-line" type="line" source="geo-bbox" :paint="{ 'line-color': '#f59e0b', 'line-width': 1, 'line-dasharray': [2, 2] }" />
+      </MaplibreSource>
+    </MaplibreMap>
     <div class="absolute left-2 top-2 z-10">
       <UButton size="sm" :disabled="!bounds" @click="bounds && fitBounds(bounds, { padding: 40 })">
         缩放到包围盒

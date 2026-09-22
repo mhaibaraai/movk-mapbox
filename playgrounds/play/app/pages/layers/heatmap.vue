@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { GeoJSONSourceSpecification } from 'mapbox-gl'
+import type { GeoJSONSourceSpecification } from '@maplibre/maplibre-gl-style-spec'
 
 const source: GeoJSONSourceSpecification = {
   type: 'geojson',
@@ -20,8 +20,8 @@ const source: GeoJSONSourceSpecification = {
     description="heatmap 类型基于点密度渲染热力，paint 表达式控制权重、半径与配色渐变。"
   >
     <DemoMap :center="[116.41, 39.93]" :zoom="10">
-      <MapboxSource source-id="heat" :source="source">
-        <MapboxLayer
+      <MaplibreSource source-id="heat" :source="source">
+        <MaplibreLayer
           layer-id="heat-layer"
           type="heatmap"
           source="heat"
@@ -38,7 +38,7 @@ const source: GeoJSONSourceSpecification = {
             ]
           }"
         />
-      </MapboxSource>
+      </MaplibreSource>
     </DemoMap>
   </MapShowcase>
 </template>

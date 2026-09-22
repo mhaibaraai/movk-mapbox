@@ -2,57 +2,57 @@
 import { onMounted, onUnmounted, provide, useId, useTemplateRef, watch } from 'vue'
 import { useResizeObserver } from '@vueuse/core'
 import { omitUndefined } from '@movk/core'
-import { LngLat } from 'mapbox-gl'
-import type { LngLatLike, Map as MapboxMap, MapEventOf, MapOptions } from 'mapbox-gl'
-import type { MapboxMapOptions } from '../types'
-import { createMapboxContext, MapboxContextKey } from '../domains/map/context'
-import { createMapboxGl } from '../domains/map/create-map'
+import { LngLat } from 'maplibre-gl'
+import type { LngLatLike, Map as MaplibreMap, MapEventType, MapOptions } from 'maplibre-gl'
+import type { StyleSpecification } from '@maplibre/maplibre-gl-style-spec'
+import type { MaplibreMapOptions } from '../types'
+import { createMaplibreContext, MaplibreContextKey } from '../domains/map/context'
+import { createMaplibreGl } from '../domains/map/create-map'
+import { getMaplibreConfig } from '../domains/map/config'
 import { getMapContext, registerMap, unregisterMap } from '../domains/map/registry'
 import { bindMapEvents } from '../utils/events'
 
 defineOptions({ inheritAttrs: false })
 
+// MapLibre 无内置底图，缺省 style 时实例没有样式，style.load 永不触发；以空白样式兜底（如仅叠加天地图）
+function blankStyle(): StyleSpecification {
+  const { glyphs } = getMaplibreConfig()
+  return { version: 8, ...(glyphs ? { glyphs } : {}), sources: {}, layers: [] }
+}
+
 const props = withDefaults(defineProps<{
-  /** 地图 id；省略时自动生成。提供后可经 useMapbox(id) 外部访问 */
+  /** 地图 id；省略时自动生成。提供后可经 useMaplibre(id) 外部访问 */
   mapId?: string
   /**
-   * mapbox-gl Map 初始化选项（container 由组件接管）
-   * @see https://docs.mapbox.com/mapbox-gl-js/api/map/
+   * maplibre-gl Map 初始化选项（container 由组件接管）；缺省 style 时使用空白样式
+   * @see https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/MapOptions/
    */
-  options?: MapboxMapOptions
-  /** 覆盖全局 access token */
-  accessToken?: string
+  options?: MaplibreMapOptions
   /** 卸载时不销毁实例，配合 keepalive / `<keep-alive>` 跨路由复用 */
   persistent?: boolean
-  /**
-   * 隐藏地图左下角的 Mapbox 字标
-   * @defaultValue false
-   */
-  hideLogo?: boolean
 }>(), {
-  persistent: false,
-  hideLogo: false
+  persistent: false
 })
 
 const emit = defineEmits<{
-  load: [map: MapboxMap]
-  idle: [map: MapboxMap]
-  error: [event: MapEventOf<'error'>]
-  click: [event: MapEventOf<'click'>]
-  dblclick: [event: MapEventOf<'dblclick'>]
-  contextmenu: [event: MapEventOf<'contextmenu'>]
-  mousemove: [event: MapEventOf<'mousemove'>]
-  mousedown: [event: MapEventOf<'mousedown'>]
-  mouseup: [event: MapEventOf<'mouseup'>]
-  movestart: [event: MapEventOf<'movestart'>]
-  moveend: [event: MapEventOf<'moveend'>]
-  zoomstart: [event: MapEventOf<'zoomstart'>]
-  zoomend: [event: MapEventOf<'zoomend'>]
-  rotateend: [event: MapEventOf<'rotateend'>]
-  pitchend: [event: MapEventOf<'pitchend'>]
-  dragend: [event: MapEventOf<'dragend'>]
-  styledata: [event: MapEventOf<'styledata'>]
-  sourcedata: [event: MapEventOf<'sourcedata'>]
+  load: [map: MaplibreMap]
+  idle: [map: MaplibreMap]
+  error: [event: MapEventType['error']]
+  click: [event: MapEventType['click']]
+  dblclick: [event: MapEventType['dblclick']]
+  contextmenu: [event: MapEventType['contextmenu']]
+  mousemove: [event: MapEventType['mousemove']]
+  mousedown: [event: MapEventType['mousedown']]
+  mouseup: [event: MapEventType['mouseup']]
+  movestart: [event: MapEventType['movestart']]
+  moveend: [event: MapEventType['moveend']]
+  zoomstart: [event: MapEventType['zoomstart']]
+  zoomend: [event: MapEventType['zoomend']]
+  rotateend: [event: MapEventType['rotateend']]
+  pitchend: [event: MapEventType['pitchend']]
+  dragend: [event: MapEventType['dragend']]
+  styledata: [event: MapEventType['styledata']]
+  sourcedata: [event: MapEventType['sourcedata']]
 }>()
 
 const FORWARDED_EVENTS = [
@@ -70,16 +70,16 @@ const pitch = defineModel<number>('pitch')
 const container = useTemplateRef<HTMLDivElement>('container')
 
 // useId() 保证同页多图 id 唯一且 SSR 稳定
-const mapId = props.mapId ?? `movk-mapbox-${useId()}`
+const mapId = props.mapId ?? `movk-maplibre-${useId()}`
 
 // setup 阶段同步建立上下文并 provide，确保子组件 useMap() 能注入；实例在 onMounted 挂载
 const existing = props.mapId ? getMapContext(mapId) : undefined
-const created = existing ? undefined : createMapboxContext(mapId)
+const created = existing ? undefined : createMaplibreContext(mapId)
 const context = existing ?? created!.context
-provide(MapboxContextKey, context)
+provide(MaplibreContextKey, context)
 if (created && props.mapId) registerMap(context)
 
-function syncModelsFromMap(map: MapboxMap): void {
+function syncModelsFromMap(map: MaplibreMap): void {
   const c = map.getCenter()
   center.value = [c.lng, c.lat]
   zoom.value = map.getZoom()
@@ -90,7 +90,7 @@ function syncModelsFromMap(map: MapboxMap): void {
 
 // 事件转发、相机回写与自适应；新建实例与跨实例复用的 persistent 实例都需绑定
 let runtimeBound = false
-function bindRuntime(map: MapboxMap): void {
+function bindRuntime(map: MaplibreMap): void {
   if (runtimeBound) return
   runtimeBound = true
 
@@ -110,15 +110,15 @@ onMounted(() => {
   }
   if (!created || !container.value) return
 
-  // 剔除 undefined：mapbox jumpTo 以 `key in options` 判定，`+undefined` 会得 NaN 污染相机矩阵
-  // 相机 model 初始值并入初始化选项（model 优先，回退 options，皆无则由 omitUndefined 交还 mapbox 默认）
-  const map = createMapboxGl(omitUndefined({
+  // 剔除 undefined：maplibre jumpTo 以 `key in options` 判定，`+undefined` 会得 NaN 污染相机矩阵
+  // 相机 model 初始值并入初始化选项（model 优先，回退 options，皆无则由 omitUndefined 交还 maplibre 默认）
+  const map = createMaplibreGl(omitUndefined({
     ...props.options,
+    style: props.options?.style ?? blankStyle(),
     center: center.value ?? props.options?.center,
     zoom: zoom.value ?? props.options?.zoom,
     bearing: bearing.value ?? props.options?.bearing,
     pitch: pitch.value ?? props.options?.pitch,
-    ...(props.accessToken ? { accessToken: props.accessToken } : {}),
     container: container.value
   }) as MapOptions)
   created.attach(map)
@@ -151,7 +151,7 @@ watch(pitch, (value) => {
   map.setPitch(value)
 })
 
-// 切换底图为整样式替换；mapbox diff 跨样式会产出未实现操作（如 setSprite）并告警，
+// 切换底图为整样式替换；maplibre diff 跨样式会产出未实现操作（如 setSprite）并告警，
 // 关闭 diff 直接整体重建，运行时 source/layer 由 style.load → onReady 重建
 watch(() => props.options?.style, (style) => {
   const map = context.map.value
@@ -172,28 +172,23 @@ defineExpose({
 </script>
 
 <template>
-  <div class="movk-mapbox" :class="{ 'movk-mapbox--hide-logo': hideLogo }" v-bind="$attrs">
-    <div ref="container" class="movk-mapbox__container" />
+  <div class="movk-maplibre" v-bind="$attrs">
+    <div ref="container" class="movk-maplibre__container" />
     <slot />
   </div>
 </template>
 
 <style>
 @layer components {
-  :where(.movk-mapbox) {
+  :where(.movk-maplibre) {
     position: relative;
     width: 100%;
     height: 100%;
   }
 }
 
-.movk-mapbox > .movk-mapbox__container {
+.movk-maplibre > .movk-maplibre__container {
   position: absolute;
   inset: 0;
-}
-
-/* mapbox-gl.css 未分层，分层规则会被其 display:block 盖掉，故此处不入 @layer */
-.movk-mapbox--hide-logo .mapboxgl-ctrl-logo {
-  display: none;
 }
 </style>

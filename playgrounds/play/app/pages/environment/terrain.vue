@@ -1,26 +1,33 @@
 <script setup lang="ts">
+import type { RasterDEMSourceSpecification } from '@maplibre/maplibre-gl-style-spec'
+
 const exaggeration = ref(1.5)
+
+// 公开 Terrarium 编码高程瓦片，无需 key
+const dem: RasterDEMSourceSpecification = {
+  type: 'raster-dem',
+  tiles: ['https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png'],
+  encoding: 'terrarium',
+  tileSize: 256,
+  maxzoom: 15,
+  attribution: '© Mapzen, AWS Terrain Tiles'
+}
 </script>
 
 <template>
   <MapShowcase
     title="Terrain 3D 地形"
-    description="MapboxTerrain 内部接管 DEM 源并 setTerrain，滑块实时调整夸张系数。本页固定卫星样式展示珠峰。"
+    description="MaplibreTerrain 以传入的 raster-dem 源 setTerrain，滑块实时调整夸张系数。本页叠加天地图影像展示珠峰。"
   >
     <template #toolbar>
       <USlider v-model="exaggeration" :min="0" :max="3" :step="0.1" class="w-32" />
       <span class="text-xs text-muted">×{{ exaggeration.toFixed(1) }}</span>
     </template>
 
-    <DemoMap
-      map-style="mapbox://styles/mapbox/satellite-streets-v12"
-      :center="[86.925, 27.95]"
-      :zoom="12"
-      :pitch="70"
-      :bearing="100"
-    >
-      <MapboxTerrain :exaggeration="exaggeration" />
-      <MapboxFog />
-    </DemoMap>
+    <MaplibreMap :options="{ center: [86.925, 27.95], zoom: 12, pitch: 70, maxPitch: 85, bearing: 100 }">
+      <MaplibreTiandituLayer layer="img" annotation />
+      <MaplibreTerrain :source="dem" :exaggeration="exaggeration" />
+      <MaplibreSky />
+    </MaplibreMap>
   </MapShowcase>
 </template>

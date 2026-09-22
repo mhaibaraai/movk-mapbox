@@ -13,20 +13,21 @@ const data: FeatureCollection = {
 
 <template>
   <div class="h-115 w-full overflow-hidden rounded-(--ui-radius) border border-default">
-    <MapboxMap :options="{ style: 'mapbox://styles/mapbox/light-v11', center: [116.39, 39.93], zoom: 11 }">
+    <MaplibreMap :options="{ style: 'https://tiles.openfreemap.org/styles/positron', center: [116.39, 39.93], zoom: 11 }">
       <!-- text-field 读取属性渲染文字标注，无需注册图标 -->
-      <MapboxLayer
+      <MaplibreLayer
         layer-id="labels"
         type="symbol"
         :source="{ type: 'geojson', data }"
         :layout="{
           'text-field': ['get', 'name'],
+          'text-font': ['Noto Sans Regular'],
           'text-size': 14,
           'text-offset': [0, 0.6],
           'text-anchor': 'top'
         }"
         :paint="{ 'text-color': '#1f2937', 'text-halo-color': '#fff', 'text-halo-width': 1.5 }"
       />
-    </MapboxMap>
+    </MaplibreMap>
   </div>
 </template>

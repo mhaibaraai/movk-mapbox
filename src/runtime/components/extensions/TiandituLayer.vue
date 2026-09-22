@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { tiandituAnnotationFor, tiandituRasterSource, type TiandituLayerType } from '../../utils/tianditu'
-import MapboxSource from '../Source.vue'
-import MapboxLayer from '../Layer.vue'
+import MaplibreSource from '../Source.vue'
+import MaplibreLayer from '../Layer.vue'
 
 const props = withDefaults(defineProps<{
   /**
@@ -32,10 +32,10 @@ const annoSource = computed(() => (annoType.value ? tiandituRasterSource(annoTyp
 </script>
 
 <template>
-  <MapboxSource :source-id="BASE_ID" :source="source">
-    <MapboxLayer :layer-id="BASE_ID" type="raster" :source="BASE_ID" :before-id="beforeId" />
-  </MapboxSource>
-  <MapboxSource v-if="annoSource" :source-id="ANNOTATION_ID" :source="annoSource">
-    <MapboxLayer :layer-id="ANNOTATION_ID" type="raster" :source="ANNOTATION_ID" :before-id="beforeId" />
-  </MapboxSource>
+  <MaplibreSource :source-id="BASE_ID" :source="source">
+    <MaplibreLayer :layer-id="BASE_ID" type="raster" :source="BASE_ID" :before-id="beforeId" />
+  </MaplibreSource>
+  <MaplibreSource v-if="annoSource" :source-id="ANNOTATION_ID" :source="annoSource">
+    <MaplibreLayer :layer-id="ANNOTATION_ID" type="raster" :source="ANNOTATION_ID" :before-id="beforeId" />
+  </MaplibreSource>
 </template>

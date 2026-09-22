@@ -24,20 +24,20 @@ const source = computed(() => ({ type: 'geojson' as const, data: datasets[index.
 
 <template>
   <div class="h-115 w-full overflow-hidden rounded-(--ui-radius) border border-default">
-    <MapboxMap :options="{ style: 'mapbox://styles/mapbox/light-v11', center: [116.4, 39.9], zoom: 10 }">
+    <MaplibreMap :options="{ style: 'https://tiles.openfreemap.org/styles/positron', center: [116.4, 39.9], zoom: 10 }">
       <div class="absolute left-3 top-3 z-10">
         <UButton size="xs" color="neutral" variant="solid" @click="index = index === 0 ? 1 : 0">
           Toggle dataset
         </UButton>
       </div>
-      <MapboxSource source-id="pts" :source="source">
-        <MapboxLayer
+      <MaplibreSource source-id="pts" :source="source">
+        <MaplibreLayer
           layer-id="pts"
           type="circle"
           source="pts"
           :paint="{ 'circle-radius': 6, 'circle-color': '#3b82f6', 'circle-opacity': 0.8 }"
         />
-      </MapboxSource>
-    </MapboxMap>
+      </MaplibreSource>
+    </MaplibreMap>
   </div>
 </template>

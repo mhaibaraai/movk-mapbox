@@ -4,15 +4,15 @@ const center: [number, number] = [116.397, 39.908]
 
 <template>
   <div class="h-115 w-full overflow-hidden rounded-(--ui-radius) border border-default">
-    <MapboxMap :options="{ style: 'mapbox://styles/mapbox/light-v11', center, zoom: 11 }">
+    <MaplibreMap :options="{ style: 'https://tiles.openfreemap.org/styles/positron', center, zoom: 11 }">
       <!-- bearing1 → bearing2（度，正北顺时针）扇面，半径单位米 -->
-      <MapboxBufferSector
+      <MaplibreBufferSector
         :center="center"
         :radius="3000"
         :bearing1="30"
         :bearing2="120"
         color="#f43f5e"
       />
-    </MapboxMap>
+    </MaplibreMap>
   </div>
 </template>

@@ -1,6 +1,7 @@
-import type { TiandituLayerType } from '#mapbox/utils/tianditu'
+import type { StyleSpecification } from '@maplibre/maplibre-gl-style-spec'
+import type { TiandituLayerType } from '#maplibre/utils/tianditu'
 
-export type BasemapKey = 'mapbox-light' | 'mapbox-dark' | 'tianditu-vec' | 'tianditu-img' | 'tianditu-ter'
+export type BasemapKey = 'maplibre-light' | 'maplibre-dark' | 'tianditu-vec' | 'tianditu-img' | 'tianditu-ter'
 
 interface BasemapOption {
   label: string
@@ -8,17 +9,20 @@ interface BasemapOption {
   icon: string
 }
 
-const STYLE: Record<BasemapKey, string> = {
-  'mapbox-light': 'mapbox://styles/mapbox/light-v11',
-  'mapbox-dark': 'mapbox://styles/mapbox/dark-v11',
-  'tianditu-vec': 'mapbox://styles/mapbox/empty-v9',
-  'tianditu-img': 'mapbox://styles/mapbox/empty-v9',
-  'tianditu-ter': 'mapbox://styles/mapbox/empty-v9'
+// 天地图为栅格叠加层，底图用空白样式；切换时需显式对象才能触发 setStyle 重置
+const BLANK_STYLE: StyleSpecification = { version: 8, sources: {}, layers: [] }
+
+const STYLE: Record<BasemapKey, string | StyleSpecification> = {
+  'maplibre-light': 'https://tiles.openfreemap.org/styles/positron',
+  'maplibre-dark': 'https://tiles.openfreemap.org/styles/dark',
+  'tianditu-vec': BLANK_STYLE,
+  'tianditu-img': BLANK_STYLE,
+  'tianditu-ter': BLANK_STYLE
 }
 
 const options: BasemapOption[] = [
-  { label: 'Mapbox 亮色', value: 'mapbox-light', icon: 'i-lucide-sun' },
-  { label: 'Mapbox 暗色', value: 'mapbox-dark', icon: 'i-lucide-moon' },
+  { label: 'MapLibre 亮色', value: 'maplibre-light', icon: 'i-lucide-sun' },
+  { label: 'MapLibre 暗色', value: 'maplibre-dark', icon: 'i-lucide-moon' },
   { label: '天地图 矢量', value: 'tianditu-vec', icon: 'i-lucide-map' },
   { label: '天地图 影像', value: 'tianditu-img', icon: 'i-lucide-satellite' },
   { label: '天地图 地形', value: 'tianditu-ter', icon: 'i-lucide-mountain' }

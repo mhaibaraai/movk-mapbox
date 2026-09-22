@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { defineComponent, h, nextTick, ref } from 'vue'
 import { mount } from '@vue/test-utils'
-import MapboxMap from '../src/runtime/components/Map.vue'
-import MapboxTooltip from '../src/runtime/components/Tooltip.vue'
+import MaplibreMap from '../src/runtime/components/Map.vue'
+import MaplibreTooltip from '../src/runtime/components/Tooltip.vue'
 
 const { maps, popups, makeFakeMap } = vi.hoisted(() => {
   interface FakePopupLike { opened: boolean, options: Record<string, unknown> }
@@ -46,7 +46,7 @@ const { maps, popups, makeFakeMap } = vi.hoisted(() => {
   return { maps, popups, makeFakeMap }
 })
 
-vi.mock('mapbox-gl', () => {
+vi.mock('maplibre-gl', () => {
   function FakeGlMap(this: unknown) {
     return makeFakeMap()
   }
@@ -76,7 +76,7 @@ vi.mock('mapbox-gl', () => {
     isOpen() { return this.opened }
   }
   return {
-    default: { Map: FakeGlMap, accessToken: '', prewarm() {}, setRTLTextPlugin() {} },
+    Map: FakeGlMap,
     LngLat: { convert: (v: unknown) => v },
     Marker: function () {},
     Popup: FakePopup
@@ -89,8 +89,8 @@ const layerEvent = { features: [feature], lngLat: { lng: 0, lat: 0 } }
 async function mountTooltip(props: Record<string, unknown>, slot?: (scope: Record<string, unknown>) => unknown) {
   const Parent = defineComponent({
     setup() {
-      return () => h(MapboxMap, { options: {} }, {
-        default: () => h(MapboxTooltip, { layerId: 'poi', ...props }, {
+      return () => h(MaplibreMap, { options: {} }, {
+        default: () => h(MaplibreTooltip, { layerId: 'poi', ...props }, {
           default: slot ?? (({ feature }: Record<string, unknown>) =>
             h('p', (feature as typeof layerEvent.features[0] | undefined)?.properties?.title ?? ''))
         })
@@ -105,7 +105,7 @@ async function mountTooltip(props: Record<string, unknown>, slot?: (scope: Recor
   return { wrapper, map, popup: () => popups[popups.length - 1]! }
 }
 
-describe('MapboxTooltip 触发模式', () => {
+describe('MaplibreTooltip 触发模式', () => {
   beforeEach(() => {
     maps.length = 0
     popups.length = 0
@@ -169,8 +169,8 @@ describe('MapboxTooltip 触发模式', () => {
     const trigger = ref<'hover' | 'none'>('hover')
     const Parent = defineComponent({
       setup() {
-        return () => h(MapboxMap, { options: {} }, {
-          default: () => h(MapboxTooltip, { layerId: 'poi', trigger: trigger.value }, { default: () => h('p', 'x') })
+        return () => h(MaplibreMap, { options: {} }, {
+          default: () => h(MaplibreTooltip, { layerId: 'poi', trigger: trigger.value }, { default: () => h('p', 'x') })
         })
       }
     })

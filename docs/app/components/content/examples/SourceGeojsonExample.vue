@@ -14,21 +14,21 @@ const data: FeatureCollection = {
 
 <template>
   <div class="h-115 w-full overflow-hidden rounded-(--ui-radius) border border-default">
-    <MapboxMap :options="{ style: 'mapbox://styles/mapbox/light-v11', center: [116.4, 39.9], zoom: 11 }">
-      <MapboxSource source-id="cities" :source="{ type: 'geojson', data }">
-        <MapboxLayer
+    <MaplibreMap :options="{ style: 'https://tiles.openfreemap.org/styles/positron', center: [116.4, 39.9], zoom: 11 }">
+      <MaplibreSource source-id="cities" :source="{ type: 'geojson', data }">
+        <MaplibreLayer
           layer-id="cities-halo"
           type="circle"
           source="cities"
           :paint="{ 'circle-radius': 18, 'circle-color': '#3b82f6', 'circle-opacity': 0.2 }"
         />
-        <MapboxLayer
+        <MaplibreLayer
           layer-id="cities-core"
           type="circle"
           source="cities"
           :paint="{ 'circle-radius': 7, 'circle-color': '#3b82f6' }"
         />
-      </MapboxSource>
-    </MapboxMap>
+      </MaplibreSource>
+    </MaplibreMap>
   </div>
 </template>

@@ -1,4 +1,4 @@
-import type { SearchParams } from '#mapbox/types'
+import type { SearchParams } from '#maplibre/types'
 
 function parseBounds(value: unknown): [number, number, number, number] {
   const parts = String(value ?? '').split(',').map(Number)

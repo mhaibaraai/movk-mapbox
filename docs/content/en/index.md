@@ -1,7 +1,7 @@
 ---
 seo:
-  title: Movk Mapbox — Declarative Mapbox GL v3 Component Library
-  description: Compose maps, sources, layers, markers and controls declaratively with MapboxMap / MapboxLayer components and composables. Native Nuxt 4 module plus a Vite plugin for plain Vue. Ships 3D buildings, radar / diffusion / glow effects, fog / terrain / weather, Tianditu and WMS / WMTS basemaps, and multi-CRS localization.
+  title: Movk MapLibre — Declarative MapLibre GL Component Library
+  description: Compose maps, sources, layers, markers and controls declaratively with MaplibreMap / MaplibreLayer components and composables. Native Nuxt 4 module plus a Vite plugin for plain Vue. Ships 3D buildings, radar / diffusion / glow effects, fog / terrain / weather, Tianditu and WMS / WMTS basemaps, and multi-CRS localization.
 ---
 
 ::u-page-hero{class="dark:bg-gradient-to-b from-neutral-900 to-neutral-950"}
@@ -13,7 +13,7 @@ orientation: horizontal
 
 #title
 :::motion
-Declarative [Mapbox GL]{.text-primary} Components
+Declarative [MapLibre GL]{.text-primary} Components
 :::
 
 #description
@@ -21,7 +21,7 @@ Declarative [Mapbox GL]{.text-primary} Components
 ---
 transition: { duration: 0.6, delay: 0.3 }
 ---
-Compose maps, layers, markers and controls declaratively with two-way `v-model` camera bindings. One component set works across Nuxt 4 and plain Vue + Vite, with built-in 3D buildings, dynamic effects, weather environment, and localization basemaps.
+Compose maps, layers, markers and controls declaratively with two-way `v-model` camera bindings. One component set works across Nuxt 4 and plain Vue + Vite, with built-in 3D buildings, dynamic effects, 3D environment, and localization basemaps — no access token required.
 :::
 
 #links
@@ -44,7 +44,7 @@ transition: { duration: 0.6, delay: 0.5 }
   color: neutral
   variant: outline
   size: xl
-  to: https://github.com/mhaibaraai/movk-mapbox
+  to: https://github.com/mhaibaraai/movk-maplibre
   target: _blank
   ---
   View Source
@@ -78,7 +78,7 @@ Declarative composition, context injection, and dual-mode runtime — from a sim
 
   :::u-page-feature{icon="i-lucide-share-2"}
   #title
-  MapboxContext Injection
+  MaplibreContext Injection
 
   #description
   The root component provides context down the tree. Child components access the map instance, isLoaded, and whenLoaded() via useMap() — no id lookups needed.
@@ -102,10 +102,10 @@ Declarative composition, context injection, and dual-mode runtime — from a sim
 
   :::u-page-feature{icon="i-lucide-cloud-sun"}
   #title
-  Environment & Weather
+  3D Environment
 
   #description
-  Fog atmosphere, 3D lights, terrain, and temperature / rain / snow weather — combined with camera tilt for an immersive 3D scene.
+  Sky and atmosphere, terrain, and temperature heatmaps — combined with camera tilt for an immersive 3D scene.
   :::
 
   :::u-page-feature{icon="i-lucide-map"}
@@ -113,7 +113,7 @@ Declarative composition, context injection, and dual-mode runtime — from a sim
   Localization Extensions
 
   #description
-  Tianditu basemaps, WMS / WMTS services, mapbox-gl-draw integration, and WGS84 / GCJ02 / BD09 coordinate conversion via gcoord — all out of the box.
+  Tianditu basemaps, WMS / WMTS services, terra-draw integration, and WGS84 / GCJ02 / BD09 coordinate conversion via gcoord — all out of the box.
   :::
 
   :::u-page-feature{icon="i-lucide-package"}
@@ -121,7 +121,7 @@ Declarative composition, context injection, and dual-mode runtime — from a sim
   Nuxt / Vue Dual Mode
 
   #description
-  Works as a Nuxt 4 module and also provides @movk/mapbox/vite + vue-plugin, so the same components are available in plain Vue + Vite projects.
+  Works as a Nuxt 4 module and also provides @movk/maplibre/vite + vue-plugin, so the same components are available in plain Vue + Vite projects.
   :::
 
   :::u-page-feature{icon="i-lucide-toy-brick"}
@@ -129,7 +129,7 @@ Declarative composition, context injection, and dual-mode runtime — from a sim
   Composables & Utilities
 
   #description
-  Composables including useMap, useMapboxCamera, useMeasure, and useMapExport, paired with coordinate, buffer, geometry, and measurement utilities for progressive adoption.
+  Composables including useMap, useMaplibreCamera, useMeasure, and useMapExport, paired with coordinate, buffer, geometry, and measurement utilities for progressive adoption.
   :::
 ::
 
@@ -138,7 +138,7 @@ Declarative composition, context injection, and dual-mode runtime — from a sim
 class: dark:bg-neutral-950
 links:
   - label: Star on GitHub
-    to: https://github.com/mhaibaraai/movk-mapbox
+    to: https://github.com/mhaibaraai/movk-maplibre
     target: _blank
     icon: i-lucide-star
     color: neutral
@@ -152,5 +152,5 @@ links:
 Start Building Your Next Map
 
 #description
-From a simple basemap to 3D buildings, dynamic effects, and localized tile services — Movk Mapbox distills the complexity of Mapbox GL into composable, declarative components.
+From a simple basemap to 3D buildings, dynamic effects, and localized tile services — Movk MapLibre distills the complexity of MapLibre GL into composable, declarative components.
 ::
