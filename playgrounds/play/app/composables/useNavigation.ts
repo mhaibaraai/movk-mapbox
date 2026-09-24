@@ -63,6 +63,7 @@ const environmentNav: NavigationMenuItem = {
   children: [
     { label: 'Terrain 3D 地形', to: '/environment/terrain' },
     { label: 'Sky 天空', to: '/environment/sky' },
+    { label: 'Projection 球形投影', to: '/environment/projection' },
     { label: 'Temperature 温度热力', to: '/environment/temperature' }
   ]
 }
