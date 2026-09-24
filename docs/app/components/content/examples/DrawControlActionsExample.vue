@@ -29,7 +29,7 @@ function draw(mode: string) {
     </div>
     <div class="relative flex-1 overflow-hidden rounded-(--ui-radius) border border-default">
       <MaplibreMap :options="{ style: 'https://tiles.openfreemap.org/styles/positron', center: [116.397, 39.908], zoom: 11 }">
-        <MaplibreDrawControl ref="drawRef" v-model:features="features" :controls="false" />
+        <MaplibreDrawControl ref="drawRef" v-model:features="features" :toolbar="false" />
       </MaplibreMap>
     </div>
   </div>

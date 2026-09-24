@@ -57,7 +57,7 @@ The MCP tool `convert-coordinates` does the same conversion on demand.
 
 ## Drawing
 
-`MaplibreDrawControl` is built on terra-draw (install `terra-draw` and `terra-draw-maplibre-gl-adapter`). It uses `movkDrawModes()` by default (select, point, linestring, polygon, rectangle, circle, ellipse, sector); `theme` colors them, `controls` limits the toolbar buttons.
+`MaplibreDrawControl` is built on terra-draw (install `terra-draw` and `terra-draw-maplibre-gl-adapter`). `modes` lists the enabled modes by name (default: select, point, linestring, polygon, rectangle, circle, ellipse, sector) and sets the toolbar button order; it also accepts custom terra-draw mode instances, used as-is. `theme` colors the built-in modes and applies instantly; `:toolbar="false"` hides the built-in toolbar.
 
 ```vue
 <script setup lang="ts">
@@ -71,7 +71,7 @@ const mode = ref('select')
     v-model:features="features"
     v-model:mode="mode"
     position="top-left"
-    :controls="['polygon', 'rectangle', 'circle']"
+    :modes="['select', 'polygon', 'rectangle', 'circle']"
     :theme="{ color: '#8b5cf6' }"
   />
 </template>

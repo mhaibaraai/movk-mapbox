@@ -31,7 +31,6 @@ Follow the `Layer.vue` pattern:
 
 - Components resolve by **bare file name** (directory ignored). Custom component file names must be **globally unique** even across subdirectories. The configured prefix (default `Maplibre`) is prepended for templates.
 - Each composable file name is its exported function name.
-- Non-composable exports (`movkDrawModes`, `drawThemeStyles`) are not auto-scanned; they are registered explicitly by the module/unplugin and available globally in templates.
 
 ## Tokens and runtime config
 
