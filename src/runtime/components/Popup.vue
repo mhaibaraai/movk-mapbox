@@ -37,7 +37,7 @@ function createPopup(map: MaplibreMap): void {
 }
 
 onMounted(async () => {
-  const map = await ctx.whenLoaded()
+  const map = await ctx.whenAttached()
   if (disposed) return
   createPopup(map)
 })

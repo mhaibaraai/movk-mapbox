@@ -16,6 +16,10 @@ export function createMaplibreContext(id: string): { context: MaplibreContext, a
   const isStyleReady = ref(false)
   const readyCallbacks = new Set<(map: MaplibreMap) => void>()
 
+  let resolveAttached!: (value: MaplibreMap) => void
+  const attachedPromise = new Promise<MaplibreMap>((resolve) => {
+    resolveAttached = resolve
+  })
   let resolveLoaded!: (value: MaplibreMap) => void
   const loadedPromise = new Promise<MaplibreMap>((resolve) => {
     resolveLoaded = resolve
@@ -23,6 +27,7 @@ export function createMaplibreContext(id: string): { context: MaplibreContext, a
 
   function attach(instance: MaplibreMap): void {
     map.value = instance
+    resolveAttached(instance)
     instance.on('load', () => {
       isLoaded.value = true
       resolveLoaded(instance)
@@ -43,6 +48,7 @@ export function createMaplibreContext(id: string): { context: MaplibreContext, a
     map,
     isLoaded,
     isStyleReady,
+    whenAttached: () => attachedPromise,
     whenLoaded: () => loadedPromise,
     onReady(callback) {
       readyCallbacks.add(callback)

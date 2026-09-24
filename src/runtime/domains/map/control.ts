@@ -3,7 +3,7 @@ import type { MaybeRefOrGetter } from 'vue'
 import type { ControlPosition, IControl } from 'maplibre-gl'
 import { useMap } from '../../composables/useMap'
 
-/** 控件组件共享逻辑：地图就绪后 addControl；position/options 变化时移除并按新配置重建；卸载时 removeControl。 */
+/** 控件组件共享逻辑：地图实例创建后 addControl；position/options 变化时移除并按新配置重建；卸载时 removeControl。 */
 export function useControl(
   create: () => IControl,
   position?: MaybeRefOrGetter<ControlPosition | undefined>,
@@ -21,7 +21,7 @@ export function useControl(
   }
 
   onMounted(async () => {
-    await ctx.whenLoaded()
+    await ctx.whenAttached()
     rebuild()
   })
 

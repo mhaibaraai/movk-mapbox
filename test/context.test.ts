@@ -138,6 +138,16 @@ describe('createMaplibreContext', () => {
     await expect(promise).resolves.toBe(map)
     expect(context.isLoaded.value).toBe(true)
   })
+
+  it('whenAttached 在 attach 后即 resolve，不等 load', async () => {
+    const { context, attach } = createMaplibreContext('m')
+    const map = fakeMap()
+    const promise = context.whenAttached()
+    attach(map as unknown as MaplibreMap)
+
+    await expect(promise).resolves.toBe(map)
+    expect(context.isLoaded.value).toBe(false)
+  })
 })
 
 describe('MaplibreMap provide 时机', () => {

@@ -38,6 +38,8 @@ export interface MaplibreContext {
   isLoaded: Ref<boolean>
   /** 当前样式是否已解析（style.load 置真、styledataloading 置假）；不受瓦片/源加载影响 */
   isStyleReady: Ref<boolean>
+  /** 地图实例创建后 resolve；Marker、Popup、控件、相机等无需等待瓦片加载的操作用它 */
+  whenAttached: () => Promise<MaplibreMap>
   /** 样式首次加载完成时 resolve */
   whenLoaded: () => Promise<MaplibreMap>
   /**

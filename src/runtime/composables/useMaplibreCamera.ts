@@ -23,7 +23,7 @@ function isGeoJSON(target: LngLatBoundsLike | GeoJSON): target is GeoJSON {
     && typeof (target as { type?: unknown }).type === 'string'
 }
 
-/** 相机操作助手；所有方法等待地图加载完成后执行。 */
+/** 相机操作助手；所有方法等待地图实例创建后执行。 */
 export function useMaplibreCamera(options: UseMaplibreCameraOptions = {}): UseMaplibreCameraReturn {
   const resolve = useContextResolver(options.mapId)
 
@@ -33,7 +33,7 @@ export function useMaplibreCamera(options: UseMaplibreCameraOptions = {}): UseMa
       logger.warn('useMaplibreCamera: no map context found; pass options.mapId or call inside <MaplibreMap>.')
       return
     }
-    action(await ctx.whenLoaded())
+    action(await ctx.whenAttached())
   }
 
   return {
