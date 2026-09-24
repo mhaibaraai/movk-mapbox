@@ -93,11 +93,14 @@ export default defineNuxtConfig({
       forceUseTs: true,
       schema: {
         ignore: [
-          // maplibre 表达式 / 样式规范是递归元组联合，展开 schema 会耗尽内存
+          // maplibre 表达式 / 样式规范是递归元组联合，展开 schema 会耗尽内存；
+          // 可选 prop 的 `T | undefined` 联合无声明，需按成员判定，否则 Props 表按成员拼出超长类型致高亮请求 431
           (_name: string, type: import('typescript').Type) => {
-            const declaration = type.aliasSymbol?.declarations?.[0] ?? type.symbol?.declarations?.[0]
-            const file = declaration?.getSourceFile().fileName
-            return file && /maplibre-gl/.test(file) ? true : undefined
+            const fromMaplibre = (t: import('typescript').Type): boolean => {
+              const declaration = t.aliasSymbol?.declarations?.[0] ?? t.symbol?.declarations?.[0]
+              return /maplibre-gl/.test(declaration?.getSourceFile().fileName ?? '')
+            }
+            return (fromMaplibre(type) || (type.isUnion() && type.types.some(fromMaplibre))) ? true : undefined
           }
         ]
       }
