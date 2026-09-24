@@ -17,8 +17,8 @@ const state = computed(() => ({ mode: mode.value, count: features.value.length }
 
 <template>
   <MapShowcase
-    title="Draw 自定义模式"
-    description="movkDrawModes 预设的 terra-draw 规则图形模式：矩形 / 圆 / 椭圆 / 扇形，选择模式下可整体拖拽。"
+    title="Draw 模式子集"
+    description="modes 按名限定为规则图形：矩形 / 圆 / 椭圆 / 扇形，选择模式下可整体拖拽。"
     :state="state"
   >
     <template #toolbar>
@@ -38,7 +38,8 @@ const state = computed(() => ({ mode: mode.value, count: features.value.length }
         v-model:features="features"
         v-model:mode="mode"
         position="top-left"
-        :controls="false"
+        :modes="['select', 'rectangle', 'circle', 'ellipse', 'sector']"
+        :toolbar="false"
       />
     </DemoMap>
   </MapShowcase>
