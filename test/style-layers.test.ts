@@ -5,6 +5,7 @@ import type { LayerSpecification } from 'maplibre-gl'
 import MaplibreMap from '../src/runtime/components/Map.vue'
 import MaplibreLayer from '../src/runtime/components/Layer.vue'
 import MaplibreLayerGroup from '../src/runtime/components/LayerGroup.vue'
+import { tiandituStyle } from '../src/runtime/utils/tianditu'
 import type { FakeStyleMap } from './fixtures/fake-style-map'
 
 const created = vi.hoisted(() => [] as FakeStyleMap[])
@@ -92,6 +93,30 @@ describe('MaplibreLayerGroup styleLayers', () => {
     map.replaceStyle([{ id: 'label-new', type: 'symbol' }])
     await nextTick()
     expect(map.layers.get('label-new')!.layout.visibility).toBe('none')
+  })
+
+  it('天地图栅格注记按图层 id 认领，底图图层不受影响', async () => {
+    const opacity = ref(0.5)
+    const visible = ref(true)
+    const isAnnotation = (layer: LayerSpecification) => /^tianditu-c[vit]a$/.test(layer.id)
+    mount(defineComponent({
+      setup() {
+        return () => h(MaplibreMap, { options: {} }, {
+          default: () => h(MaplibreLayerGroup, { title: '注记', visible: visible.value, opacity: opacity.value, styleLayers: isAnnotation })
+        })
+      }
+    }))
+    const map = created.at(-1)!
+    map.fire('style.load')
+    map.replaceStyle(tiandituStyle('vec', { annotation: true, tk: 'test' }).layers)
+    await nextTick()
+    expect(map.layers.get('tianditu-cva')!.paint['raster-opacity']).toBe(0.5)
+    expect(map.layers.get('tianditu-vec')!.paint['raster-opacity']).toBeUndefined()
+
+    visible.value = false
+    await nextTick()
+    expect(map.layers.get('tianditu-cva')!.layout.visibility).toBe('none')
+    expect(map.layers.get('tianditu-vec')!.layout.visibility).toBeUndefined()
   })
 
   it('卸载时恢复原值', async () => {
