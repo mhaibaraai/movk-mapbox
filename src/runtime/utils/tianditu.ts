@@ -1,5 +1,6 @@
-import type { RasterSourceSpecification } from '@maplibre/maplibre-gl-style-spec'
+import type { RasterSourceSpecification, StyleSpecification } from '@maplibre/maplibre-gl-style-spec'
 import { getMaplibreConfig } from '../domains/map/config'
+import { blankStyle } from '../domains/map/style'
 import { logger } from './logger'
 import { wmtsRasterSource } from './wmts'
 
@@ -54,4 +55,25 @@ export function tiandituRasterSource(
     attribution: '© 天地图',
     params: { tk: tk ?? '' }
   })
+}
+
+export interface TiandituStyleOptions extends TiandituSourceOptions {
+  /** 叠加对应注记图层（vec→cva / img→cia / ter→cta） */
+  annotation?: boolean
+}
+
+/**
+ * 生成以天地图为底图的完整样式，可直接作为 MaplibreMap 的 options.style 或底图切换项，
+ * 与矢量样式经同一 setStyle 机制切换；glyphs 取自运行时配置，便于叠加文字图层。
+ */
+export function tiandituStyle(layer: TiandituLayerType, options: TiandituStyleOptions = {}): StyleSpecification {
+  const { annotation, ...sourceOptions } = options
+  const types = [layer, annotation ? tiandituAnnotationFor(layer) : undefined]
+    .filter((type): type is TiandituLayerType => type !== undefined)
+  const style = blankStyle()
+  return {
+    ...style,
+    sources: Object.fromEntries(types.map(type => [`tianditu-${type}`, tiandituRasterSource(type, sourceOptions)])),
+    layers: types.map(type => ({ id: `tianditu-${type}`, type: 'raster', source: `tianditu-${type}` }))
+  }
 }

@@ -66,6 +66,7 @@ function parentMap(styleLoaded = true) {
   const map = fakeCameraMap({ center: { lng: 120, lat: 30 }, zoom: 10 })
   return Object.assign(map, {
     isStyleLoaded: () => styleLoaded,
+    getLayersOrder: () => [] as string[],
     getStyle: () => ({ version: 8, name: 'parent', sources: {}, layers: [] }),
     getContainer: () => ({ clientWidth: 100, clientHeight: 50 }),
     unproject: (p: [number, number]) => ({ lng: p[0], lat: p[1] }),

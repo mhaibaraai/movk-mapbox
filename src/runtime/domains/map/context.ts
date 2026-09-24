@@ -14,6 +14,7 @@ export function createMaplibreContext(id: string): { context: MaplibreContext, a
   const map = shallowRef<MaplibreMap>()
   const isLoaded = ref(false)
   const isStyleReady = ref(false)
+  const styleLayerIds = shallowRef<readonly string[]>([])
   const readyCallbacks = new Set<(map: MaplibreMap) => void>()
 
   let resolveAttached!: (value: MaplibreMap) => void
@@ -39,6 +40,8 @@ export function createMaplibreContext(id: string): { context: MaplibreContext, a
     // style.load 在初次加载与每次 setStyle 后触发：重跑就绪回调以便重建 source/layer
     instance.on('style.load', () => {
       isStyleReady.value = true
+      // 先于就绪回调快照：此刻只有样式自带图层，运行时图层尚未由回调重建
+      styleLayerIds.value = instance.getLayersOrder()
       for (const callback of readyCallbacks) callback(instance)
     })
   }
@@ -48,6 +51,7 @@ export function createMaplibreContext(id: string): { context: MaplibreContext, a
     map,
     isLoaded,
     isStyleReady,
+    styleLayerIds,
     whenAttached: () => attachedPromise,
     whenLoaded: () => loadedPromise,
     onReady(callback) {

@@ -38,6 +38,7 @@ const { maps, markers, popups, makeFakeMap } = vi.hoisted(() => {
         handlers[type]?.forEach(fn => fn(e))
       },
       isStyleLoaded: () => true,
+      getLayersOrder: () => [] as string[],
       resize() {},
       remove() {},
       getCanvasContainer: () => canvasContainer,

@@ -48,6 +48,11 @@ export function useCategory() {
         id: 'info',
         title: t('category.controls.info'),
         icon: 'i-lucide-info'
+      },
+      {
+        id: 'layer-management',
+        title: t('category.controls.layerManagement'),
+        icon: 'i-lucide-layers'
       }
     ],
     'effects': [

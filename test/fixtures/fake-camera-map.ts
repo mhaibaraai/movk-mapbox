@@ -49,6 +49,7 @@ export function fakeCameraMap(initial: Partial<CameraState> = {}, options: Recor
     },
     listenerCount: (type: string) => handlers[type]?.size ?? 0,
     isStyleLoaded: () => true,
+    getLayersOrder: () => [] as string[],
     resize() {
       self.resizeCalls++
     },

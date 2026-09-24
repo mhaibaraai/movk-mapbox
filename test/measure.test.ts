@@ -30,6 +30,7 @@ const { maps, makeFakeMap } = vi.hoisted(() => {
         handlers[type]?.forEach(fn => fn(e))
       },
       isStyleLoaded: () => true,
+      getLayersOrder: () => [] as string[],
       // 复刻 maplibre：remove() 后 style 为 undefined，getLayer/getSource 解引用即抛
       getLayer: (id: string) => {
         if (removed) throw new TypeError('Cannot read properties of undefined (reading \'getOwnLayer\')')

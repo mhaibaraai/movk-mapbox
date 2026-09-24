@@ -27,6 +27,7 @@ const { maps, makeFakeMap } = vi.hoisted(() => {
         handlers[type]?.forEach(fn => fn(e))
       },
       isStyleLoaded: () => true,
+      getLayersOrder: () => [] as string[],
       addControl(control: { onAdd: (map: unknown) => HTMLElement, onRemove: () => void }) {
         self.controls.push(control)
       },

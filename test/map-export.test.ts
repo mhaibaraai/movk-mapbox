@@ -28,6 +28,7 @@ const { maps, makeFakeMap } = vi.hoisted(() => {
         handlers[`once:${type}`]?.clear()
       },
       isStyleLoaded: () => true,
+      getLayersOrder: () => [] as string[],
       triggerRepaint() {
         self.triggerRepaintCalls++
         // 模拟下一帧渲染

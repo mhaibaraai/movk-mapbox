@@ -12,7 +12,7 @@
     "@iconify-json/vscode-icons": "^1.2.79",
     "@maplibre/maplibre-gl-style-spec": "^26.4.4",
     "@movk/maplibre": "workspace:*",
-    "@movk/nuxt-docs": "^2.4.0",
+    "@movk/nuxt-docs": "^2.4.1",
     "@nuxt/content": "^3.16.1",
     "@nuxtjs/i18n": "^10.6.0",
     "@vercel/analytics": "^2.0.1",

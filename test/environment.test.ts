@@ -40,6 +40,7 @@ const { maps, makeFakeMap } = vi.hoisted(() => {
         handlers[type]?.forEach(fn => fn(e))
       },
       isStyleLoaded: () => self.styleLoaded,
+      getLayersOrder: () => [] as string[],
       setSky(value: unknown) {
         self.checkLoaded()
         self.skyCalls.push(value)

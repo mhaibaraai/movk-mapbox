@@ -13,6 +13,7 @@ function fakeMap() {
     on: (type: string, fn: (e?: unknown) => void) => { handlers[type] = fn },
     off: () => {},
     isStyleLoaded: () => false,
+    getLayersOrder: () => [] as string[],
     remove: () => {},
     resize: () => {},
     handlers
@@ -31,6 +32,7 @@ function loadingMap() {
       handlers[type]?.delete(fn)
     },
     isStyleLoaded: () => styleLoaded,
+    getLayersOrder: () => [] as string[],
     setStyleLoaded: (value: boolean) => { styleLoaded = value },
     emit: (type: string) => {
       for (const fn of [...(handlers[type] ?? [])]) fn()
@@ -44,6 +46,10 @@ vi.mock('maplibre-gl', () => {
   class FakeGlMap {
     on() {
       return this
+    }
+
+    getLayersOrder() {
+      return [] as string[]
     }
 
     isStyleLoaded() {
@@ -70,6 +76,19 @@ describe('createMaplibreContext', () => {
 
     map.handlers['style.load']!()
     expect(calls).toHaveLength(1)
+  })
+
+  it('style.load 时先快照样式自带图层，再执行就绪回调', () => {
+    const { context, attach } = createMaplibreContext('m')
+    const order = ['background', 'roads']
+    const map = { ...fakeMap(), getLayersOrder: () => [...order] }
+    // 就绪回调模拟组件建层：快照不应包含运行时图层
+    context.onReady(() => order.push('runtime-layer'))
+    attach(map as unknown as MaplibreMap)
+
+    map.handlers['style.load']!()
+    expect(context.styleLayerIds.value).toEqual(['background', 'roads'])
+    expect(order).toContain('runtime-layer')
   })
 
   it('样式已就绪时 onReady 同步执行', () => {

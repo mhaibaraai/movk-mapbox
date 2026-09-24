@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { inject, onUnmounted, watch } from 'vue'
+import { computed, inject, onUnmounted, watch } from 'vue'
 import { omitUndefined } from '@movk/core'
 import type { Map as MaplibreMap, MapEventType, MapLayerEventType } from 'maplibre-gl'
 import type { FilterSpecification, LayerSpecification, SourceSpecification } from '@maplibre/maplibre-gl-style-spec'
 import { useMap } from '../composables/useMap'
 import { LayerGroupKey } from '../domains/map/layer-group'
 import { applyLayerProps, type LayerUpdate } from '../utils/layer'
+import { opacityPropsFor, scaleOpacity } from '../utils/layer-opacity'
 import { bindMapEvents } from '../utils/events'
 import { updateSource } from '../utils/source'
 
@@ -69,8 +70,28 @@ const emit = defineEmits<{
 const LAYER_EVENTS = ['click', 'dblclick', 'mousedown', 'mouseup', 'mousemove', 'mouseenter', 'mouseleave', 'contextmenu'] as const
 
 const ctx = useMap()
-// 所属图层组（可选）：提供缺省插入锚点与组级显隐
+// 所属图层组（可选）：提供缺省插入锚点、组级显隐与透明度
 const group = inject(LayerGroupKey, null)
+
+// 组状态叠加到使用方的 layout / paint：组隐藏时强制 none，组透明度按类型缩放透明度属性
+const effectiveLayout = computed<PropBag | undefined>(() => {
+  if (!group) return props.layout
+  const visibility = group.visible.value ? (props.layout?.visibility ?? 'visible') : 'none'
+  return { ...props.layout, visibility }
+})
+
+const effectivePaint = computed<PropBag | undefined>(() => {
+  const factor = group?.opacity.value ?? 1
+  if (factor === 1) return props.paint
+  const scaled = Object.fromEntries(
+    opacityPropsFor(props.type).map(key => [key, scaleOpacity(props.paint?.[key], factor)])
+  )
+  return { ...props.paint, ...scaled }
+})
+
+if (group) {
+  onUnmounted(group.registerLayer(() => ({ layerId: props.layerId, type: props.type, paint: props.paint })))
+}
 const inlineSourceId = `${props.layerId}__source`
 const hasInlineSource = typeof props.source === 'object'
 
@@ -84,8 +105,8 @@ function buildSpec(): LayerSpecification {
     id: props.layerId,
     type: props.type,
     source: resolveSourceId(),
-    paint: props.paint,
-    layout: props.layout,
+    paint: effectivePaint.value,
+    layout: effectiveLayout.value,
     filter: props.filter,
     minzoom: props.minzoom,
     maxzoom: props.maxzoom
@@ -100,15 +121,19 @@ function resolveBeforeId(map: MaplibreMap): string | undefined {
   return anchor && map.getLayer(anchor) ? anchor : undefined
 }
 
+function currentUpdate(): LayerUpdate {
+  return { id: props.layerId, paint: effectivePaint.value, layout: effectiveLayout.value, filter: props.filter, minzoom: props.minzoom, maxzoom: props.maxzoom }
+}
+
+let prev: LayerUpdate = currentUpdate()
+
 function addLayer(map: MaplibreMap): void {
   if (map.getLayer(props.layerId)) return
   if (hasInlineSource && !map.getSource(inlineSourceId)) {
     map.addSource(inlineSourceId, props.source as SourceSpecification)
   }
   map.addLayer(buildSpec(), resolveBeforeId(map))
-  if (group && !group.visible.value) {
-    map.setLayoutProperty(props.layerId, 'visibility', 'none')
-  }
+  prev = currentUpdate()
 }
 
 let stopEvents: (() => void) | undefined
@@ -139,13 +164,12 @@ function bindLayerEvents(map: MaplibreMap): void {
   stopEvents = bindMapEvents(map, LAYER_EVENTS, (type, event) => emit(type as never, event as never), props.layerId)
 }
 
-let prev: LayerUpdate = { id: props.layerId, paint: props.paint, layout: props.layout, filter: props.filter, minzoom: props.minzoom, maxzoom: props.maxzoom }
 watch(
-  () => [props.paint, props.layout, props.filter, props.minzoom, props.maxzoom] as const,
+  () => [effectivePaint.value, effectiveLayout.value, props.filter, props.minzoom, props.maxzoom] as const,
   () => {
     const map = ctx.map.value
     if (!map?.getLayer(props.layerId)) return
-    const next: LayerUpdate = { id: props.layerId, paint: props.paint, layout: props.layout, filter: props.filter, minzoom: props.minzoom, maxzoom: props.maxzoom }
+    const next = currentUpdate()
     applyLayerProps(map, next, prev)
     prev = next
   },
@@ -165,14 +189,6 @@ watch(() => props.beforeId ?? group?.beforeId.value, () => {
   if (!map?.getLayer(props.layerId)) return
   map.moveLayer(props.layerId, resolveBeforeId(map))
 })
-
-if (group) {
-  watch(group.visible, (visible) => {
-    const map = ctx.map.value
-    if (!map?.getLayer(props.layerId)) return
-    map.setLayoutProperty(props.layerId, 'visibility', visible ? 'visible' : 'none')
-  })
-}
 
 onUnmounted(() => {
   stopReady()
