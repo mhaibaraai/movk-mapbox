@@ -1,25 +1,17 @@
 <script setup lang="ts">
-import { inject, onMounted, onUnmounted, provide, useId, useTemplateRef, watch } from 'vue'
+import { onMounted, onUnmounted, provide, useId, useTemplateRef, watch } from 'vue'
 import { useResizeObserver } from '@vueuse/core'
 import { omitUndefined } from '@movk/core'
 import { LngLat } from 'maplibre-gl'
 import type { LngLatLike, Map as MaplibreMap, MapEventType, MapOptions } from 'maplibre-gl'
-import type { StyleSpecification } from '@maplibre/maplibre-gl-style-spec'
 import type { MaplibreMapOptions } from '../types'
 import { createMaplibreContext, MaplibreContextKey } from '../domains/map/context'
 import { createMaplibreGl } from '../domains/map/create-map'
-import { getMaplibreConfig } from '../domains/map/config'
-import { MapGroupKey } from '../domains/map/group'
+import { blankStyle } from '../domains/map/style'
 import { getMapContext, registerMap, unregisterMap } from '../domains/map/registry'
 import { bindMapEvents } from '../utils/events'
 
 defineOptions({ inheritAttrs: false })
-
-// MapLibre 无内置底图，缺省 style 时实例没有样式，style.load 永不触发；以空白样式兜底（如仅叠加天地图）
-function blankStyle(): StyleSpecification {
-  const { glyphs } = getMaplibreConfig()
-  return { version: 8, ...(glyphs ? { glyphs } : {}), sources: {}, layers: [] }
-}
 
 const props = withDefaults(defineProps<{
   /** 地图 id；省略时自动生成。提供后可经 useMaplibre(id) 外部访问 */
@@ -80,8 +72,6 @@ const created = existing ? undefined : createMaplibreContext(mapId)
 const context = existing ?? created!.context
 provide(MaplibreContextKey, context)
 if (created && props.mapId) registerMap(context)
-// 位于多图容器（如卷帘）内时登记上下文，容器据此联动而无需使用方填 map-id
-const disposeGroup = inject(MapGroupKey, null)?.(context)
 
 function syncModelsFromMap(map: MaplibreMap): void {
   const c = map.getCenter()
@@ -164,7 +154,6 @@ watch(() => props.options?.style, (style) => {
 })
 
 onUnmounted(() => {
-  disposeGroup?.()
   if (props.persistent) return
   context.map.value?.remove()
   unregisterMap(context.id)
@@ -190,6 +179,14 @@ defineExpose({
     width: 100%;
     height: 100%;
   }
+}
+
+/*
+ * 层叠约定：根节点隔离，控件与叠加层的 z-index 不外溢到页面；
+ * 容器不得形成层叠上下文，maplibre 控件角（z-index: 2）才能压在插槽叠加层（如卷帘，z-index: 1）之上
+ */
+.movk-maplibre {
+  isolation: isolate;
 }
 
 .movk-maplibre > .movk-maplibre__container {
