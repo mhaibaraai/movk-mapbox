@@ -130,8 +130,8 @@ All components are prefixed with `Maplibre` by default (configurable). Grouped b
 | Core | `MaplibreMap` `MaplibreSource` `MaplibreLayer` `MaplibreLayerGroup` `MaplibreCustomLayer` `MaplibreMarker` `MaplibreLottieMarker` `MaplibrePopup` `MaplibreTooltip` |
 | Layers | `MaplibreBuildingLayer` `MaplibreClusterLayer` `MaplibreImageLayer` `MaplibreRasterLayer` `MaplibreVideoLayer` |
 | Effects | `MaplibreRadar` `MaplibreDiffusionCircle` `MaplibreGlowCircle` `MaplibreWaveCircle` `MaplibreGradientBuilding` `MaplibreTextureBuilding` `MaplibreWindowBuilding` `MaplibreFlowBuilding` `MaplibreMigration` `MaplibreTrail` `MaplibreAnimatedImage` `MaplibreSpriteImage` |
-| Environment | `MaplibreSky` `MaplibreTerrain` `MaplibreTemperature` |
-| Controls | `MaplibreNavigationControl` `MaplibreGeolocateControl` `MaplibreFullscreenControl` `MaplibreScaleControl` `MaplibreAttributionControl` |
+| Environment | `MaplibreSky` `MaplibreProjection` `MaplibreTerrain` `MaplibreTemperature` |
+| Controls | `MaplibreNavigationControl` `MaplibreGeolocateControl` `MaplibreFullscreenControl` `MaplibreGlobeControl` `MaplibreScaleControl` `MaplibreAttributionControl` |
 | Extensions | `MaplibreDrawControl` `MaplibreTiandituLayer` `MaplibreWmsLayer` `MaplibreWmtsLayer` |
 | Buffers | `MaplibreBufferCircle` `MaplibreBufferEllipse` `MaplibreBufferLine` `MaplibreBufferPolygon` `MaplibreBufferSector` |
 
