@@ -42,6 +42,7 @@ const { maps, rendered, sourceFeatures, makeFakeMap } = vi.hoisted(() => {
       querySourceFeatures: vi.fn(() => [...sourceFeatures]),
       getCanvas: () => canvas,
       isStyleLoaded: () => true,
+      getLayersOrder: () => [] as string[],
       resize() {},
       remove() {},
       getCenter: () => ({ lng: 0, lat: 0 }),

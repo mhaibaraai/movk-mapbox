@@ -28,6 +28,7 @@ const { maps, makeFakeMap } = vi.hoisted(() => {
         handlers[type]?.forEach(fn => fn(e))
       },
       isStyleLoaded: () => true,
+      getLayersOrder: () => [] as string[],
       addControl() {},
       removeControl() {},
       resize() {},

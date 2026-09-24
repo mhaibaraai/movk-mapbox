@@ -56,6 +56,7 @@ const { maps, popups, rendered, makeFakeMap } = vi.hoisted(() => {
       },
       getCanvas: () => canvas,
       isStyleLoaded: () => true,
+      getLayersOrder: () => [] as string[],
       resize() {},
       remove() {},
       getCenter: () => ({ lng: 0, lat: 0 }),

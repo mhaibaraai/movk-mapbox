@@ -33,6 +33,7 @@ const { maps, makeFakeMap } = vi.hoisted(() => {
         handlers[type]?.forEach(fn => fn(e))
       },
       isStyleLoaded: () => self.styleLoaded,
+      getLayersOrder: () => [] as string[],
       getLayer: (id: string) => (layers.has(id) ? { id } : undefined),
       addLayer: (spec: { id: string }) => layers.add(spec.id),
       removeLayer: (id: string) => layers.delete(id),

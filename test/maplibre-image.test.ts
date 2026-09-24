@@ -30,6 +30,7 @@ const { maps, makeFakeMap } = vi.hoisted(() => {
         handlers[type]?.forEach(fn => fn(e))
       },
       isStyleLoaded: () => true,
+      getLayersOrder: () => [] as string[],
       loadImage: (url: string) => new Promise((resolve, reject) => loads.push({ url, resolve, reject })),
       hasImage: (name: string) => images.has(name),
       addImage: (name: string, data: unknown) => images.set(name, data),
