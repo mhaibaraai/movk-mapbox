@@ -116,6 +116,17 @@ const controlsNav: NavigationMenuItem = {
   ]
 }
 
+const multiMapNav: NavigationMenuItem = {
+  label: '多图联动',
+  icon: 'i-lucide-columns-2',
+  defaultOpen: true,
+  children: [
+    { label: 'Swipe 卷帘对比', to: '/multi-map/swipe' },
+    { label: 'Minimap 鹰眼', to: '/multi-map/minimap' },
+    { label: 'useMapSync 多图联动', to: '/multi-map/sync' }
+  ]
+}
+
 const extensionsNav: NavigationMenuItem = {
   label: '扩展',
   icon: 'i-lucide-puzzle',
@@ -147,6 +158,7 @@ const components: NavigationMenuItem[] = [
   effectsNav,
   toolsNav,
   controlsNav,
+  multiMapNav,
   extensionsNav
 ]
 
