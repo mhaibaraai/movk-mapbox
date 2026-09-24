@@ -7,6 +7,7 @@ import MaplibreCustomLayer from '../src/runtime/components/CustomLayer.vue'
 import MaplibreTiandituLayer from '../src/runtime/components/extensions/TiandituLayer.vue'
 import { useMap } from '../src/runtime/composables/useMap'
 import { setMaplibreConfig } from '../src/runtime/domains/map/config'
+import { useControl } from '../src/runtime/domains/map/control'
 
 // 富功能 fake gl Map：记录 addLayer 次数、图层级 on 绑定次数，并可手动 fire 事件
 const { maps, makeFakeMap } = vi.hoisted(() => {
@@ -78,7 +79,8 @@ const { maps, makeFakeMap } = vi.hoisted(() => {
       setBearing() {},
       setPitch() {},
       setStyle() {},
-      addControl() {},
+      addControlCalls: 0,
+      addControl: () => self.addControlCalls++,
       removeControl() {}
     }
     maps.push(self)
@@ -398,6 +400,21 @@ describe('attrs', () => {
   it('$attrs 透传的 class 与根节点类合并', () => {
     const wrapper = mount(MaplibreMap, { attrs: { class: 'h-115' } })
     expect(wrapper.classes()).toEqual(expect.arrayContaining(['movk-maplibre', 'h-115']))
+    wrapper.unmount()
+  })
+})
+
+describe('useControl', () => {
+  it('地图实例创建后即 addControl，不等 load', async () => {
+    const Control = defineComponent({
+      setup() {
+        useControl(() => ({ onAdd: () => document.createElement('div'), onRemove() {} }))
+        return () => null
+      }
+    })
+    const wrapper = mount(MaplibreMap, { props: { options: {} }, slots: { default: () => h(Control) } })
+    await nextTick()
+    expect(maps[maps.length - 1]!.addControlCalls).toBe(1)
     wrapper.unmount()
   })
 })

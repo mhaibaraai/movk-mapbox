@@ -118,11 +118,10 @@ describe('MaplibrePopup 挂载前的内容隔离', () => {
   })
 
   // 回归：地图就绪前 popup 内容不得参与文档流，否则会裸露在地图容器左上角
-  it('地图未 load 时，内容被 display:none 的宿主隔离', async () => {
+  it('maplibre Popup 创建前，内容被 display:none 的宿主隔离', () => {
     const { wrapper } = mountPopup()
-    await nextTick()
 
-    // 尚未创建 maplibre Popup（还在 await whenLoaded）
+    // 同步断言：whenAttached 的微任务续体尚未执行
     expect(popups).toHaveLength(0)
 
     const el = cardEl(wrapper).parentElement!
@@ -131,13 +130,10 @@ describe('MaplibrePopup 挂载前的内容隔离', () => {
     wrapper.unmount()
   })
 
-  it('地图 load 后把内层节点交给 maplibre，内容脱离隐藏宿主', async () => {
-    const { wrapper, map } = mountPopup()
-    await nextTick()
+  it('地图实例创建后把内层节点交给 maplibre，不等 load', async () => {
+    const { wrapper } = mountPopup()
     const el = cardEl(wrapper).parentElement!
 
-    map().fire('load')
-    await nextTick()
     await nextTick()
 
     expect(popups).toHaveLength(1)

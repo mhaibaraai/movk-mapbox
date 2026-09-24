@@ -392,15 +392,24 @@ describe('MaplibreMarker options 响应式', () => {
     wrapper.unmount()
   })
 
-  it('地图就绪前卸载不会创建 marker', async () => {
+  it('地图实例创建后即挂载 marker，不等 load', async () => {
     const Parent = defineComponent({
       setup: () => () => h(MaplibreMap, { options: {} }, { default: () => h(MaplibreMarker, { lnglat: [0, 0] }) })
     })
     const wrapper = mount(Parent, { attachTo: document.body })
     await nextTick()
-    const map = maps[maps.length - 1]!
+    expect(maps[maps.length - 1]!.fired).not.toContain('load')
+    expect(markers).toHaveLength(1)
     wrapper.unmount()
-    map.fire('load')
+  })
+
+  it('地图就绪前卸载不会创建 marker', async () => {
+    const Parent = defineComponent({
+      setup: () => () => h(MaplibreMap, { options: {} }, { default: () => h(MaplibreMarker, { lnglat: [0, 0] }) })
+    })
+    // 同步卸载：whenAttached 的微任务续体尚未执行
+    const wrapper = mount(Parent, { attachTo: document.body })
+    wrapper.unmount()
     await nextTick()
     await nextTick()
     expect(markers).toHaveLength(0)
