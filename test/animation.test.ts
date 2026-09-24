@@ -124,14 +124,19 @@ describe('useMapAnimation', () => {
     return { frames, wrapper, map: maps[maps.length - 1]! }
   }
 
-  it('style.load 前不调 frame；之后以动画起点计 elapsed', () => {
+  it('首次 load 前不调 frame；之后以动画起点计 elapsed', () => {
     const raf = stubRaf()
     const { frames, wrapper, map } = mountAnimation()
 
     raf.tick(1000)
     expect(frames).toHaveLength(0)
 
+    // 样式已解析但首次 load 未触发：逐帧改样式会一直推迟 load
     map.fire('style.load')
+    raf.tick(1500)
+    expect(frames).toHaveLength(0)
+
+    map.fire('load')
     raf.tick(2000)
     raf.tick(2500)
     // 起点为首个有效帧时间戳，elapsed 从 0 起算
@@ -143,6 +148,7 @@ describe('useMapAnimation', () => {
     const raf = stubRaf()
     const { frames, wrapper, map } = mountAnimation()
     map.fire('style.load')
+    map.fire('load')
 
     map.styleLoaded = false
     raf.tick(1000)
@@ -156,6 +162,7 @@ describe('useMapAnimation', () => {
     const raf = stubRaf()
     const { frames, wrapper, map } = mountAnimation()
     map.fire('style.load')
+    map.fire('load')
     raf.tick(1000)
 
     map.fire('styledataloading')
@@ -172,6 +179,7 @@ describe('useMapAnimation', () => {
     const raf = stubRaf()
     const { frames, wrapper, map } = mountAnimation()
     map.fire('style.load')
+    map.fire('load')
 
     raf.tick(1000)
     raf.tick(1016)
