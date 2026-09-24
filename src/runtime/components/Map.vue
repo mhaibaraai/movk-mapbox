@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, provide, useId, useTemplateRef, watch } from 'vue'
+import { inject, onMounted, onUnmounted, provide, useId, useTemplateRef, watch } from 'vue'
 import { useResizeObserver } from '@vueuse/core'
 import { omitUndefined } from '@movk/core'
 import { LngLat } from 'maplibre-gl'
@@ -9,6 +9,7 @@ import type { MaplibreMapOptions } from '../types'
 import { createMaplibreContext, MaplibreContextKey } from '../domains/map/context'
 import { createMaplibreGl } from '../domains/map/create-map'
 import { getMaplibreConfig } from '../domains/map/config'
+import { MapGroupKey } from '../domains/map/group'
 import { getMapContext, registerMap, unregisterMap } from '../domains/map/registry'
 import { bindMapEvents } from '../utils/events'
 
@@ -79,6 +80,8 @@ const created = existing ? undefined : createMaplibreContext(mapId)
 const context = existing ?? created!.context
 provide(MaplibreContextKey, context)
 if (created && props.mapId) registerMap(context)
+// 位于多图容器（如卷帘）内时登记上下文，容器据此联动而无需使用方填 map-id
+const disposeGroup = inject(MapGroupKey, null)?.(context)
 
 function syncModelsFromMap(map: MaplibreMap): void {
   const c = map.getCenter()
@@ -161,6 +164,7 @@ watch(() => props.options?.style, (style) => {
 })
 
 onUnmounted(() => {
+  disposeGroup?.()
   if (props.persistent) return
   context.map.value?.remove()
   unregisterMap(context.id)
