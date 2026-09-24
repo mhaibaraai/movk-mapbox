@@ -33,7 +33,8 @@ const districts: FeatureCollection = {
   ]
 }
 
-const isLabel = (layer: LayerSpecification) => layer.type === 'symbol'
+// 矢量样式的文字图层，或天地图注记栅格图层（tianditu-cva / cia / cta）
+const isLabel = (layer: LayerSpecification) => layer.type === 'symbol' || /^tianditu-c[vit]a$/.test(layer.id)
 const isRoad = (layer: LayerSpecification) => 'source-layer' in layer && layer['source-layer'] === 'transportation'
 
 const tree = useLayerTree({ mapId })
@@ -42,7 +43,7 @@ const tree = useLayerTree({ mapId })
 <template>
   <MapShowcase
     title="图层管理"
-    description="MaplibreLayerGroup 是唯一数据源：图层控件、图例与右侧 useLayerTree 侧栏读写同一份 v-model；底图切换后业务图层与底图图层（注记、道路）状态保留。"
+    description="MaplibreLayerGroup 是唯一数据源：图层控件、图例与右侧 useLayerTree 侧栏读写同一份 v-model；底图切换后业务图层与底图图层（注记、道路）状态保留。天地图道路绘制在底图瓦片中，无法单独控制。"
   >
     <MaplibreMap :map-id="mapId" :options="{ style, center: [116.41, 39.91], zoom: 11.5 }">
       <MaplibreLayerGroup title="人口片区" :opacity="0.7">
