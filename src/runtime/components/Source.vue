@@ -5,7 +5,7 @@ import { useMap } from '../composables/useMap'
 import { updateSource } from '../utils/source'
 
 const props = defineProps<{
-  /** 数据源 id，供图层经 source 字段按字符串引用；变更需配合 :key 重建 */
+  /** 数据源 id，供图层经 source 字段按字符串引用；变更需配合 `:key` 重建 */
   sourceId: string
   /**
    * 数据源定义，变化时按类型增量更新（setData / setTiles 等）

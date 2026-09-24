@@ -21,10 +21,10 @@ type FeatureId = TerraDrawExtend.FeatureId
 type OnFinishContext = Parameters<TerraDrawEventListeners['finish']>[1]
 
 const props = withDefaults(defineProps<{
-  /** 工具栏停靠位置；省略用地图默认位置，变更需配合 :key 重建 */
+  /** 工具栏停靠位置；省略用地图默认位置，变更需配合 `:key` 重建 */
   position?: ControlPosition
   /**
-   * 启用的模式及工具栏按钮顺序：内置模式名套用 theme，terra-draw 实例原样使用；变更需配合 :key 重建
+   * 启用的模式及工具栏按钮顺序：内置模式名套用 theme，terra-draw 实例原样使用；变更需配合 `:key` 重建
    * @defaultValue `['select', 'point', 'linestring', 'polygon', 'rectangle', 'circle', 'ellipse', 'sector']`
    * @see https://github.com/JamesLMilner/terra-draw/blob/main/guides/4.MODES.md
    */
@@ -32,11 +32,11 @@ const props = withDefaults(defineProps<{
   /** 内置模式的主题，变更即时生效；要素 properties.color 优先于主题色 */
   theme?: DrawThemeOptions
   /**
-   * 是否显示内置工具栏（模式按钮 + 删除按钮）；变更需配合 :key 重建
+   * 是否显示内置工具栏（模式按钮 + 删除按钮）；变更需配合 `:key` 重建
    * @defaultValue true
    */
   toolbar?: boolean
-  /** 绘制图层插入到该图层之下；变更需配合 :key 重建 */
+  /** 绘制图层插入到该图层之下；变更需配合 `:key` 重建 */
   renderBelowLayerId?: string
 }>(), {
   toolbar: true

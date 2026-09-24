@@ -12,16 +12,16 @@ import { updateSource } from '../utils/source'
 type PropBag = Record<string, unknown>
 
 const props = withDefaults(defineProps<{
-  /** 图层 id，全局唯一；变更需配合 :key 重建 */
+  /** 图层 id，全局唯一；变更需配合 `:key` 重建 */
   layerId: string
   /**
-   * 图层类型，决定渲染方式与可用的 paint / layout 属性；变更需配合 :key 重建
+   * 图层类型，决定渲染方式与可用的 paint / layout 属性；变更需配合 `:key` 重建
    * @see https://maplibre.org/maplibre-style-spec/layers/
    */
   type: LayerSpecification['type']
-  /** source id 字符串引用，或内联 source 对象（自动创建匿名源并随图层卸载，内容变化时增量更新）；二者之间切换需配合 :key 重建 */
+  /** source id 字符串引用，或内联 source 对象（自动创建匿名源并随图层卸载，内容变化时增量更新）；二者之间切换需配合 `:key` 重建 */
   source?: string | SourceSpecification
-  /** 矢量瓦片源内的子图层名（source-layer），消费矢量源时必填；变更需配合 :key 重建 */
+  /** 矢量瓦片源内的子图层名（source-layer），消费矢量源时必填；变更需配合 `:key` 重建 */
   sourceLayer?: string
   /**
    * 绘制样式属性，响应式变更经 setPaintProperty 增量下发

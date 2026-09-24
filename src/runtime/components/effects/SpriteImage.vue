@@ -37,7 +37,7 @@ const props = withDefaults(defineProps<{
    * @defaultValue 64
    */
   size?: number
-  /** 图层 id；省略时自动生成，变更需配合 :key 重建 */
+  /** 图层 id；省略时自动生成，变更需配合 `:key` 重建 */
   layerId?: string
   /** 插入到该图层之前 */
   beforeId?: string

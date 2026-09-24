@@ -129,6 +129,7 @@ pnpm vitest test/layer.test.ts              # 单文件 watch 模式
 ```
 
 - 改 API 表内容 = 改运行时组件源码 JSDoc（按 jsdoc 规范），不在 md 手写表格；composable / util 不在 component-meta 覆盖范围，需另行处理。
+- JSDoc 描述经 MDC 渲染：`:key` 这类冒号开头的写法会被解析为行内组件（报 `Failed to resolve component`），须用反引号包成行内代码。
 - `:commit-changelog` 路径 = `commitPath('src/runtime')` + `prefix/` + 组件名 + `.vue`；承载型页面（如 circle 用 MaplibreLayer）加 `name=` 指向真实组件文件（`name="Layer"`）。
 - 组件经 `defineExpose` 暴露实例时，补一个手写 `### Expose` 表（component-meta 不抽取 exposed）；用法细节先查 nuxt-docs MCP / 读 `@movk/nuxt-docs`。
 
