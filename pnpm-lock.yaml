@@ -174,8 +174,8 @@ importers:
         specifier: ^26.4.4
         version: 26.4.4
       '@movk/core':
-        specifier: ^1.4.1
-        version: 1.4.1(vue@3.5.43(typescript@6.0.3))
+        specifier: https://pkg.pr.new/@movk/core@2faf6cb
+        version: https://pkg.pr.new/@movk/core@2faf6cb(vue@3.5.43(typescript@6.0.3))
       '@turf/area':
         specifier: ^7.4.0
         version: 7.4.0
@@ -1755,6 +1755,13 @@ packages:
 
   '@movk/core@1.4.1':
     resolution: {integrity: sha512-xm1sO4h6kkuT/D4abZ9ntbr4TEYK9UzHlJAdFQ5/F71L3KaMrZ9WMT+BQBJwh8OWckSqj5Xng/WEDT1azH2rmQ==}
+    hasBin: true
+    peerDependencies:
+      vue: ^3.5.25
+
+  '@movk/core@https://pkg.pr.new/@movk/core@2faf6cb':
+    resolution: {integrity: sha512-Rh+qK5DjBPqMkEzQvWJhCn992tT/97k7Zmdd5k1gmUbUxYR791N+wzehMLmzKmal0eConWcOl7g0XNaXdtFrVQ==, tarball: https://pkg.pr.new/@movk/core@2faf6cb}
+    version: 1.4.1
     hasBin: true
     peerDependencies:
       vue: ^3.5.25
@@ -10238,6 +10245,11 @@ snapshots:
   '@movk/core@1.4.1(vue@3.5.43(typescript@6.0.3))':
     dependencies:
       '@vueuse/core': 14.4.0(vue@3.5.43(typescript@6.0.3))
+      vue: 3.5.43(typescript@6.0.3)
+
+  '@movk/core@https://pkg.pr.new/@movk/core@2faf6cb(vue@3.5.43(typescript@6.0.3))':
+    dependencies:
+      '@vueuse/core': 15.0.0(vue@3.5.43(typescript@6.0.3))
       vue: 3.5.43(typescript@6.0.3)
 
   '@movk/nuxt-docs@2.4.0(ef465dd011274a18db01b67b43938abf)':

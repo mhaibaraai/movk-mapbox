@@ -3,7 +3,7 @@ import { onUnmounted } from 'vue'
 import type { ProjectionDefinitionSpecification, ProjectionSpecification } from '@maplibre/maplibre-gl-style-spec'
 import { useMap } from '../../composables/useMap'
 import { useStyleEffect } from '../../domains/map/style-effect'
-import { isDeepEqual } from '../../utils/equal'
+import { isDeepEqual } from '@movk/core'
 
 const props = withDefaults(defineProps<{
   /**

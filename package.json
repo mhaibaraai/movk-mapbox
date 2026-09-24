@@ -131,7 +131,7 @@
   },
   "dependencies": {
     "@maplibre/maplibre-gl-style-spec": "^26.4.4",
-    "@movk/core": "^1.4.1",
+    "@movk/core": "https://pkg.pr.new/@movk/core@2faf6cb",
     "@turf/area": "^7.4.0",
     "@turf/bearing": "^7.4.0",
     "@turf/buffer": "^7.4.0",

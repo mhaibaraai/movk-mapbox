@@ -1,3 +1,5 @@
+import { clamp } from '@movk/core'
+
 export type Position2D = [number, number]
 
 export interface ArcLineOptions {
@@ -84,7 +86,7 @@ export function ringFade(progress: number): number {
 export function trailGradient(head: number, trailLength: number, color: string): unknown[] {
   const eps = 1e-4
   const transparent = 'rgba(0, 0, 0, 0)'
-  const h = Math.min(Math.max(head, eps), 1)
+  const h = clamp(head, eps, 1)
   const tail = Math.max(h - Math.max(trailLength, eps), 0)
 
   const expr: unknown[] = ['interpolate', ['linear'], ['line-progress'], tail, transparent, h, color]

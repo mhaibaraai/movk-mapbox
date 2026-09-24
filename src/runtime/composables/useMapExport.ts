@@ -1,3 +1,4 @@
+import { triggerDownload } from '@movk/core'
 import { useContextResolver } from '../domains/map/resolve'
 import { logger } from '../utils/logger'
 
@@ -62,11 +63,7 @@ export function useMapExport(options: UseMapExportOptions = {}): UseMapExportRet
 
   async function download(opts: DownloadOptions = {}): Promise<void> {
     try {
-      const dataUrl = await exportImage(opts)
-      const link = document.createElement('a')
-      link.href = dataUrl
-      link.download = opts.fileName ?? 'map.png'
-      link.click()
+      triggerDownload(await exportImage(opts), opts.fileName ?? 'map.png')
     } catch (error) {
       logger.warn('Map export failed:', error)
       throw error

@@ -3,7 +3,7 @@ import { onMounted, onUnmounted, useTemplateRef, watch } from 'vue'
 import { Popup } from 'maplibre-gl'
 import type { LngLatLike, Map as MaplibreMap, PopupOptions } from 'maplibre-gl'
 import { useMap } from '../composables/useMap'
-import { isDeepEqual } from '../utils/equal'
+import { isDeepEqual } from '@movk/core'
 
 const props = defineProps<{
   /** 弹窗锚定的经纬度 */

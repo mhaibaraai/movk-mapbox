@@ -8,7 +8,7 @@ import type { Feature } from 'geojson'
 import { useMap } from '../../composables/useMap'
 import { DrawKey } from '../../domains/map/draw'
 import { addStoreFeatures, committedFeatures, createDrawContext, toStoreFeatures } from '../../domains/map/draw-context'
-import { registerDraw, unregisterDraw } from '../../domains/map/draw-registry'
+import { registerDraw } from '../../domains/map/draw-registry'
 import { createDrawToolbar } from '../../domains/map/draw-toolbar'
 import type { DrawToolbar } from '../../domains/map/draw-toolbar'
 import { getMapContext } from '../../domains/map/registry'
@@ -79,8 +79,7 @@ const draw = drawContext.draw
 
 provide(DrawKey, drawContext)
 // 仅当地图显式设了 map-id（即已进 map 注册表）才登记：自动生成的 id 外部无从知晓，注册无意义
-const addressable = getMapContext(ctx.id) === ctx
-if (addressable) registerDraw(drawContext)
+const disposeDraw = getMapContext(ctx.id) === ctx ? registerDraw(drawContext) : undefined
 
 let instance: TerraDraw | undefined
 let boundMap: MaplibreMap | undefined
@@ -200,7 +199,7 @@ watch(mode, (value) => {
 })
 
 onUnmounted(() => {
-  if (addressable) unregisterDraw(drawContext)
+  disposeDraw?.()
   boundMap?.off('style.load', onStyleLoad)
   if (toolbar) boundMap?.removeControl(toolbar)
   if (!instance) return
