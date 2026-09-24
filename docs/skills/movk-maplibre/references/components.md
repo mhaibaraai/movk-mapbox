@@ -54,11 +54,22 @@ Markers position by `lnglat` (`v-model:lnglat` for draggable). The default slot 
 
 ## Controls
 
-`MaplibreNavigationControl`, `MaplibreFullscreenControl`, `MaplibreGeolocateControl`, `MaplibreScaleControl`, `MaplibreAttributionControl`. All take a `position` (`top-left` / `top-right` / `bottom-left` / `bottom-right`).
+`MaplibreNavigationControl`, `MaplibreFullscreenControl`, `MaplibreGlobeControl`, `MaplibreGeolocateControl`, `MaplibreScaleControl`, `MaplibreAttributionControl`. All take a `position` (`top-left` / `top-right` / `bottom-left` / `bottom-right`).
 
 ```vue
 <MaplibreNavigationControl position="top-right" />
 ```
+
+## MaplibreProjection
+
+Sets the map projection via `setProjection`. `type` defaults to `'globe'` and also accepts `'mercator'`, `'vertical-perspective'` or a zoom interpolation expression; `options` (full `ProjectionSpecification`) overrides `type`. Reapplied after `setStyle`; unmounting restores the projection declared by the style (mercator if none). Mount one per map.
+
+```vue
+<MaplibreProjection />
+<MaplibreProjection :type="['interpolate', ['linear'], ['zoom'], 10, 'vertical-perspective', 12, 'mercator']" />
+```
+
+`MaplibreGlobeControl` toggles globe / mercator by button; it treats an expression projection as non-mercator.
 
 ## Tianditu basemap (extension)
 

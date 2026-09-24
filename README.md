@@ -129,8 +129,8 @@ const zoom = ref(9)
 | 核心 | `MaplibreMap` `MaplibreSource` `MaplibreLayer` `MaplibreLayerGroup` `MaplibreCustomLayer` `MaplibreMarker` `MaplibreLottieMarker` `MaplibrePopup` `MaplibreTooltip` |
 | 图层 | `MaplibreBuildingLayer` `MaplibreClusterLayer` `MaplibreImageLayer` `MaplibreRasterLayer` `MaplibreVideoLayer` |
 | 效果 | `MaplibreRadar` `MaplibreDiffusionCircle` `MaplibreGlowCircle` `MaplibreWaveCircle` `MaplibreGradientBuilding` `MaplibreTextureBuilding` `MaplibreWindowBuilding` `MaplibreFlowBuilding` `MaplibreMigration` `MaplibreTrail` `MaplibreAnimatedImage` `MaplibreSpriteImage` |
-| 环境 | `MaplibreSky` `MaplibreTerrain` `MaplibreTemperature` |
-| 控件 | `MaplibreNavigationControl` `MaplibreGeolocateControl` `MaplibreFullscreenControl` `MaplibreScaleControl` `MaplibreAttributionControl` |
+| 环境 | `MaplibreSky` `MaplibreProjection` `MaplibreTerrain` `MaplibreTemperature` |
+| 控件 | `MaplibreNavigationControl` `MaplibreGeolocateControl` `MaplibreFullscreenControl` `MaplibreGlobeControl` `MaplibreScaleControl` `MaplibreAttributionControl` |
 | 扩展 | `MaplibreDrawControl` `MaplibreTiandituLayer` `MaplibreWmsLayer` `MaplibreWmtsLayer` |
 | 缓冲 | `MaplibreBufferCircle` `MaplibreBufferEllipse` `MaplibreBufferLine` `MaplibreBufferPolygon` `MaplibreBufferSector` |
 

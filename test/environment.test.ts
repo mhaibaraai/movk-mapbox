@@ -4,6 +4,8 @@ import { mount } from '@vue/test-utils'
 import MaplibreMap from '../src/runtime/components/Map.vue'
 import MaplibreSky from '../src/runtime/components/environment/Sky.vue'
 import MaplibreTerrain from '../src/runtime/components/environment/Terrain.vue'
+import MaplibreProjection from '../src/runtime/components/environment/Projection.vue'
+import MaplibreGlobeControl from '../src/runtime/components/controls/GlobeControl.vue'
 import { logger } from '../src/runtime/utils/logger'
 
 // 记录环境 setter 调用的 fake gl Map
@@ -17,6 +19,9 @@ const { maps, makeFakeMap } = vi.hoisted(() => {
       sourceSpecs: [] as unknown[],
       skyCalls: [] as unknown[],
       terrainCalls: [] as unknown[],
+      projection: undefined as unknown,
+      projectionCalls: [] as unknown[],
+      controls: [] as { control: unknown, position: unknown }[],
       setTilesCalls: [] as unknown[],
       styleLoaded: true,
       // 模拟 maplibre Style._checkLoaded：样式未加载完时样式级 setter 必抛
@@ -42,6 +47,18 @@ const { maps, makeFakeMap } = vi.hoisted(() => {
       setTerrain(value: unknown) {
         self.checkLoaded()
         self.terrainCalls.push(value)
+      },
+      getProjection: () => self.projection,
+      setProjection(value: unknown) {
+        self.checkLoaded()
+        self.projectionCalls.push(value)
+        self.projection = value
+      },
+      addControl(control: unknown, position?: unknown) {
+        self.controls.push({ control, position })
+      },
+      removeControl(control: unknown) {
+        self.controls = self.controls.filter(item => item.control !== control)
       },
       getSource: (id: string) => (sources.has(id)
         ? { setUrl() {}, setTiles(tiles: unknown) { self.setTilesCalls.push(tiles) } }
@@ -70,8 +87,12 @@ vi.mock('maplibre-gl', () => {
     return makeFakeMap()
   }
   function Noop() {}
+  function FakeGlobeControl(this: { kind: string }) {
+    this.kind = 'globe'
+  }
   return {
     Map: FakeGlMap,
+    GlobeControl: FakeGlobeControl,
     LngLat: { convert: (v: unknown) => v },
     Marker: Noop,
     Popup: Noop
@@ -256,5 +277,136 @@ describe('Terrain 地形', () => {
     await expect(nextTick()).resolves.toBeUndefined()
     // setTerrain(null) 被吞掉，地形清除交由样式重载
     expect(map.terrainCalls).toHaveLength(1)
+  })
+})
+
+function mountWith(child: () => ReturnType<typeof h> | null) {
+  const Parent = defineComponent({
+    setup() {
+      return () => h(MaplibreMap, { options: {} }, { default: child })
+    }
+  })
+  mount(Parent)
+  return maps[maps.length - 1]!
+}
+
+const ZOOM_TRANSITION = ['interpolate', ['linear'], ['zoom'], 10, 'vertical-perspective', 12, 'mercator']
+
+describe('Projection 投影', () => {
+  it('缺省下发 globe', () => {
+    const map = mountWith(() => h(MaplibreProjection))
+    map.fire('style.load')
+    expect(map.projectionCalls).toEqual([{ type: 'globe' }])
+  })
+
+  it('type 与插值表达式原样下发', () => {
+    const map = mountWith(() => h(MaplibreProjection, { type: 'vertical-perspective' }))
+    map.fire('style.load')
+    expect(map.projectionCalls).toEqual([{ type: 'vertical-perspective' }])
+
+    const exprMap = mountWith(() => h(MaplibreProjection, { type: ZOOM_TRANSITION as never }))
+    exprMap.fire('style.load')
+    expect(exprMap.projectionCalls).toEqual([{ type: ZOOM_TRANSITION }])
+  })
+
+  it('options 优先于 type', () => {
+    const map = mountWith(() => h(MaplibreProjection, { type: 'mercator', options: { type: 'globe' } }))
+    map.fire('style.load')
+    expect(map.projectionCalls).toEqual([{ type: 'globe' }])
+  })
+
+  it('type 变化重新下发，内容相同的新表达式不重复下发', async () => {
+    const type = ref<unknown>('globe')
+    const map = mountWith(() => h(MaplibreProjection, { type: type.value as never }))
+    map.fire('style.load')
+
+    type.value = 'mercator'
+    await nextTick()
+    expect(map.projectionCalls).toEqual([{ type: 'globe' }, { type: 'mercator' }])
+
+    type.value = [...ZOOM_TRANSITION]
+    await nextTick()
+    type.value = [...ZOOM_TRANSITION]
+    await nextTick()
+    expect(map.projectionCalls).toHaveLength(3)
+  })
+
+  it('卸载还原样式自带的投影', async () => {
+    const show = ref(true)
+    const map = mountWith(() => (show.value ? h(MaplibreProjection, { type: 'mercator' }) : null))
+    map.projection = { type: 'globe' }
+    map.fire('style.load')
+    expect(map.projection).toEqual({ type: 'mercator' })
+
+    show.value = false
+    await nextTick()
+    expect(map.projection).toEqual({ type: 'globe' })
+  })
+
+  it('样式未声明投影时卸载还原为 mercator', async () => {
+    const show = ref(true)
+    const map = mountWith(() => (show.value ? h(MaplibreProjection) : null))
+    map.fire('style.load')
+
+    show.value = false
+    await nextTick()
+    expect(map.projectionCalls).toEqual([{ type: 'globe' }, { type: 'mercator' }])
+  })
+
+  it('setStyle 后重新记录原值并重新覆盖', async () => {
+    const show = ref(true)
+    const map = mountWith(() => (show.value ? h(MaplibreProjection) : null))
+    map.fire('style.load')
+
+    // 模拟新样式自带 vertical-perspective
+    map.projection = { type: 'vertical-perspective' }
+    map.fire('style.load')
+    expect(map.projection).toEqual({ type: 'globe' })
+
+    show.value = false
+    await nextTick()
+    expect(map.projection).toEqual({ type: 'vertical-perspective' })
+  })
+
+  it('样式未加载完时变更与卸载不抛错，style.load 后以最新值恢复', async () => {
+    const type = ref('globe')
+    const show = ref(true)
+    const map = mountWith(() => (show.value ? h(MaplibreProjection, { type: type.value as never }) : null))
+    map.fire('style.load')
+
+    map.styleLoaded = false
+    type.value = 'vertical-perspective'
+    await expect(nextTick()).resolves.toBeUndefined()
+    expect(map.projectionCalls).toHaveLength(1)
+
+    map.styleLoaded = true
+    map.fire('style.load')
+    expect(map.projection).toEqual({ type: 'vertical-perspective' })
+
+    map.styleLoaded = false
+    show.value = false
+    await expect(nextTick()).resolves.toBeUndefined()
+  })
+})
+
+describe('GlobeControl 投影切换控件', () => {
+  it('挂载即 addControl，position 变化重建，卸载移除', async () => {
+    const show = ref(true)
+    const position = ref('top-right')
+    const map = mountWith(() => (show.value ? h(MaplibreGlobeControl, { position: position.value as never }) : null))
+    await nextTick()
+    expect(map.controls).toHaveLength(1)
+    expect(map.controls[0]).toMatchObject({ control: { kind: 'globe' }, position: 'top-right' })
+
+    const first = map.controls[0]!.control
+    position.value = 'bottom-left'
+    await nextTick()
+    expect(map.controls).toHaveLength(1)
+    expect(map.controls[0]!.position).toBe('bottom-left')
+    expect(map.controls[0]!.control).not.toBe(first)
+
+    show.value = false
+    await nextTick()
+    expect(map.controls).toHaveLength(0)
   })
 })
