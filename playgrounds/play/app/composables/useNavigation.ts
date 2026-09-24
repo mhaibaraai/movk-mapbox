@@ -121,7 +121,7 @@ const multiMapNav: NavigationMenuItem = {
   icon: 'i-lucide-columns-2',
   defaultOpen: true,
   children: [
-    { label: 'Compare 卷帘对比', to: '/multi-map/compare' },
+    { label: 'Swipe 卷帘对比', to: '/multi-map/swipe' },
     { label: 'Minimap 鹰眼', to: '/multi-map/minimap' },
     { label: 'useMapSync 多图联动', to: '/multi-map/sync' }
   ]
