@@ -39,7 +39,7 @@ const { changeMode, deleteAll } = useMaplibreDraw({ mapId: MAP_ID })
         v-model:features="features"
         v-model:mode="mode"
         position="top-left"
-        :controls="['point', 'linestring', 'polygon']"
+        :modes="['select', 'point', 'linestring', 'polygon']"
       />
     </MaplibreMap>
   </div>

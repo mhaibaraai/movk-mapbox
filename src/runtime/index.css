@@ -1,1 +1,16 @@
 @import 'maplibre-gl/dist/maplibre-gl.css';
+
+/* 绘制工具栏：图标块级居中，选中态实心高亮（优先级高于 maplibre 按钮的 hover/active 背景） */
+.movk-draw-toolbar__button {
+  color: #333;
+}
+
+.movk-draw-toolbar__button svg {
+  display: block;
+  margin: auto;
+}
+
+.movk-draw-toolbar .movk-draw-toolbar__button[aria-pressed='true']:not(:disabled) {
+  background-color: var(--movk-draw-toolbar-active, #3b82f6);
+  color: #fff;
+}

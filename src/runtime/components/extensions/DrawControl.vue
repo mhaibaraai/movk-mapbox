@@ -5,39 +5,41 @@ import type { TerraDrawEventListeners, TerraDrawExtend } from 'terra-draw'
 import { TerraDrawMapLibreGLAdapter } from 'terra-draw-maplibre-gl-adapter'
 import type { ControlPosition, Map as MaplibreMap } from 'maplibre-gl'
 import type { Feature } from 'geojson'
+import { isDeepEqual } from '@movk/core'
 import { useMap } from '../../composables/useMap'
 import { DrawKey } from '../../domains/map/draw'
 import { addStoreFeatures, committedFeatures, createDrawContext, toStoreFeatures } from '../../domains/map/draw-context'
 import { registerDraw } from '../../domains/map/draw-registry'
 import { createDrawToolbar } from '../../domains/map/draw-toolbar'
 import type { DrawToolbar } from '../../domains/map/draw-toolbar'
+import { DRAW_MODE_NAMES, isDrawModeName, resolveDrawModes } from '../../domains/map/draw-modes'
+import { drawThemeStyles } from '../../domains/map/draw-theme'
 import { getMapContext } from '../../domains/map/registry'
-import { movkDrawModes } from '../../draw-modes'
-import type { DrawMode } from '../../draw-modes'
-import type { DrawThemeOptions } from '../../utils/draw-theme'
+import type { DrawModeEntry, DrawThemeOptions } from '../../types'
 
 type FeatureId = TerraDrawExtend.FeatureId
 type OnFinishContext = Parameters<TerraDrawEventListeners['finish']>[1]
 
 const props = withDefaults(defineProps<{
-  /** 工具栏停靠位置；省略用地图默认位置，变更需配合 :key 重建 */
+  /** 工具栏停靠位置；省略用地图默认位置，变更需配合 `:key` 重建 */
   position?: ControlPosition
   /**
-   * terra-draw 模式实例；缺省使用 movkDrawModes({ theme })，变更需配合 :key 重建
+   * 启用的模式及工具栏按钮顺序：内置模式名套用 theme，terra-draw 实例原样使用；变更需配合 `:key` 重建
+   * @defaultValue `['select', 'point', 'linestring', 'polygon', 'rectangle', 'circle', 'ellipse', 'sector']`
    * @see https://github.com/JamesLMilner/terra-draw/blob/main/guides/4.MODES.md
    */
-  modes?: DrawMode[]
-  /** 缺省模式集合的主题；传入 modes 时忽略，变更需配合 :key 重建 */
+  modes?: DrawModeEntry[]
+  /** 内置模式的主题，变更即时生效；要素 properties.color 优先于主题色 */
   theme?: DrawThemeOptions
   /**
-   * 工具栏按钮：true 显示全部模式，数组限定模式名，false 不显示工具栏；变更需配合 :key 重建
+   * 是否显示内置工具栏（模式按钮 + 删除按钮）；变更需配合 `:key` 重建
    * @defaultValue true
    */
-  controls?: boolean | string[]
-  /** 绘制图层插入到该图层之下；变更需配合 :key 重建 */
+  toolbar?: boolean
+  /** 绘制图层插入到该图层之下；变更需配合 `:key` 重建 */
   renderBelowLayerId?: string
 }>(), {
-  controls: true
+  toolbar: true
 })
 
 const emit = defineEmits<{
@@ -67,7 +69,7 @@ function applyFeatures(list: Feature[]): void {
 
 function applyMode(value: string): void {
   mode.value = value
-  toolbar?.setActive(value)
+  toolbarControl?.setActive(value)
   emit('modechange', value)
 }
 
@@ -83,7 +85,7 @@ const disposeDraw = getMapContext(ctx.id) === ctx ? registerDraw(drawContext) : 
 
 let instance: TerraDraw | undefined
 let boundMap: MaplibreMap | undefined
-let toolbar: DrawToolbar | undefined
+let toolbarControl: DrawToolbar | undefined
 let selectedId: FeatureId | undefined
 
 function syncFeatures(): void {
@@ -145,13 +147,11 @@ function onStyleLoad(): void {
   instance.setMode(current)
 }
 
-const modes = props.modes ?? movkDrawModes({ theme: props.theme })
+const entries = props.modes ?? DRAW_MODE_NAMES
+const modes = resolveDrawModes(entries, props.theme)
 const modeNames = modes.map(m => m.mode)
-
-function toolbarModes(): string[] {
-  if (props.controls === false) return []
-  return props.controls === true ? modeNames : props.controls.filter(name => modeNames.includes(name))
-}
+// 仅按名解析的内置模式随 theme 更新，自定义实例的样式由使用方负责
+const themedNames = entries.filter(isDrawModeName)
 
 onMounted(async () => {
   const map = await ctx.whenLoaded()
@@ -168,22 +168,22 @@ onMounted(async () => {
   instance.on('deselect', onDeselect)
   map.on('style.load', onStyleLoad)
 
-  if (props.controls !== false) {
-    toolbar = createDrawToolbar({
-      modes: toolbarModes(),
+  if (props.toolbar) {
+    toolbarControl = createDrawToolbar({
+      modes: modeNames,
       // 再次点击当前绘制模式回到选择模式，与常见绘图工具一致
       onMode: name => setMode(name === instance?.getMode() && hasMode('select') ? 'select' : name),
       onTrash: () => {
         if (selectedId !== undefined && instance?.hasFeature(selectedId)) instance.removeFeatures([selectedId])
       }
     })
-    map.addControl(toolbar, props.position)
+    map.addControl(toolbarControl, props.position)
   }
 
   attach(instance)
 
   if (features.value?.length) setFeatures(features.value)
-  const initial = mode.value ?? (modeNames.includes('select') ? 'select' : instance.getMode())
+  const initial = mode.value ?? (hasMode('select') ? 'select' : modeNames[0] ?? instance.getMode())
   instance.setMode(initial)
   applyMode(initial)
 })
@@ -198,10 +198,17 @@ watch(mode, (value) => {
   if (value) setMode(value)
 })
 
+// 父组件内联对象每次渲染都是新引用，值未变时跳过，避免反复重绘
+watch(() => props.theme, (theme, previous) => {
+  if (!instance || isDeepEqual(theme, previous)) return
+  const styles = drawThemeStyles(theme)
+  for (const name of themedNames) instance.updateModeOptions(name, { styles: styles[name] })
+}, { deep: true })
+
 onUnmounted(() => {
   disposeDraw?.()
   boundMap?.off('style.load', onStyleLoad)
-  if (toolbar) boundMap?.removeControl(toolbar)
+  if (toolbarControl) boundMap?.removeControl(toolbarControl)
   if (!instance) return
   instance.off('change', onChange)
   instance.off('finish', onFinish)

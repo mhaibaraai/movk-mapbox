@@ -1,50 +1,14 @@
 import type { GeoJSONStoreFeatures, HexColor } from 'terra-draw'
-
-export interface DrawThemeOptions {
-  /**
-   * 非激活态主色
-   * @defaultValue '#3b82f6'
-   */
-  color?: HexColor
-  /**
-   * 激活态（绘制辅助点/选中）主色
-   * @defaultValue '#f59e0b'
-   */
-  activeColor?: HexColor
-  /**
-   * 多边形填充不透明度
-   * @defaultValue 0.1
-   */
-  fillOpacity?: number
-  /**
-   * 线宽
-   * @defaultValue 2
-   */
-  lineWidth?: number
-  /**
-   * 顶点圆半径
-   * @defaultValue 5
-   */
-  vertexRadius?: number
-}
+import type { DrawModeName, DrawThemeOptions } from '../../types'
 
 type ColorStyle = (feature: GeoJSONStoreFeatures) => HexColor
 type ModeStyles = Record<string, number | HexColor | ColorStyle>
 
-/** 各模式的 terra-draw styles，键为模式名 */
-export interface DrawThemeStyles {
-  select: Record<string, number | HexColor>
-  point: ModeStyles
-  linestring: ModeStyles
-  polygon: ModeStyles
-  rectangle: ModeStyles
-  circle: ModeStyles
-  ellipse: ModeStyles
-  sector: ModeStyles
-}
+/** 各内置模式的 terra-draw styles，键为模式名 */
+export type DrawThemeStyles = Record<DrawModeName, ModeStyles>
 
 /**
- * 生成 terra-draw 各模式的主题样式。
+ * 生成 terra-draw 各内置模式的主题样式。
  * 要素 `properties.color` 优先于主题色，便于按要素单独着色（配合 setFeatureProperty）。
  */
 export function drawThemeStyles(options: DrawThemeOptions = {}): DrawThemeStyles {

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { GeoJSONStoreFeatures } from 'terra-draw'
-import { drawThemeStyles } from '../src/runtime/utils/draw-theme'
+import { drawThemeStyles } from '../src/runtime/domains/map/draw-theme'
 
 type StyleFn = (feature: GeoJSONStoreFeatures) => unknown
 

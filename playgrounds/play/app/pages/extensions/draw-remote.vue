@@ -51,7 +51,7 @@ const state = computed(() => ({
         v-model:features="features"
         v-model:mode="mode"
         position="top-left"
-        :controls="['point', 'linestring', 'polygon']"
+        :modes="['select', 'point', 'linestring', 'polygon']"
       />
     </DemoMap>
   </MapShowcase>

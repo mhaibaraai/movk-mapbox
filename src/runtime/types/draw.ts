@@ -1,8 +1,45 @@
 import type { Ref } from 'vue'
-import type { TerraDraw, TerraDrawExtend } from 'terra-draw'
+import type { HexColor, TerraDraw, TerraDrawExtend } from 'terra-draw'
 import type { Feature, FeatureCollection, Geometry } from 'geojson'
 
 type FeatureId = TerraDrawExtend.FeatureId
+
+/** 内置模式名：选择模式与全部绘制模式 */
+export type DrawModeName = 'select' | 'point' | 'linestring' | 'polygon' | 'rectangle' | 'circle' | 'ellipse' | 'sector'
+
+/** terra-draw 模式实例（绘制或选择模式） */
+export type DrawMode = TerraDrawExtend.TerraDrawBaseDrawMode<TerraDrawExtend.CustomStyling>
+
+/** 模式项：内置模式名（套用主题）或自定义 terra-draw 实例（原样使用） */
+export type DrawModeEntry = DrawModeName | DrawMode
+
+export interface DrawThemeOptions {
+  /**
+   * 非激活态主色，要素 properties.color 优先
+   * @defaultValue '#3b82f6'
+   */
+  color?: HexColor
+  /**
+   * 激活态（绘制辅助点/选中）主色
+   * @defaultValue '#f59e0b'
+   */
+  activeColor?: HexColor
+  /**
+   * 多边形填充不透明度
+   * @defaultValue 0.1
+   */
+  fillOpacity?: number
+  /**
+   * 线宽
+   * @defaultValue 2
+   */
+  lineWidth?: number
+  /**
+   * 顶点圆半径
+   * @defaultValue 5
+   */
+  vertexRadius?: number
+}
 
 /**
  * 由 MaplibreDrawControl 下发的绘制上下文。

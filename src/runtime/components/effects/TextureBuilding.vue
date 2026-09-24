@@ -9,7 +9,7 @@ import MaplibreBuildingLayer from '../layers/BuildingLayer.vue'
 const props = withDefaults(defineProps<BuildingSourceOptions & {
   /** 贴图地址 */
   url: string
-  /** 图层 id；省略时自动生成，变更需配合 :key 重建 */
+  /** 图层 id；省略时自动生成，变更需配合 `:key` 重建 */
   layerId?: string
   /**
    * 整体透明度

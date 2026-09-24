@@ -1,5 +1,5 @@
 import { createRequire } from 'node:module'
-import { addComponentsDir, addImports, addImportsDir, addPlugin, addPluginTemplate, createResolver, defineNuxtModule, extendViteConfig } from '@nuxt/kit'
+import { addComponentsDir, addImportsDir, addPlugin, addPluginTemplate, createResolver, defineNuxtModule, extendViteConfig } from '@nuxt/kit'
 import { defu } from 'defu'
 import { name, version } from '../package.json'
 
@@ -49,11 +49,6 @@ export default defineNuxtModule<ModuleOptions>({
       pathPrefix: false
     })
     addImportsDir(resolve('./runtime/composables'))
-    // 标绘自定义模式与主题工厂(非 composable,显式登记自动导入)
-    addImports([
-      { name: 'movkDrawModes', from: resolve('./runtime/draw-modes') },
-      { name: 'drawThemeStyles', from: resolve('./runtime/utils/draw-theme') }
-    ])
     addPlugin({ src: resolve('./runtime/plugins/config') })
     // maplibre-gl v6 经打包工具使用时无法自动解析 worker 地址；由应用自身的 Vite 处理 ?worker&url 并注入
     addPluginTemplate({

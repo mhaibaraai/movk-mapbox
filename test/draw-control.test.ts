@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { defineComponent, h, nextTick, ref } from 'vue'
 import { mount } from '@vue/test-utils'
+import { TerraDrawPointMode } from 'terra-draw'
 import type { Feature } from 'geojson'
 import MaplibreMap from '../src/runtime/components/Map.vue'
 import MaplibreDrawControl from '../src/runtime/components/extensions/DrawControl.vue'
@@ -251,11 +252,9 @@ describe('DrawControl 工具栏', () => {
     expect(draw.mode).toBe('select')
   })
 
-  it('controls 限定按钮；删除按钮移除当前选中要素', async () => {
-    const { map, draw, features } = await mountControlled({ controls: ['polygon'] })
+  it('删除按钮移除当前选中要素', async () => {
+    const { map, draw, features } = await mountControlled()
     const el = toolbar(map)
-
-    expect(el.querySelectorAll('[data-mode]')).toHaveLength(1)
 
     features.value = [pointFeature]
     await nextTick()
@@ -267,8 +266,74 @@ describe('DrawControl 工具栏', () => {
     expect(features.value).toEqual([])
   })
 
-  it('controls 为 false 时不添加工具栏', async () => {
-    const { map } = await mountControlled({ controls: false })
+  it('toolbar 为 false 时不添加工具栏', async () => {
+    const { map } = await mountControlled({ toolbar: false })
     expect(map.controls).toHaveLength(0)
+  })
+})
+
+describe('DrawControl modes', () => {
+  it('按模式名子集注册，工具栏按钮与之一致', async () => {
+    const { map, draw } = await mountControlled({ modes: ['select', 'rectangle', 'circle'] })
+    expect(draw.modes.map(m => m.mode)).toEqual(['select', 'rectangle', 'circle'])
+
+    const buttons = [...toolbar(map).querySelectorAll<HTMLButtonElement>('[data-mode]')]
+    expect(buttons.map(b => b.dataset.mode)).toEqual(['select', 'rectangle', 'circle'])
+  })
+
+  it('混入自定义 terra-draw 实例，工具栏以模式名作标题', async () => {
+    const custom = new TerraDrawPointMode({ modeName: 'marker' })
+    const { map, draw } = await mountControlled({ modes: ['select', custom] })
+    expect(draw.modes[1]).toBe(custom)
+    expect(button(toolbar(map), 'marker').title).toBe('marker')
+  })
+
+  it('缺少选择模式时进入首个模式', async () => {
+    const { draw, mode } = await mountControlled({ modes: ['polygon'] })
+    expect(draw.mode).toBe('polygon')
+    expect(mode.value).toBe('polygon')
+  })
+})
+
+describe('DrawControl theme', () => {
+  it('theme 变更原地更新按名解析模式的样式，不重建实例', async () => {
+    const theme = ref({ color: '#111111' })
+    const custom = new TerraDrawPointMode({ modeName: 'marker' })
+    const Parent = defineComponent({
+      setup: () => () => h(MaplibreMap, { options: {} }, {
+        default: () => h(MaplibreDrawControl, { modes: ['select', 'polygon', custom], theme: theme.value })
+      })
+    })
+    mount(Parent)
+    maps[0]!.fire('load')
+    await nextTick()
+    await nextTick()
+    const draw = draws[0] as FakeTerraDraw
+
+    theme.value = { color: '#222222' }
+    await nextTick()
+
+    expect(draws).toHaveLength(1)
+    expect(draw.modeOptionUpdates.map(([name]) => name)).toEqual(['select', 'polygon'])
+    const styles = (draw.modeOptionUpdates[1]![1] as { styles: Record<string, (f: unknown) => unknown> }).styles
+    expect(styles.fillColor!({ properties: {} })).toBe('#222222')
+  })
+
+  it('theme 值未变（新对象同内容）时跳过更新', async () => {
+    const theme = ref({ color: '#111111' })
+    const Parent = defineComponent({
+      setup: () => () => h(MaplibreMap, { options: {} }, {
+        default: () => h(MaplibreDrawControl, { theme: theme.value })
+      })
+    })
+    mount(Parent)
+    maps[0]!.fire('load')
+    await nextTick()
+    await nextTick()
+
+    theme.value = { color: '#111111' }
+    await nextTick()
+
+    expect((draws[0] as FakeTerraDraw).modeOptionUpdates).toHaveLength(0)
   })
 })

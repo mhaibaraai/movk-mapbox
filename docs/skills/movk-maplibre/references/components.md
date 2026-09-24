@@ -91,4 +91,4 @@ Also available: `MaplibreWmsLayer`, `MaplibreWmtsLayer`.
 <MaplibreDrawControl v-model:features="features" position="top-left" />
 ```
 
-See [recipes.md](recipes.md) for `movkDrawModes` / `drawThemeStyles`.
+See [recipes.md](recipes.md) for `modes` / `theme` / `toolbar`.

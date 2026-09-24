@@ -14,7 +14,7 @@ type PropBag = Record<string, unknown>
 const props = withDefaults(defineProps<{
   /** 点要素数据（GeoJSON 或其 URL） */
   data: GeoJSONSourceSpecification['data']
-  /** source 与图层 id 前缀；省略时自动生成，变更需配合 :key 重建 */
+  /** source 与图层 id 前缀；省略时自动生成，变更需配合 `:key` 重建 */
   sourceId?: string
   /**
    * 聚合半径（像素）

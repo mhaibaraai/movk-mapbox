@@ -23,8 +23,7 @@ const theme = computed(() => ({ color: props.color as `#${string}` }))
 <template>
   <div class="h-115 w-full overflow-hidden rounded-(--ui-radius) border border-default">
     <MaplibreMap :options="{ style: 'https://tiles.openfreemap.org/styles/positron', center: [116.395, 39.91], zoom: 12 }">
-      <!-- color 变化经 :key 重建控件按新主题重绘 -->
-      <MaplibreDrawControl :key="color" v-model:features="features" :controls="false" :theme="theme" />
+      <MaplibreDrawControl v-model:features="features" :theme="theme" />
     </MaplibreMap>
   </div>
 </template>

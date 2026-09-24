@@ -38,7 +38,7 @@ pnpm vitest test/layer.test.ts              # 单文件 watch 模式
 
 - 组件解析按「裸文件名」匹配：`maplibreComponentResolver` 递归扫描 `components/` 下所有 `.vue`，以去掉目录与扩展名的文件名作为键。因此 **组件文件名必须全局唯一**，即使分布在不同子目录。加前缀（默认 `Maplibre`）后即为模板里的组件名。
 - composables 目录下每个 `.ts` 自动成为导入项；其文件名即导出的函数名。
-- 非 composable 的导出（标绘模式集合 `movkDrawModes`、主题工厂 `drawThemeStyles`）不在自动扫描范围，必须在 [src/module.ts](src/module.ts) 的 `addImports` 与 [src/unplugin.ts](src/unplugin.ts) 的 `UTIL_MANIFEST` **两处同步登记**。
+- 目前只自动导入 composables。若确需新增非 composable 的公开导出，须在 [src/module.ts](src/module.ts)（`addImports`）与 [src/unplugin.ts](src/unplugin.ts)（`maplibreAutoImports`）**两处同步登记**；优先把能力收进组件 props，而非新增独立工具导出。
 
 ### 运行时配置单例
 
@@ -129,6 +129,7 @@ pnpm vitest test/layer.test.ts              # 单文件 watch 模式
 ```
 
 - 改 API 表内容 = 改运行时组件源码 JSDoc（按 jsdoc 规范），不在 md 手写表格；composable / util 不在 component-meta 覆盖范围，需另行处理。
+- JSDoc 描述经 MDC 渲染：`:key` 这类冒号开头的写法会被解析为行内组件（报 `Failed to resolve component`），须用反引号包成行内代码。
 - `:commit-changelog` 路径 = `commitPath('src/runtime')` + `prefix/` + 组件名 + `.vue`；承载型页面（如 circle 用 MaplibreLayer）加 `name=` 指向真实组件文件（`name="Layer"`）。
 - 组件经 `defineExpose` 暴露实例时，补一个手写 `### Expose` 表（component-meta 不抽取 exposed）；用法细节先查 nuxt-docs MCP / 读 `@movk/nuxt-docs`。
 

@@ -18,7 +18,7 @@ const props = withDefaults(defineProps<{
   mapId?: string
   /**
    * maplibre-gl Map 初始化选项（container 由组件接管）；缺省 style 时使用空白样式。
-   * 除 style 外仅在创建时读取，变更需配合 :key 重建
+   * 除 style 外仅在创建时读取，变更需配合 `:key` 重建
    * @see https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/MapOptions/
    */
   options?: MaplibreMapOptions

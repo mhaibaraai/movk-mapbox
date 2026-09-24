@@ -9,7 +9,7 @@ import MaplibreLayer from '../Layer.vue'
 const props = withDefaults(defineProps<{
   /** 点要素数据（GeoJSON 或其 URL） */
   data: GeoJSONSourceSpecification['data']
-  /** 图层 id；省略时自动生成，变更需配合 :key 重建 */
+  /** 图层 id；省略时自动生成，变更需配合 `:key` 重建 */
   layerId?: string
   /**
    * 权重取值的要素属性

@@ -133,7 +133,7 @@ const extensionsNav: NavigationMenuItem = {
   defaultOpen: true,
   children: [
     { label: 'Draw 绘制', to: '/extensions/draw' },
-    { label: 'Draw 自定义模式', to: '/extensions/draw-modes' },
+    { label: 'Draw 模式子集', to: '/extensions/draw-modes' },
     { label: 'Draw 样式主题', to: '/extensions/draw-theme' },
     { label: 'Draw 跨组件树驱动', to: '/extensions/draw-remote' },
     { label: '天地图底图', to: '/extensions/tianditu' },
