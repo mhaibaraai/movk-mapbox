@@ -41,7 +41,8 @@
     },
     "extensions": {
       "draw": "Drawing",
-      "basemap": "Basemaps & Coordinates"
+      "basemap": "Basemaps & Coordinates",
+      "multiMap": "Multi-map"
     },
     "composables": {
       "context": "Context Injection",

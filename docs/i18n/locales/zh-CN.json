@@ -41,7 +41,8 @@
     },
     "extensions": {
       "draw": "绘制",
-      "basemap": "底图与坐标"
+      "basemap": "底图与坐标",
+      "multiMap": "多图联动"
     },
     "composables": {
       "context": "上下文注入",

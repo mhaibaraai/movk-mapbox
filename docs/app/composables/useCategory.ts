@@ -89,6 +89,11 @@ export function useCategory() {
         id: 'basemap',
         title: t('category.extensions.basemap'),
         icon: 'i-lucide-map'
+      },
+      {
+        id: 'multi-map',
+        title: t('category.extensions.multiMap'),
+        icon: 'i-lucide-columns-2'
       }
     ],
     'composables': [
