@@ -3,7 +3,7 @@ import { onMounted, onUnmounted, ref, useSlots, useTemplateRef, watch } from 'vu
 import { Marker } from 'maplibre-gl'
 import type { LngLatLike, Map as MaplibreMap, MarkerOptions, PopupOptions } from 'maplibre-gl'
 import { useMap } from '../composables/useMap'
-import { isDeepEqual } from '../utils/equal'
+import { isDeepEqual } from '@movk/core'
 import { applyMarkerOptions, markerNeedsRebuild, removeMarkerClassName } from '../utils/marker'
 import type { MarkerInputOptions } from '../utils/marker'
 import type { PopupTrigger } from '../types'

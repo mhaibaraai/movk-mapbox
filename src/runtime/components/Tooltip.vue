@@ -3,7 +3,7 @@ import { onMounted, onUnmounted, shallowRef, useTemplateRef, watch } from 'vue'
 import { Popup } from 'maplibre-gl'
 import type { GeoJSONFeature, LngLat, Map as MaplibreMap, MapMouseEvent, PopupOptions } from 'maplibre-gl'
 import { useMap } from '../composables/useMap'
-import { isDeepEqual } from '../utils/equal'
+import { isDeepEqual } from '@movk/core'
 import { onLayerDataChange } from '../utils/events'
 import type { PopupTrigger } from '../types'
 

@@ -87,14 +87,14 @@ describe('useMapExport', () => {
 
   it('download 经临时链接触发,沿用导出结果', async () => {
     const { api } = await mountExport()
-    const click = vi.fn()
-    const anchor = { href: '', download: '', click } as unknown as HTMLAnchorElement
-    const spy = vi.spyOn(document, 'createElement').mockReturnValue(anchor)
+    const clicked: Array<{ href: string, download: string }> = []
+    const spy = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(function (this: HTMLAnchorElement) {
+      clicked.push({ href: this.href, download: this.download })
+    })
 
     await api.download({ fileName: 'shot.png' })
-    expect(anchor.download).toBe('shot.png')
-    expect(anchor.href).toBe('data:image/png;base64,FAKE')
-    expect(click).toHaveBeenCalled()
+    expect(clicked).toEqual([{ href: 'data:image/png;base64,FAKE', download: 'shot.png' }])
+    expect(document.querySelectorAll('a')).toHaveLength(0)
     spy.mockRestore()
   })
 })

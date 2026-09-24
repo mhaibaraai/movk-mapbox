@@ -1,4 +1,4 @@
-import { isDeepEqual } from './equal'
+import { isDeepEqual } from '@movk/core'
 import type { Marker, MarkerOptions } from 'maplibre-gl'
 
 export type MarkerInputOptions = Omit<MarkerOptions, 'element'>
