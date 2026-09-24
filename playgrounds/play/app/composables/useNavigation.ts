@@ -112,7 +112,8 @@ const controlsNav: NavigationMenuItem = {
   icon: 'i-lucide-sliders-horizontal',
   defaultOpen: true,
   children: [
-    { label: '内置控件', to: '/controls' }
+    { label: '内置控件', to: '/controls' },
+    { label: '图层管理', to: '/layer-management' }
   ]
 }
 
