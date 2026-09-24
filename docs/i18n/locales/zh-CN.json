@@ -28,7 +28,8 @@
     },
     "controls": {
       "interactive": "交互控件",
-      "info": "信息控件"
+      "info": "信息控件",
+      "layerManagement": "图层管理"
     },
     "effects": {
       "dynamic": "动态",

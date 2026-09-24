@@ -28,7 +28,8 @@
     },
     "controls": {
       "interactive": "Interactive",
-      "info": "Informational"
+      "info": "Informational",
+      "layerManagement": "Layer Management"
     },
     "effects": {
       "dynamic": "Dynamic",
