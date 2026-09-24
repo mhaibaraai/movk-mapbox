@@ -120,4 +120,20 @@ describe('useMapSync', () => {
     expect(a.map.listenerCount('move')).toBe(0)
     expect(b.map.listenerCount('move')).toBe(0)
   })
+
+  it('按 id 引用的地图注销后自动解绑', async () => {
+    run(() => useMapSync(['sync-u', 'sync-v']))
+    const u = attached('sync-u')
+    const v = attached('sync-v')
+    registerMap(u.context)
+    registerMap(v.context)
+    await nextTick()
+    expect(u.map.listenerCount('move')).toBe(1)
+
+    unregisterMap('sync-v')
+    await nextTick()
+    expect(u.map.listenerCount('move')).toBe(0)
+    expect(v.map.listenerCount('move')).toBe(0)
+    unregisterMap('sync-u')
+  })
 })
