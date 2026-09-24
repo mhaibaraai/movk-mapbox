@@ -27,6 +27,9 @@ const ICONS: Record<string, string> = {
   trash: '<path d="M5 7h14M10 7V5h4v2M7 7l1 13h8l1-13"/>'
 }
 
+// 自定义模式无专属图标时的通用画笔图标
+const FALLBACK_ICON = '<path d="M4 20l4-1L19 8l-3-3L5 16z"/>'
+
 const LABELS: Record<string, string> = {
   select: 'Select',
   point: 'Point',
@@ -46,7 +49,7 @@ function createButton(name: string, dataset: Record<string, string>, onClick: ()
   button.title = LABELS[name] ?? name
   button.setAttribute('aria-label', button.title)
   Object.assign(button.dataset, dataset)
-  button.innerHTML = `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round">${ICONS[name] ?? ''}</svg>`
+  button.innerHTML = `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round">${ICONS[name] ?? FALLBACK_ICON}</svg>`
   button.addEventListener('click', onClick)
   return button
 }

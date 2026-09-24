@@ -17,6 +17,8 @@ export class FakeTerraDraw {
   stopThrows = false
   addCalls = 0
   setModeCalls = 0
+  /** updateModeOptions 调用记录：[模式名, 选项] */
+  modeOptionUpdates: [string, unknown][] = []
   modes: { mode: string }[]
   private listeners: Record<string, Set<Listener>> = {}
   private nextId = 0
@@ -60,6 +62,11 @@ export class FakeTerraDraw {
   setMode(mode: string) {
     this.setModeCalls++
     this.mode = mode
+  }
+
+  updateModeOptions(mode: string, options: unknown) {
+    if (!this.modes.some(m => m.mode === mode)) throw new Error('No mode with this name present')
+    this.modeOptionUpdates = [...this.modeOptionUpdates, [mode, options]]
   }
 
   getFeatureId() {

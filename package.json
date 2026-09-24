@@ -49,10 +49,6 @@
       "types": "./dist/vue-plugin.d.mts",
       "import": "./dist/vue-plugin.mjs"
     },
-    "./draw-modes": {
-      "types": "./dist/runtime/draw-modes/index.d.ts",
-      "import": "./dist/runtime/draw-modes/index.js"
-    },
     "./index.css": "./dist/runtime/index.css",
     "./runtime/*": "./dist/runtime/*",
     "./components/*": "./dist/runtime/components/*",
@@ -74,9 +70,6 @@
       ],
       "vue-plugin": [
         "./dist/vue-plugin.d.mts"
-      ],
-      "draw-modes": [
-        "./dist/runtime/draw-modes/index.d.ts"
       ],
       "runtime/*": [
         "./dist/runtime/*"

@@ -22,12 +22,6 @@ export interface MaplibreUnpluginOptions extends MaplibreResolverOptions {
 // runtime 目录：dev 经 jiti 解析到 src/runtime，发布时为 dist/runtime
 const runtimeDir = fileURLToPath(new URL('./runtime', import.meta.url))
 
-// 工具导出名 → runtime 下相对路径(标绘模式集合与主题工厂)，非 composables 目录、需显式登记
-const UTIL_MANIFEST: Record<string, string> = {
-  movkDrawModes: 'draw-modes',
-  drawThemeStyles: 'utils/draw-theme'
-}
-
 // 递归收集 runtime/components 下 .vue：裸文件名(全局唯一) → 绝对路径
 function componentMap(): Map<string, string> {
   const dir = join(runtimeDir, 'components')
@@ -53,16 +47,13 @@ export function maplibreComponentResolver(options: MaplibreResolverOptions = {})
   }
 }
 
-/** 本库 composables + 工具的自动导入项，注入既有 unplugin-auto-import 实例复用 */
+/** 本库 composables 的自动导入项，注入既有 unplugin-auto-import 实例复用 */
 export function maplibreAutoImports() {
   const cdir = join(runtimeDir, 'composables')
-  const composables = (readdirSync(cdir) as string[])
+  return (readdirSync(cdir) as string[])
     .filter(f => f.endsWith('.ts'))
     .map(f => f.slice(0, -'.ts'.length))
     .map(name => ({ from: join(cdir, name), imports: [name] }))
-  const utils = Object.entries(UTIL_MANIFEST)
-    .map(([name, file]) => ({ from: join(runtimeDir, file), imports: [name] }))
-  return [...composables, ...utils]
 }
 
 export const MaplibreUnplugin = createUnplugin<MaplibreUnpluginOptions | undefined>((options = {}, meta) => {
